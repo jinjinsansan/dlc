@@ -171,12 +171,13 @@ export default function MyPagePage() {
         )}
       </Card>
 
-      {/* Billing History Placeholder */}
+      {/* Billing History */}
       <Card className="mb-6">
         <h2 className="font-bold mb-4">請求履歴</h2>
-        <p className="text-text-muted text-sm">
-          Stripeの決済履歴が連携され次第、こちらに表示されます。
+        <p className="text-text-muted text-sm mb-4">
+          Stripeの決済履歴・請求書の確認はこちらから行えます。
         </p>
+        <BillingPortalButton />
       </Card>
 
       {/* Withdraw */}
@@ -212,6 +213,41 @@ export default function MyPagePage() {
           </div>
         )}
       </Card>
+    </div>
+  );
+}
+
+function BillingPortalButton() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleClick = async () => {
+    setLoading(true);
+    setError("");
+
+    const res = await fetch("/api/billing-portal", { method: "POST" });
+    const data = await res.json();
+
+    if (res.ok && data.url) {
+      window.location.href = data.url;
+    } else {
+      setError(data.error === "No billing history found"
+        ? "決済履歴が見つかりません。購入後にご利用いただけます。"
+        : "現在利用できません。Stripe設定完了後にご利用いただけます。");
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <button
+        onClick={handleClick}
+        disabled={loading}
+        className="bg-primary/20 hover:bg-primary/30 text-primary font-bold text-sm px-6 py-2 rounded-lg transition-colors disabled:opacity-50"
+      >
+        {loading ? "読み込み中..." : "請求履歴・請求書を確認"}
+      </button>
+      {error && <p className="text-text-muted text-sm mt-2">{error}</p>}
     </div>
   );
 }

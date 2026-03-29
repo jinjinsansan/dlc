@@ -8,6 +8,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "パスが指定されていません" }, { status: 400 });
   }
 
+  const normalized = filePath.replace(/\\/g, "/");
+  if (normalized.includes("..") || normalized.startsWith("/")) {
+    return NextResponse.json({ error: "不正なパスです" }, { status: 400 });
+  }
+
   const supabaseResponse = NextResponse.next();
 
   const supabase = createServerClient(

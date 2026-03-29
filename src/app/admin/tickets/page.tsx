@@ -4,6 +4,12 @@ import { useEffect, useState, useCallback } from "react";
 import Card from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
 
+interface TicketReply {
+  id: string;
+  body: string;
+  created_at: string;
+}
+
 interface Ticket {
   id: string;
   subject: string;
@@ -13,6 +19,7 @@ interface Ticket {
   created_at: string;
   user_email: string;
   user_name: string;
+  replies: TicketReply[];
 }
 
 const STATUSES = [
@@ -36,7 +43,7 @@ export default function AdminTicketsPage() {
     const supabase = createClient();
     let query = supabase
       .from("tickets")
-      .select("id, subject, body, status, file_url, created_at, user_id, users!tickets_user_id_fkey(email, name)")
+      .select("id, subject, body, status, file_url, created_at, user_id, users!tickets_user_id_fkey(email, name), ticket_replies(id, body, created_at)")
       .order("created_at", { ascending: false });
 
     if (filter) query = query.eq("status", filter);
@@ -45,6 +52,9 @@ export default function AdminTicketsPage() {
     setTickets(
       (data ?? []).map((t: Record<string, unknown>) => {
         const users = t.users as { email: string; name: string } | null;
+        const replies = ((t.ticket_replies ?? []) as TicketReply[]).sort(
+          (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        );
         return {
           id: t.id as string,
           subject: t.subject as string,
@@ -54,6 +64,7 @@ export default function AdminTicketsPage() {
           created_at: t.created_at as string,
           user_email: users?.email ?? "",
           user_name: users?.name ?? "匿名",
+          replies,
         };
       })
     );
@@ -112,6 +123,21 @@ export default function AdminTicketsPage() {
                 <p className="text-text-muted text-sm whitespace-pre-wrap">{t.body}</p>
                 {t.file_url && (
                   <a href={`/api/download?path=${encodeURIComponent(t.file_url)}`} className="text-primary hover:underline text-sm">📎 添付ファイル</a>
+                )}
+                {t.replies.length > 0 ? (
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-bold text-primary">返信履歴 ({t.replies.length}件)</h4>
+                    {t.replies.map((r) => (
+                      <div key={r.id} className="pl-4 border-l-2 border-primary/30">
+                        <p className="text-text-muted text-xs mb-1">
+                          {new Date(r.created_at).toLocaleDateString("ja-JP")}
+                        </p>
+                        <p className="text-sm whitespace-pre-wrap">{r.body}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-text-muted text-sm">まだ返信がありません</p>
                 )}
                 <div className="flex gap-2">
                   {["open", "in_progress", "closed"].map((s) => (
