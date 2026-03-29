@@ -1,31 +1,22 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Card from "@/components/ui/Card";
-
-const episodes = [
-  {
-    number: 1,
-    title: "AIが変えた、個人開発の常識",
-    description: "時代の変化・AIで何でも作れる現実",
-  },
-  {
-    number: 2,
-    title: "Dlogicはこうして生まれた",
-    description: "開発実録・使ったツール・失敗談",
-  },
-  {
-    number: 3,
-    title: "あなたにも同じことができる理由",
-    description: "受講者目線・学習ロードマップ・卒業後のビジョン",
-  },
-  {
-    number: 4,
-    title: "Dlogic Academy、始まります",
-    description: "サロン全貌・料金・申し込み方法",
-  },
-];
+import { episodes } from "@/lib/episodes";
 
 export default function LaunchPage() {
+  const [watched, setWatched] = useState<number[]>([]);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("dlogic-watched");
+      if (stored) setWatched(JSON.parse(stored));
+    } catch {}
+  }, []);
+
   return (
     <div className="min-h-screen bg-bg text-text-main">
       <Header />
@@ -40,8 +31,13 @@ export default function LaunchPage() {
 
           <div className="grid sm:grid-cols-2 gap-6">
             {episodes.map((ep) => (
-              <a key={ep.number} href={`/launch/episode/${ep.number}`}>
-                <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
+              <Link key={ep.number} href={`/launch/episode/${ep.number}`}>
+                <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full relative">
+                  {watched.includes(ep.number) && (
+                    <span className="absolute top-3 right-3 bg-primary text-bg text-xs font-bold px-2 py-1 rounded-full">
+                      視聴済み
+                    </span>
+                  )}
                   <div className="w-full aspect-video bg-bg rounded-lg mb-4 flex items-center justify-center">
                     <span className="text-primary text-4xl font-serif font-bold">
                       {ep.number}
@@ -53,7 +49,7 @@ export default function LaunchPage() {
                   <h2 className="font-bold text-lg mt-1 mb-2">{ep.title}</h2>
                   <p className="text-text-muted text-sm">{ep.description}</p>
                 </Card>
-              </a>
+              </Link>
             ))}
           </div>
         </div>

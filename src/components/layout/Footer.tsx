@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="bg-surface border-t border-border py-12">
@@ -16,19 +18,19 @@ export default function Footer() {
             <h4 className="font-bold text-text-main mb-4 text-sm">リンク</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="/launch/episode/1" className="text-text-muted hover:text-primary transition-colors">
+                <Link href="/launch/episode/1" className="text-text-muted hover:text-primary transition-colors">
                   無料ローンチ動画
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/apply" className="text-text-muted hover:text-primary transition-colors">
+                <Link href="/apply" className="text-text-muted hover:text-primary transition-colors">
                   お申し込み
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/login" className="text-text-muted hover:text-primary transition-colors">
+                <Link href="/login" className="text-text-muted hover:text-primary transition-colors">
                   ログイン
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -36,14 +38,14 @@ export default function Footer() {
             <h4 className="font-bold text-text-main mb-4 text-sm">法的情報</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="/legal/tokushoho" className="text-text-muted hover:text-primary transition-colors">
+                <Link href="/legal/tokushoho" className="text-text-muted hover:text-primary transition-colors">
                   特定商取引法に基づく表記
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/legal/privacy" className="text-text-muted hover:text-primary transition-colors">
+                <Link href="/legal/privacy" className="text-text-muted hover:text-primary transition-colors">
                   プライバシーポリシー
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

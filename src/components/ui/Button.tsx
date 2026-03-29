@@ -1,40 +1,55 @@
 import { ButtonHTMLAttributes } from "react";
+import Link from "next/link";
 
 type ButtonVariant = "primary" | "secondary" | "outline";
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+type ButtonAsLink = {
   variant?: ButtonVariant;
-  href?: string;
-}
+  className?: string;
+  children: React.ReactNode;
+  href: string;
+};
+
+type ButtonAsButton = {
+  variant?: ButtonVariant;
+  className?: string;
+  href?: undefined;
+} & ButtonHTMLAttributes<HTMLButtonElement>;
+
+type ButtonProps = ButtonAsLink | ButtonAsButton;
 
 const variants: Record<ButtonVariant, string> = {
-  primary:
-    "bg-primary hover:bg-primary-light text-bg font-bold",
+  primary: "bg-primary hover:bg-primary-light text-bg font-bold",
   secondary:
     "bg-surface hover:bg-border text-text-main font-bold border border-border",
   outline:
     "bg-transparent hover:bg-surface text-primary font-bold border border-primary",
 };
 
-export default function Button({
-  variant = "primary",
-  href,
-  className = "",
-  children,
-  ...props
-}: ButtonProps) {
-  const base = `py-3 px-8 rounded-lg text-lg transition-colors ${variants[variant]} ${className}`;
+function extractButtonProps(props: ButtonAsButton): ButtonHTMLAttributes<HTMLButtonElement> {
+  const rest = { ...props };
+  delete rest.variant;
+  delete rest.className;
+  delete rest.href;
+  return rest;
+}
 
-  if (href) {
+export default function Button(props: ButtonProps) {
+  const { variant = "primary", className = "", children } = props;
+  const base = `inline-block py-3 px-8 rounded-lg text-lg transition-colors ${variants[variant]} ${className}`;
+
+  if (props.href) {
     return (
-      <a href={href} className={base}>
+      <Link href={props.href} className={base}>
         {children}
-      </a>
+      </Link>
     );
   }
 
+  const buttonProps = extractButtonProps(props as ButtonAsButton);
+
   return (
-    <button className={base} {...props}>
+    <button className={base} {...buttonProps}>
       {children}
     </button>
   );

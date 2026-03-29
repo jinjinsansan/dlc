@@ -18,8 +18,8 @@ const config: Config = {
         border: "#2a2a3e",
       },
       fontFamily: {
-        serif: ["Noto Serif JP", "serif"],
-        sans: ["Noto Sans JP", "sans-serif"],
+        serif: ["var(--font-noto-serif)", "Noto Serif JP", "serif"],
+        sans: ["var(--font-noto-sans)", "Noto Sans JP", "sans-serif"],
       },
     },
   },

@@ -15,7 +15,7 @@
 body {
   color: var(--color-text);
   background: var(--color-bg);
-  font-family: "Noto Sans JP", sans-serif;
+  font-family: var(--font-noto-sans), "Noto Sans JP", sans-serif;
 }
 
 @layer utilities {

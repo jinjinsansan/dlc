@@ -4,7 +4,6 @@ import { useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Card from "@/components/ui/Card";
-import Button from "@/components/ui/Button";
 
 const plans = [
   {
@@ -30,11 +29,35 @@ const plans = [
 
 export default function ApplyPage() {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleCheckout = async () => {
     if (!selectedPlan) return;
-    // TODO: Stripe Checkout Session API呼び出し
-    alert("Stripe決済連携は今後実装予定です");
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ planId: selectedPlan }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "エラーが発生しました");
+      }
+
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "エラーが発生しました");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -90,16 +113,24 @@ export default function ApplyPage() {
             ))}
           </div>
 
+          {error && (
+            <div className="text-red-400 text-center mb-4 text-sm">
+              {error}
+            </div>
+          )}
+
           <div className="text-center">
-            <Button
+            <button
               onClick={handleCheckout}
-              className={`text-lg py-4 px-16 ${
-                !selectedPlan ? "opacity-50 cursor-not-allowed" : ""
+              disabled={!selectedPlan || loading}
+              className={`inline-block py-4 px-16 rounded-lg text-lg font-bold transition-colors bg-primary hover:bg-primary-light text-bg ${
+                !selectedPlan || loading
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
               }`}
-              disabled={!selectedPlan}
             >
-              決済に進む
-            </Button>
+              {loading ? "処理中..." : "決済に進む"}
+            </button>
             <p className="text-text-muted text-sm mt-4">
               Stripeの安全な決済画面に移動します
             </p>
