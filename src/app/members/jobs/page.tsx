@@ -1,0 +1,185 @@
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
+import Card from "@/components/ui/Card";
+import { createClient } from "@/lib/supabase/client";
+import { useMember } from "@/components/members/MemberContext";
+import JobForm from "@/components/jobs/JobForm";
+
+interface Job {
+  id: string;
+  user_id: string;
+  type: string;
+  title: string;
+  description: string;
+  budget: string | null;
+  duration: string | null;
+  contact: string;
+  created_at: string;
+  user_name: string;
+}
+
+const TYPE_LABELS: Record<string, { label: string; color: string }> = {
+  request: { label: "依頼したい", color: "bg-blue-500/20 text-blue-400" },
+  offer: { label: "受けたい", color: "bg-green-500/20 text-green-400" },
+};
+
+export default function JobsPage() {
+  const member = useMember();
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [typeFilter, setTypeFilter] = useState("");
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<"new" | "budget">("new");
+
+  const fetchJobs = useCallback(async () => {
+    setLoading(true);
+    const supabase = createClient();
+
+    let query = supabase
+      .from("jobs")
+      .select("id, user_id, type, title, description, budget, duration, contact, created_at, users!jobs_user_id_fkey(name)");
+
+    if (typeFilter) {
+      query = query.eq("type", typeFilter);
+    }
+
+    query = query.order("created_at", { ascending: false });
+
+    const { data } = await query;
+
+    let mapped: Job[] = (data ?? []).map((j: Record<string, unknown>) => {
+      const users = j.users as { name: string } | null;
+      return {
+        id: j.id as string,
+        user_id: j.user_id as string,
+        type: j.type as string,
+        title: j.title as string,
+        description: j.description as string,
+        budget: j.budget as string | null,
+        duration: j.duration as string | null,
+        contact: j.contact as string,
+        created_at: j.created_at as string,
+        user_name: users?.name ?? "匿名",
+      };
+    });
+
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      mapped = mapped.filter(
+        (j) =>
+          j.title.toLowerCase().includes(q) ||
+          j.description.toLowerCase().includes(q)
+      );
+    }
+
+    setJobs(mapped);
+    setLoading(false);
+  }, [typeFilter, search]);
+
+  useEffect(() => {
+    fetchJobs();
+  }, [fetchJobs]);
+
+  const handleInterest = async (jobId: string, jobUserId: string) => {
+    if (jobUserId === member.userId) return;
+    alert("投稿者に興味ありの通知が送信されました（今後実装予定）");
+  };
+
+  return (
+    <div>
+      <h1 className="font-serif text-2xl font-bold mb-2">受発注ボード</h1>
+      <p className="text-text-muted text-sm mb-6">
+        仲間同士で依頼・受注し合えるボードです
+      </p>
+
+      <JobForm onPosted={fetchJobs} />
+
+      {/* Filters */}
+      <div className="flex flex-wrap gap-3 mb-6 items-center">
+        <div className="flex gap-2">
+          {[
+            { value: "", label: "すべて" },
+            { value: "request", label: "依頼したい" },
+            { value: "offer", label: "受けたい" },
+          ].map((t) => (
+            <button
+              key={t.value}
+              onClick={() => setTypeFilter(t.value)}
+              className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
+                typeFilter === t.value
+                  ? "bg-primary text-bg font-bold"
+                  : "bg-surface border border-border text-text-muted hover:text-text-main"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="キーワード検索"
+          className="bg-surface border border-border rounded-lg px-4 py-1.5 text-sm text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
+        />
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value as "new" | "budget")}
+          className="bg-surface border border-border rounded-lg px-3 py-1.5 text-sm text-text-muted focus:outline-none focus:border-primary transition-colors"
+        >
+          <option value="new">新着順</option>
+          <option value="budget">予算順</option>
+        </select>
+      </div>
+
+      {/* Job List */}
+      {loading ? (
+        <p className="text-text-muted text-center py-8">読み込み中...</p>
+      ) : jobs.length > 0 ? (
+        <div className="space-y-4">
+          {jobs.map((job) => {
+            const typeInfo = TYPE_LABELS[job.type] ?? TYPE_LABELS.request;
+            return (
+              <Card key={job.id} className="hover:border-primary/30 transition-colors">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                      <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${typeInfo.color}`}>
+                        {typeInfo.label}
+                      </span>
+                      <span className="text-text-muted text-xs">{job.user_name}</span>
+                      <span className="text-text-muted text-xs">
+                        {new Date(job.created_at).toLocaleDateString("ja-JP")}
+                      </span>
+                    </div>
+                    <h3 className="font-bold mb-1">{job.title}</h3>
+                    <p className="text-text-muted text-sm whitespace-pre-wrap line-clamp-3">
+                      {job.description}
+                    </p>
+                    <div className="flex gap-4 mt-3 text-xs text-text-muted">
+                      {job.budget && <span>予算: {job.budget}</span>}
+                      {job.duration && <span>期間: {job.duration}</span>}
+                    </div>
+                  </div>
+                  {job.user_id !== member.userId && (
+                    <button
+                      onClick={() => handleInterest(job.id, job.user_id)}
+                      className="shrink-0 bg-primary/20 hover:bg-primary/30 text-primary font-bold text-sm px-4 py-2 rounded-lg transition-colors"
+                    >
+                      興味あり
+                    </button>
+                  )}
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      ) : (
+        <Card className="text-center py-8">
+          <p className="text-text-muted">まだ投稿がありません</p>
+        </Card>
+      )}
+    </div>
+  );
+}
