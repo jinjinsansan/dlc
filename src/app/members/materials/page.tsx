@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import Card from "@/components/ui/Card";
 
@@ -23,12 +22,10 @@ export default async function MaterialsPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
-
   const { data: profile } = await supabase
     .from("users")
     .select("plan")
-    .eq("email", user.email)
+    .eq("email", user?.email)
     .single();
 
   const userPlan = profile?.plan ?? "video-only";
@@ -75,9 +72,8 @@ export default async function MaterialsPage() {
                     </p>
                   </div>
                   <a
-                    href={material.file_url}
-                    download
-                    className="bg-primary/20 hover:bg-primary/30 text-primary font-bold text-sm px-4 py-2 rounded-lg transition-colors"
+                    href={`/api/download?path=${encodeURIComponent(material.file_url)}`}
+                    className="shrink-0 bg-primary/20 hover:bg-primary/30 text-primary font-bold text-sm px-4 py-2 rounded-lg transition-colors"
                   >
                     ダウンロード
                   </a>

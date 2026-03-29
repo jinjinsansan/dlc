@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import Card from "@/components/ui/Card";
@@ -10,15 +9,13 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
-
   const { data: profile } = await supabase
     .from("users")
     .select("name, plan, community_free_until")
-    .eq("email", user.email)
+    .eq("email", user?.email)
     .single();
 
-  const name = profile?.name ?? user.user_metadata?.name ?? "会員";
+  const name = profile?.name ?? user?.user_metadata?.name ?? "会員";
   const plan = profile?.plan ?? null;
   const access = getPlanAccess(plan);
 
@@ -27,6 +24,22 @@ export default async function DashboardPage() {
     .select("id, title, body, created_at")
     .order("created_at", { ascending: false })
     .limit(5);
+
+  // Progress: count watched weeks from video_watches
+  const { data: watchedVideos } = await supabase
+    .from("video_watches")
+    .select("video_id, videos(week)")
+    .eq("user_id", user?.id);
+
+  const watchedWeeks = new Set<number>();
+  if (watchedVideos) {
+    for (const w of watchedVideos) {
+      const video = w.videos as unknown as { week: number } | null;
+      if (video?.week) watchedWeeks.add(video.week);
+    }
+  }
+  const completedWeeks = watchedWeeks.size;
+  const progressPercent = Math.round((completedWeeks / 8) * 100);
 
   return (
     <div>
@@ -45,10 +58,14 @@ export default async function DashboardPage() {
         <div className="w-full bg-bg rounded-full h-3 mb-2">
           <div
             className="bg-primary rounded-full h-3 transition-all"
-            style={{ width: "12.5%" }}
+            style={{ width: `${progressPercent}%` }}
           />
         </div>
-        <p className="text-text-muted text-sm">Week 1 / 8</p>
+        <p className="text-text-muted text-sm">
+          {completedWeeks > 0
+            ? `Week ${completedWeeks} / 8 完了`
+            : "まだ動画を視聴していません"}
+        </p>
       </Card>
 
       {/* Zoom Info (Zoom plan only) */}
@@ -99,21 +116,14 @@ export default async function DashboardPage() {
             <p className="font-bold text-sm">資料ダウンロード</p>
           </Card>
         </Link>
-        {access.community ? (
-          <Link href="/members/community">
-            <Card className="hover:border-primary/50 transition-colors text-center py-8">
-              <div className="text-3xl mb-2">💬</div>
-              <p className="font-bold text-sm">コミュニティ</p>
-            </Card>
-          </Link>
-        ) : (
-          <Link href="/members/mypage">
-            <Card className="hover:border-primary/50 transition-colors text-center py-8">
-              <div className="text-3xl mb-2">👤</div>
-              <p className="font-bold text-sm">マイページ</p>
-            </Card>
-          </Link>
-        )}
+        <Link href={access.community ? "/members/community" : "/members/mypage"}>
+          <Card className="hover:border-primary/50 transition-colors text-center py-8">
+            <div className="text-3xl mb-2">{access.community ? "💬" : "👤"}</div>
+            <p className="font-bold text-sm">
+              {access.community ? "コミュニティ" : "マイページ"}
+            </p>
+          </Card>
+        </Link>
       </div>
     </div>
   );

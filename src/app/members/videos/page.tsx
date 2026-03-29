@@ -1,6 +1,6 @@
-import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import Card from "@/components/ui/Card";
+import VideoCard from "@/components/members/VideoCard";
 
 interface Video {
   id: string;
@@ -17,12 +17,18 @@ export default async function VideosPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
-
   const { data: videos } = await supabase
     .from("videos")
     .select("id, week, title, description, cloudflare_video_id, unlocked_at")
     .order("week", { ascending: true });
+
+  // Get watched video IDs
+  const { data: watches } = await supabase
+    .from("video_watches")
+    .select("video_id")
+    .eq("user_id", user?.id);
+
+  const watchedIds = new Set((watches ?? []).map((w) => w.video_id));
 
   const weeks = Array.from({ length: 8 }, (_, i) => i + 1);
   const videosByWeek = weeks.map((w) => ({
@@ -72,31 +78,12 @@ export default async function VideosPage() {
                         v.unlocked_at && new Date(v.unlocked_at) <= now
                     )
                     .map((video: Video) => (
-                      <Card
+                      <VideoCard
                         key={video.id}
-                        className="hover:border-primary/50 transition-colors"
-                      >
-                        <div className="w-full aspect-video bg-bg rounded-lg mb-3 flex items-center justify-center overflow-hidden">
-                          {video.cloudflare_video_id ? (
-                            <iframe
-                              src={`https://customer-${process.env.NEXT_PUBLIC_CLOUDFLARE_CUSTOMER_CODE}.cloudflarestream.com/${video.cloudflare_video_id}/iframe`}
-                              className="w-full h-full"
-                              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
-                              allowFullScreen
-                            />
-                          ) : (
-                            <span className="text-text-muted text-sm">
-                              動画準備中
-                            </span>
-                          )}
-                        </div>
-                        <h3 className="font-bold text-sm">{video.title}</h3>
-                        {video.description && (
-                          <p className="text-text-muted text-xs mt-1">
-                            {video.description}
-                          </p>
-                        )}
-                      </Card>
+                        video={video}
+                        watched={watchedIds.has(video.id)}
+                        userId={user?.id ?? ""}
+                      />
                     ))}
                 </div>
               ) : (

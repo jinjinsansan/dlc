@@ -4,8 +4,15 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import type { PlanAccess } from "@/lib/plans";
 
-export default function MemberHeader({ name }: { name: string }) {
+export default function MemberHeader({
+  name,
+  access,
+}: {
+  name: string;
+  access: PlanAccess;
+}) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -24,9 +31,7 @@ export default function MemberHeader({ name }: { name: string }) {
         </Link>
 
         <div className="hidden md:flex items-center gap-6">
-          <span className="text-text-muted text-sm">
-            {name} さん
-          </span>
+          <span className="text-text-muted text-sm">{name} さん</span>
           <button
             onClick={handleLogout}
             className="text-text-muted hover:text-text-main text-sm transition-colors"
@@ -53,8 +58,21 @@ export default function MemberHeader({ name }: { name: string }) {
       {menuOpen && (
         <nav className="md:hidden bg-surface border-t border-border px-4 py-4 space-y-3">
           <Link href="/members/dashboard" className="block text-text-muted hover:text-text-main" onClick={() => setMenuOpen(false)}>ダッシュボード</Link>
-          <Link href="/members/videos" className="block text-text-muted hover:text-text-main" onClick={() => setMenuOpen(false)}>動画ライブラリ</Link>
-          <Link href="/members/materials" className="block text-text-muted hover:text-text-main" onClick={() => setMenuOpen(false)}>資料ダウンロード</Link>
+          {access.videos && (
+            <Link href="/members/videos" className="block text-text-muted hover:text-text-main" onClick={() => setMenuOpen(false)}>動画ライブラリ</Link>
+          )}
+          {access.materials && (
+            <Link href="/members/materials" className="block text-text-muted hover:text-text-main" onClick={() => setMenuOpen(false)}>資料ダウンロード</Link>
+          )}
+          {access.community && (
+            <Link href="/members/community" className="block text-text-muted hover:text-text-main" onClick={() => setMenuOpen(false)}>コミュニティ</Link>
+          )}
+          {access.support && (
+            <Link href="/members/support" className="block text-text-muted hover:text-text-main" onClick={() => setMenuOpen(false)}>質問・サポート</Link>
+          )}
+          {access.jobs && (
+            <Link href="/members/jobs" className="block text-text-muted hover:text-text-main" onClick={() => setMenuOpen(false)}>受発注ボード</Link>
+          )}
           <Link href="/members/mypage" className="block text-text-muted hover:text-text-main" onClick={() => setMenuOpen(false)}>マイページ</Link>
           <button onClick={handleLogout} className="block text-text-muted hover:text-text-main w-full text-left">
             ログアウト
