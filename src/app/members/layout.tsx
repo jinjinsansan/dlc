@@ -4,6 +4,7 @@ import MemberSidebar from "@/components/layout/MemberSidebar";
 import MemberHeader from "@/components/layout/MemberHeader";
 import { getPlanAccess } from "@/lib/plans";
 import { MemberProvider, MemberProfile } from "@/components/members/MemberContext";
+import { isAdmin } from "@/lib/admin";
 
 export default async function MembersLayout({
   children,
@@ -36,6 +37,7 @@ export default async function MembersLayout({
     plan,
     access,
     communityFreeUntil: profile?.community_free_until ?? null,
+    isAdmin: isAdmin(user.email),
   };
 
   return (

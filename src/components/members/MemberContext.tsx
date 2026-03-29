@@ -10,6 +10,7 @@ export interface MemberProfile {
   plan: string | null;
   access: PlanAccess;
   communityFreeUntil: string | null;
+  isAdmin: boolean;
 }
 
 const MemberContext = createContext<MemberProfile | null>(null);

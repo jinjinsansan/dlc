@@ -5,12 +5,20 @@ import Card from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
 import { useMember } from "@/components/members/MemberContext";
 
+interface TicketReply {
+  id: string;
+  body: string;
+  created_at: string;
+}
+
 interface Ticket {
   id: string;
   subject: string;
   body: string;
   status: string;
+  file_url: string | null;
   created_at: string;
+  replies: TicketReply[];
 }
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -21,8 +29,34 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
 
 export default function SupportPage() {
   const member = useMember();
+
+  // Plan guard: only video-email and zoom
+  if (!member.access.support) {
+    return (
+      <div>
+        <h1 className="font-serif text-2xl font-bold mb-4">質問・サポート</h1>
+        <Card className="text-center py-12">
+          <p className="text-text-muted mb-4">
+            この機能は「動画＋メールサポート」以上のプランでご利用いただけます。
+          </p>
+          <a
+            href="/members/mypage"
+            className="text-primary hover:underline text-sm"
+          >
+            プランをアップグレード →
+          </a>
+        </Card>
+      </div>
+    );
+  }
+
+  return <SupportContent userId={member.userId} />;
+}
+
+function SupportContent({ userId }: { userId: string }) {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -33,13 +67,25 @@ export default function SupportPage() {
     const supabase = createClient();
     const { data } = await supabase
       .from("tickets")
-      .select("id, subject, body, status, created_at")
-      .eq("user_id", member.userId)
+      .select("id, subject, body, status, file_url, created_at, ticket_replies(id, body, created_at)")
+      .eq("user_id", userId)
       .order("created_at", { ascending: false });
 
-    setTickets(data ?? []);
+    const mapped: Ticket[] = (data ?? []).map((t: Record<string, unknown>) => ({
+      id: t.id as string,
+      subject: t.subject as string,
+      body: t.body as string,
+      status: t.status as string,
+      file_url: t.file_url as string | null,
+      created_at: t.created_at as string,
+      replies: ((t.ticket_replies ?? []) as TicketReply[]).sort(
+        (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      ),
+    }));
+
+    setTickets(mapped);
     setLoading(false);
-  }, [member.userId]);
+  }, [userId]);
 
   useEffect(() => {
     fetchTickets();
@@ -55,7 +101,7 @@ export default function SupportPage() {
 
     let fileUrl: string | null = null;
     if (file) {
-      const fileName = `${member.userId}/${Date.now()}_${file.name}`;
+      const fileName = `${userId}/${Date.now()}_${file.name}`;
       const { error: uploadError } = await supabase.storage
         .from("support-files")
         .upload(fileName, file);
@@ -66,7 +112,7 @@ export default function SupportPage() {
     }
 
     const { error } = await supabase.from("tickets").insert({
-      user_id: member.userId,
+      user_id: userId,
       subject: subject.trim(),
       body: body.trim(),
       file_url: fileUrl,
@@ -92,7 +138,6 @@ export default function SupportPage() {
         メールで個別相談ができます
       </p>
 
-      {/* Submit Form */}
       <Card className="mb-8">
         <h2 className="font-bold mb-4">新しい相談</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -143,7 +188,6 @@ export default function SupportPage() {
         </form>
       </Card>
 
-      {/* Ticket History */}
       <h2 className="font-bold text-lg mb-4">過去の相談履歴</h2>
       {loading ? (
         <p className="text-text-muted text-center py-8">読み込み中...</p>
@@ -151,24 +195,78 @@ export default function SupportPage() {
         <div className="space-y-3">
           {tickets.map((ticket) => {
             const status = STATUS_LABELS[ticket.status] ?? STATUS_LABELS.open;
+            const isExpanded = expandedId === ticket.id;
+
             return (
               <Card key={ticket.id}>
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className={`text-xs font-bold ${status.color}`}>
-                        {status.label}
+                <button
+                  onClick={() => setExpandedId(isExpanded ? null : ticket.id)}
+                  className="w-full text-left"
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className={`text-xs font-bold ${status.color}`}>
+                      {status.label}
+                    </span>
+                    <span className="text-text-muted text-xs">
+                      {new Date(ticket.created_at).toLocaleDateString("ja-JP")}
+                    </span>
+                    {ticket.replies.length > 0 && (
+                      <span className="text-xs text-primary">
+                        返信 {ticket.replies.length}件
                       </span>
-                      <span className="text-text-muted text-xs">
-                        {new Date(ticket.created_at).toLocaleDateString("ja-JP")}
-                      </span>
-                    </div>
-                    <h3 className="font-bold text-sm">{ticket.subject}</h3>
-                    <p className="text-text-muted text-sm mt-1 line-clamp-2 whitespace-pre-wrap">
+                    )}
+                    {ticket.file_url && (
+                      <span className="text-xs text-text-muted">📎</span>
+                    )}
+                    <span className="ml-auto text-text-muted text-xs">
+                      {isExpanded ? "▲" : "▼"}
+                    </span>
+                  </div>
+                  <h3 className="font-bold text-sm">{ticket.subject}</h3>
+                  {!isExpanded && (
+                    <p className="text-text-muted text-sm mt-1 line-clamp-1">
                       {ticket.body}
                     </p>
+                  )}
+                </button>
+
+                {isExpanded && (
+                  <div className="mt-3 pt-3 border-t border-border space-y-4">
+                    <p className="text-text-muted text-sm whitespace-pre-wrap">
+                      {ticket.body}
+                    </p>
+
+                    {ticket.file_url && (
+                      <a
+                        href={`/api/download?path=${encodeURIComponent(ticket.file_url)}`}
+                        className="inline-block text-primary hover:underline text-sm"
+                      >
+                        📎 添付ファイルをダウンロード
+                      </a>
+                    )}
+
+                    {ticket.replies.length > 0 && (
+                      <div className="space-y-3">
+                        <h4 className="text-sm font-bold text-primary">
+                          管理者からの返信
+                        </h4>
+                        {ticket.replies.map((reply) => (
+                          <div
+                            key={reply.id}
+                            className="pl-4 border-l-2 border-primary/30"
+                          >
+                            <p className="text-text-muted text-xs mb-1">
+                              {new Date(reply.created_at).toLocaleDateString("ja-JP")}
+                            </p>
+                            <p className="text-sm whitespace-pre-wrap">
+                              {reply.body}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                </div>
+                )}
               </Card>
             );
           })}

@@ -29,10 +29,12 @@ interface Post {
 export default function PostItem({
   post,
   currentUserId,
+  isAdmin,
   onUpdated,
 }: {
   post: Post;
   currentUserId: string;
+  isAdmin: boolean;
   onUpdated: () => void;
 }) {
   const [showReplies, setShowReplies] = useState(false);
@@ -59,6 +61,18 @@ export default function PostItem({
     onUpdated();
   };
 
+  const handleAdminAction = async (action: "delete" | "pin" | "unpin") => {
+    if (action === "delete" && !confirm("この投稿を削除しますか？")) return;
+
+    await fetch("/api/admin/delete-post", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ postId: post.id, action }),
+    });
+
+    onUpdated();
+  };
+
   return (
     <Card className={post.pinned ? "border-primary/40" : ""}>
       <div className="flex items-start gap-3">
@@ -70,9 +84,7 @@ export default function PostItem({
             <span className="bg-surface border border-border text-text-muted text-xs px-2 py-0.5 rounded">
               {CATEGORY_LABELS[post.category] ?? post.category}
             </span>
-            <span className="text-text-muted text-xs">
-              {post.user_name}
-            </span>
+            <span className="text-text-muted text-xs">{post.user_name}</span>
             <span className="text-text-muted text-xs">
               {new Date(post.created_at).toLocaleDateString("ja-JP")}
             </span>
@@ -84,7 +96,7 @@ export default function PostItem({
             </p>
           )}
 
-          <div className="flex items-center gap-4 mt-3">
+          <div className="flex items-center gap-4 mt-3 flex-wrap">
             <button
               onClick={handleLike}
               disabled={liking}
@@ -102,6 +114,25 @@ export default function PostItem({
             >
               💬 {post.reply_count}件の返信
             </button>
+
+            {isAdmin && (
+              <div className="flex items-center gap-2 ml-auto">
+                <button
+                  onClick={() =>
+                    handleAdminAction(post.pinned ? "unpin" : "pin")
+                  }
+                  className="text-xs text-text-muted hover:text-primary transition-colors"
+                >
+                  {post.pinned ? "ピン解除" : "📌 ピン留め"}
+                </button>
+                <button
+                  onClick={() => handleAdminAction("delete")}
+                  className="text-xs text-red-400 hover:text-red-300 transition-colors"
+                >
+                  削除
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

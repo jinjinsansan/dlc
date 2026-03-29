@@ -15,6 +15,8 @@ const CATEGORIES = [
   { value: "general", label: "雑談" },
 ];
 
+const PAGE_SIZE = 20;
+
 interface Post {
   id: string;
   user_id: string;
@@ -34,10 +36,14 @@ export default function CommunityPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
-  const fetchPosts = useCallback(async () => {
+  const fetchPosts = useCallback(async (pageNum = 0) => {
     setLoading(true);
     const supabase = createClient();
+    const from = pageNum * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
 
     let query = supabase
       .from("posts")
@@ -48,7 +54,8 @@ export default function CommunityPage() {
         replies(id)
       `)
       .order("pinned", { ascending: false })
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .range(from, to);
 
     if (category) {
       query = query.eq("category", category);
@@ -75,13 +82,22 @@ export default function CommunityPage() {
       };
     });
 
-    setPosts(mapped);
+    setHasMore(mapped.length === PAGE_SIZE);
+
+    if (pageNum === 0) {
+      setPosts(mapped);
+    } else {
+      setPosts((prev) => [...prev, ...mapped]);
+    }
+    setPage(pageNum);
     setLoading(false);
   }, [category, member.userId]);
 
   useEffect(() => {
-    fetchPosts();
+    fetchPosts(0);
   }, [fetchPosts]);
+
+  const handleRefresh = () => fetchPosts(0);
 
   return (
     <div>
@@ -90,9 +106,8 @@ export default function CommunityPage() {
         仲間と交流し、学びを深めましょう
       </p>
 
-      <PostForm onPosted={fetchPosts} />
+      <PostForm onPosted={handleRefresh} />
 
-      {/* Category Filter */}
       <div className="flex gap-2 mb-6 flex-wrap">
         {CATEGORIES.map((cat) => (
           <button
@@ -109,20 +124,29 @@ export default function CommunityPage() {
         ))}
       </div>
 
-      {/* Posts */}
-      {loading ? (
-        <p className="text-text-muted text-center py-8">読み込み中...</p>
-      ) : posts.length > 0 ? (
+      {posts.length > 0 ? (
         <div className="space-y-4">
           {posts.map((post) => (
             <PostItem
               key={post.id}
               post={post}
               currentUserId={member.userId}
-              onUpdated={fetchPosts}
+              isAdmin={member.isAdmin}
+              onUpdated={handleRefresh}
             />
           ))}
+          {hasMore && (
+            <button
+              onClick={() => fetchPosts(page + 1)}
+              disabled={loading}
+              className="w-full py-3 text-center text-text-muted hover:text-primary text-sm border border-border rounded-lg transition-colors"
+            >
+              {loading ? "読み込み中..." : "もっと見る"}
+            </button>
+          )}
         </div>
+      ) : loading ? (
+        <p className="text-text-muted text-center py-8">読み込み中...</p>
       ) : (
         <Card className="text-center py-8">
           <p className="text-text-muted">まだ投稿がありません</p>

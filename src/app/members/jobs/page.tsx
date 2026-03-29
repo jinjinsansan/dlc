@@ -5,6 +5,7 @@ import Card from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
 import { useMember } from "@/components/members/MemberContext";
 import JobForm from "@/components/jobs/JobForm";
+import { ADMIN_EMAIL } from "@/lib/admin";
 
 interface Job {
   id: string;
@@ -17,12 +18,22 @@ interface Job {
   contact: string;
   created_at: string;
   user_name: string;
+  interested_count: number;
+  interested_by_me: boolean;
 }
 
 const TYPE_LABELS: Record<string, { label: string; color: string }> = {
   request: { label: "依頼したい", color: "bg-blue-500/20 text-blue-400" },
   offer: { label: "受けたい", color: "bg-green-500/20 text-green-400" },
 };
+
+const PAGE_SIZE = 20;
+
+function parseBudget(b: string | null): number {
+  if (!b) return 0;
+  const num = parseInt(b.replace(/[^0-9]/g, ""), 10);
+  return isNaN(num) ? 0 : num;
+}
 
 export default function JobsPage() {
   const member = useMember();
@@ -31,25 +42,34 @@ export default function JobsPage() {
   const [typeFilter, setTypeFilter] = useState("");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<"new" | "budget">("new");
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
-  const fetchJobs = useCallback(async () => {
+  const fetchJobs = useCallback(async (pageNum = 0) => {
     setLoading(true);
     const supabase = createClient();
+    const from = pageNum * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
 
     let query = supabase
       .from("jobs")
-      .select("id, user_id, type, title, description, budget, duration, contact, created_at, users!jobs_user_id_fkey(name)");
+      .select(`
+        id, user_id, type, title, description, budget, duration, contact, created_at,
+        users!jobs_user_id_fkey(name),
+        job_interests(user_id)
+      `)
+      .order("created_at", { ascending: false })
+      .range(from, to);
 
     if (typeFilter) {
       query = query.eq("type", typeFilter);
     }
 
-    query = query.order("created_at", { ascending: false });
-
     const { data } = await query;
 
     let mapped: Job[] = (data ?? []).map((j: Record<string, unknown>) => {
       const users = j.users as { name: string } | null;
+      const interests = (j.job_interests ?? []) as { user_id: string }[];
       return {
         id: j.id as string,
         user_id: j.user_id as string,
@@ -61,6 +81,8 @@ export default function JobsPage() {
         contact: j.contact as string,
         created_at: j.created_at as string,
         user_name: users?.name ?? "匿名",
+        interested_count: interests.length,
+        interested_by_me: interests.some((i) => i.user_id === member.userId),
       };
     });
 
@@ -73,17 +95,40 @@ export default function JobsPage() {
       );
     }
 
-    setJobs(mapped);
+    if (sortBy === "budget") {
+      mapped.sort((a, b) => parseBudget(b.budget) - parseBudget(a.budget));
+    }
+
+    setHasMore(mapped.length === PAGE_SIZE);
+    if (pageNum === 0) {
+      setJobs(mapped);
+    } else {
+      setJobs((prev) => [...prev, ...mapped]);
+    }
+    setPage(pageNum);
     setLoading(false);
-  }, [typeFilter, search]);
+  }, [typeFilter, search, sortBy, member.userId]);
 
   useEffect(() => {
-    fetchJobs();
+    fetchJobs(0);
   }, [fetchJobs]);
 
-  const handleInterest = async (jobId: string, jobUserId: string) => {
-    if (jobUserId === member.userId) return;
-    alert("投稿者に興味ありの通知が送信されました（今後実装予定）");
+  const handleRefresh = () => fetchJobs(0);
+
+  const handleInterest = async (jobId: string, alreadyInterested: boolean) => {
+    const supabase = createClient();
+    if (alreadyInterested) {
+      await supabase
+        .from("job_interests")
+        .delete()
+        .eq("job_id", jobId)
+        .eq("user_id", member.userId);
+    } else {
+      await supabase
+        .from("job_interests")
+        .insert({ job_id: jobId, user_id: member.userId });
+    }
+    handleRefresh();
   };
 
   return (
@@ -93,7 +138,25 @@ export default function JobsPage() {
         仲間同士で依頼・受注し合えるボードです
       </p>
 
-      <JobForm onPosted={fetchJobs} />
+      <JobForm onPosted={handleRefresh} />
+
+      {/* Admin Direct Request */}
+      <Card className="mb-6 border-primary/30">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="font-bold text-sm">管理者へ直接依頼</h3>
+            <p className="text-text-muted text-xs mt-1">
+              仁さんに直接お仕事を依頼したい場合はこちら
+            </p>
+          </div>
+          <a
+            href={`mailto:${ADMIN_EMAIL}?subject=【直接依頼】`}
+            className="shrink-0 bg-primary hover:bg-primary-light text-bg font-bold text-sm px-4 py-2 rounded-lg transition-colors"
+          >
+            メールで依頼
+          </a>
+        </div>
+      </Card>
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3 mb-6 items-center">
@@ -134,9 +197,7 @@ export default function JobsPage() {
       </div>
 
       {/* Job List */}
-      {loading ? (
-        <p className="text-text-muted text-center py-8">読み込み中...</p>
-      ) : jobs.length > 0 ? (
+      {jobs.length > 0 ? (
         <div className="space-y-4">
           {jobs.map((job) => {
             const typeInfo = TYPE_LABELS[job.type] ?? TYPE_LABELS.request;
@@ -152,6 +213,11 @@ export default function JobsPage() {
                       <span className="text-text-muted text-xs">
                         {new Date(job.created_at).toLocaleDateString("ja-JP")}
                       </span>
+                      {job.interested_count > 0 && (
+                        <span className="text-xs text-primary">
+                          🙋 {job.interested_count}人が興味あり
+                        </span>
+                      )}
                     </div>
                     <h3 className="font-bold mb-1">{job.title}</h3>
                     <p className="text-text-muted text-sm whitespace-pre-wrap line-clamp-3">
@@ -164,17 +230,32 @@ export default function JobsPage() {
                   </div>
                   {job.user_id !== member.userId && (
                     <button
-                      onClick={() => handleInterest(job.id, job.user_id)}
-                      className="shrink-0 bg-primary/20 hover:bg-primary/30 text-primary font-bold text-sm px-4 py-2 rounded-lg transition-colors"
+                      onClick={() => handleInterest(job.id, job.interested_by_me)}
+                      className={`shrink-0 font-bold text-sm px-4 py-2 rounded-lg transition-colors ${
+                        job.interested_by_me
+                          ? "bg-primary text-bg"
+                          : "bg-primary/20 hover:bg-primary/30 text-primary"
+                      }`}
                     >
-                      興味あり
+                      {job.interested_by_me ? "興味あり済" : "興味あり"}
                     </button>
                   )}
                 </div>
               </Card>
             );
           })}
+          {hasMore && (
+            <button
+              onClick={() => fetchJobs(page + 1)}
+              disabled={loading}
+              className="w-full py-3 text-center text-text-muted hover:text-primary text-sm border border-border rounded-lg transition-colors"
+            >
+              {loading ? "読み込み中..." : "もっと見る"}
+            </button>
+          )}
         </div>
+      ) : loading ? (
+        <p className="text-text-muted text-center py-8">読み込み中...</p>
       ) : (
         <Card className="text-center py-8">
           <p className="text-text-muted">まだ投稿がありません</p>
