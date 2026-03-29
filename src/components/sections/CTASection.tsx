@@ -11,10 +11,10 @@ export default function CTASection() {
   }月${deadlineDate.getDate()}日`;
 
   return (
-    <section className="py-24 px-4 relative overflow-hidden">
+    <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-t from-primary/5 via-transparent to-transparent" />
       <div className="relative z-10 max-w-3xl mx-auto text-center">
-        <h2 className="font-serif text-3xl md:text-4xl font-bold mb-6">
+        <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold mb-6">
           さあ、<span className="text-primary">作れる側の人間</span>になろう
         </h2>
         {isOpen ? (

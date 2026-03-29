@@ -35,12 +35,12 @@ export default function CurriculumSection() {
   ];
 
   return (
-    <section id="curriculum" className="py-24 px-4 bg-surface/50">
+    <section id="curriculum" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-surface/50">
       <div className="max-w-3xl mx-auto">
-        <h2 className="font-serif text-3xl md:text-4xl font-bold text-center mb-4">
+        <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4">
           <span className="text-primary">8週間</span>で、あなたは変わる
         </h2>
-        <p className="text-text-muted text-center mb-16">
+        <p className="text-text-muted text-sm sm:text-base text-center mb-10 sm:mb-16">
           実践重視のカリキュラムで、ゼロからプロダクト完成まで導きます
         </p>
 
