@@ -245,7 +245,7 @@ function SupportContent({ userId }: { userId: string }) {
                       </a>
                     )}
 
-                    {ticket.replies.length > 0 && (
+                    {ticket.replies.length > 0 ? (
                       <div className="space-y-3">
                         <h4 className="text-sm font-bold text-primary">
                           管理者からの返信
@@ -264,6 +264,10 @@ function SupportContent({ userId }: { userId: string }) {
                           </div>
                         ))}
                       </div>
+                    ) : (
+                      <p className="text-text-muted text-sm">
+                        まだ管理者からの返信がありません。しばらくお待ちください。
+                      </p>
                     )}
                   </div>
                 )}

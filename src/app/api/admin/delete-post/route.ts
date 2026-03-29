@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
-
-const ADMIN_EMAIL = "admin@dlogic-academy.com";
+import { isAdmin } from "@/lib/admin";
 
 export async function POST(request: NextRequest) {
   const supabaseResponse = NextResponse.next();
@@ -27,7 +26,7 @@ export async function POST(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user || user.email !== ADMIN_EMAIL) {
+  if (!user || !isAdmin(user.email)) {
     return NextResponse.json({ error: "権限がありません" }, { status: 403 });
   }
 

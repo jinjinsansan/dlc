@@ -44,12 +44,20 @@ export default function JobsPage() {
   const [sortBy, setSortBy] = useState<"new" | "budget">("new");
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
 
   const fetchJobs = useCallback(async (pageNum = 0) => {
     setLoading(true);
     const supabase = createClient();
     const from = pageNum * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
+
+    if (pageNum === 0) {
+      let countQuery = supabase.from("jobs").select("*", { count: "exact", head: true });
+      if (typeFilter) countQuery = countQuery.eq("type", typeFilter);
+      const { count } = await countQuery;
+      setTotalCount(count ?? 0);
+    }
 
     let query = supabase
       .from("jobs")
@@ -133,7 +141,12 @@ export default function JobsPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-bold mb-2">受発注ボード</h1>
+      <div className="flex items-baseline gap-3 mb-2">
+        <h1 className="font-serif text-2xl font-bold">受発注ボード</h1>
+        {totalCount > 0 && (
+          <span className="text-text-muted text-sm">全{totalCount}件</span>
+        )}
+      </div>
       <p className="text-text-muted text-sm mb-6">
         仲間同士で依頼・受注し合えるボードです
       </p>
