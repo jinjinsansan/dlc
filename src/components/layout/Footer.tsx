@@ -1,0 +1,57 @@
+export default function Footer() {
+  return (
+    <footer className="bg-surface border-t border-border py-12">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="grid md:grid-cols-3 gap-8 mb-8">
+          <div>
+            <h3 className="font-serif text-lg font-bold text-primary mb-4">
+              Dlogic Academy
+            </h3>
+            <p className="text-text-muted text-sm leading-relaxed">
+              ノーコードで本格競馬AIを作った実績者が教える、
+              AI個人開発者養成コミュニティ
+            </p>
+          </div>
+          <div>
+            <h4 className="font-bold text-text-main mb-4 text-sm">リンク</h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <a href="/launch/episode/1" className="text-text-muted hover:text-primary transition-colors">
+                  無料ローンチ動画
+                </a>
+              </li>
+              <li>
+                <a href="/apply" className="text-text-muted hover:text-primary transition-colors">
+                  お申し込み
+                </a>
+              </li>
+              <li>
+                <a href="/login" className="text-text-muted hover:text-primary transition-colors">
+                  ログイン
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-bold text-text-main mb-4 text-sm">法的情報</h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <a href="/legal/tokushoho" className="text-text-muted hover:text-primary transition-colors">
+                  特定商取引法に基づく表記
+                </a>
+              </li>
+              <li>
+                <a href="/legal/privacy" className="text-text-muted hover:text-primary transition-colors">
+                  プライバシーポリシー
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="border-t border-border pt-8 text-center text-text-muted text-sm">
+          &copy; {new Date().getFullYear()} Dlogic Academy. All rights reserved.
+        </div>
+      </div>
+    </footer>
+  );
+}
