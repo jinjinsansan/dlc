@@ -44,7 +44,7 @@ export default async function MembersLayout({
     <MemberProvider profile={memberProfile}>
       <div className="min-h-screen bg-bg text-text-main">
         <MemberHeader name={name} access={access} />
-        <div className="max-w-7xl mx-auto px-4 pt-20 pb-16 flex gap-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-8 sm:pb-16 flex gap-4 lg:gap-8">
           <MemberSidebar access={access} />
           <main className="flex-1 min-w-0">{children}</main>
         </div>

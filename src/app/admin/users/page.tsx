@@ -46,7 +46,7 @@ export default function AdminUsersPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-bold mb-2">会員管理</h1>
+      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2">会員管理</h1>
       <p className="text-text-muted text-sm mb-6">計 {users.length} 名</p>
 
       <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="名前またはメールで検索"
@@ -54,7 +54,7 @@ export default function AdminUsersPage() {
 
       <div className="space-y-2">
         {filtered.map((u) => (
-          <Card key={u.id || u.email} className="flex items-center justify-between gap-4">
+          <Card key={u.id || u.email} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
             <div className="min-w-0">
               <p className="font-bold text-sm">{u.name || "名前未設定"}</p>
               <p className="text-text-muted text-xs">{u.email}</p>

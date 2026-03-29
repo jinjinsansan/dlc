@@ -44,7 +44,7 @@ export default async function DashboardPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="font-serif text-2xl font-bold mb-2">
+        <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2">
           ようこそ、<span className="text-primary">{name}</span> さん
         </h1>
         <p className="text-text-muted text-sm">

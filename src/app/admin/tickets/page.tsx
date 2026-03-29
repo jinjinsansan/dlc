@@ -90,10 +90,10 @@ export default function AdminTicketsPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-bold mb-2">サポートチケット管理</h1>
-      <p className="text-text-muted text-sm mb-6">計 {tickets.length} 件</p>
+      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2">サポートチケット管理</h1>
+      <p className="text-text-muted text-sm mb-4 sm:mb-6">計 {tickets.length} 件</p>
 
-      <div className="flex gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
         {STATUSES.map((s) => (
           <button key={s.value} onClick={() => setFilter(s.value)}
             className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
@@ -106,11 +106,11 @@ export default function AdminTicketsPage() {
         {tickets.map((t) => (
           <Card key={t.id}>
             <button onClick={() => setExpandedId(expandedId === t.id ? null : t.id)} className="w-full text-left">
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1">
                 <span className={`text-xs font-bold ${STATUS_COLORS[t.status] ?? ""}`}>
                   {STATUSES.find((s) => s.value === t.status)?.label ?? t.status}
                 </span>
-                <span className="text-text-muted text-xs">{t.user_name} ({t.user_email})</span>
+                <span className="text-text-muted text-xs truncate max-w-[200px] sm:max-w-none">{t.user_name} ({t.user_email})</span>
                 <span className="text-text-muted text-xs">{new Date(t.created_at).toLocaleDateString("ja-JP")}</span>
                 {t.file_url && <span className="text-xs">📎</span>}
                 <span className="ml-auto text-text-muted text-xs">{expandedId === t.id ? "▲" : "▼"}</span>
@@ -139,7 +139,7 @@ export default function AdminTicketsPage() {
                 ) : (
                   <p className="text-text-muted text-sm">まだ返信がありません</p>
                 )}
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {["open", "in_progress", "closed"].map((s) => (
                     <button key={s} onClick={() => handleStatusChange(t.id, s)}
                       className={`text-xs px-3 py-1 rounded border transition-colors ${
@@ -149,10 +149,10 @@ export default function AdminTicketsPage() {
                     </button>
                   ))}
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input type="text" value={replyText[t.id] ?? ""} onChange={(e) => setReplyText((prev) => ({ ...prev, [t.id]: e.target.value }))}
                     placeholder="返信を入力..."
-                    className="flex-1 bg-bg border border-border rounded-lg px-4 py-2 text-sm text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary" />
+                    className="w-full sm:flex-1 bg-bg border border-border rounded-lg px-4 py-2 text-sm text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary" />
                   <button onClick={() => handleReply(t.id)} disabled={!replyText[t.id]?.trim()}
                     className="bg-primary hover:bg-primary-light text-bg font-bold text-sm px-4 py-2 rounded-lg disabled:opacity-50">返信</button>
                 </div>

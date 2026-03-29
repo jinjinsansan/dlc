@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function TokushohoPage() {
   return (
     <div className="min-h-screen bg-bg text-text-main">
-      <div className="max-w-3xl mx-auto px-4 py-16">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
         <Link
           href="/"
           className="text-text-muted hover:text-primary text-sm mb-8 inline-block transition-colors"

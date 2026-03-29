@@ -48,9 +48,9 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-bg text-text-main">
       <Header />
-      <main className="pt-24 pb-16 px-4">
+      <main className="pt-20 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md mx-auto">
-          <h1 className="font-serif text-3xl font-bold text-center mb-2">
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-center mb-2">
             会員登録
           </h1>
           <p className="text-text-muted text-center text-sm mb-8">

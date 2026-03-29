@@ -25,7 +25,7 @@ export default function MemberHeader({
 
   return (
     <header className="fixed top-0 w-full z-50 bg-bg/80 backdrop-blur-md border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
         <Link href="/members/dashboard" className="font-serif text-xl font-bold text-primary">
           Dlogic Academy
         </Link>
@@ -56,7 +56,7 @@ export default function MemberHeader({
       </div>
 
       {menuOpen && (
-        <nav className="md:hidden bg-surface border-t border-border px-4 py-4 space-y-3">
+        <nav className="md:hidden bg-surface border-t border-border px-4 sm:px-6 py-3 space-y-2">
           <Link href="/members/dashboard" className="block text-text-muted hover:text-text-main" onClick={() => setMenuOpen(false)}>ダッシュボード</Link>
           {access.videos && (
             <Link href="/members/videos" className="block text-text-muted hover:text-text-main" onClick={() => setMenuOpen(false)}>動画ライブラリ</Link>

@@ -60,7 +60,7 @@ export default function AdminVideosPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-bold mb-6">動画管理</h1>
+      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-4 sm:mb-6">動画管理</h1>
 
       <Card className="mb-8">
         <h2 className="font-bold mb-4">動画を追加</h2>
@@ -92,7 +92,7 @@ export default function AdminVideosPage() {
             {weekVideos.length > 0 ? (
               <div className="space-y-2">
                 {weekVideos.map((v) => (
-                  <Card key={v.id} className="flex items-center justify-between gap-4">
+                  <Card key={v.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
                     <div className="min-w-0">
                       <h3 className="font-bold text-sm">{v.title}</h3>
                       <p className="text-text-muted text-xs">{v.cloudflare_video_id || "動画ID未設定"}</p>

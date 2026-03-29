@@ -63,9 +63,9 @@ export default function ApplyPage() {
   return (
     <div className="min-h-screen bg-bg text-text-main">
       <Header />
-      <main className="pt-24 pb-16 px-4">
+      <main className="pt-20 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
-          <h1 className="font-serif text-3xl md:text-4xl font-bold text-center mb-4">
+          <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4">
             <span className="text-primary">プラン</span>を選択
           </h1>
           <p className="text-text-muted text-center mb-12">
@@ -83,18 +83,18 @@ export default function ApplyPage() {
                     : "hover:border-primary/30"
                 }`}
               >
-                <label className="flex items-center gap-4 cursor-pointer">
+                <label className="flex items-start sm:items-center gap-3 sm:gap-4 cursor-pointer">
                   <input
                     type="radio"
                     name="plan"
                     value={plan.id}
                     checked={selectedPlan === plan.id}
                     onChange={() => setSelectedPlan(plan.id)}
-                    className="w-5 h-5 accent-[#c9a84c]"
+                    className="w-5 h-5 accent-[#c9a84c] mt-1 sm:mt-0 shrink-0"
                   />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3">
-                      <h3 className="font-bold text-lg">{plan.name}</h3>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                      <h3 className="font-bold text-base sm:text-lg">{plan.name}</h3>
                       {plan.recommended && (
                         <span className="bg-primary/20 text-primary text-xs px-2 py-0.5 rounded-full">
                           おすすめ
@@ -105,7 +105,7 @@ export default function ApplyPage() {
                       {plan.description}
                     </p>
                   </div>
-                  <div className="font-serif text-xl font-bold text-primary">
+                  <div className="font-serif text-lg sm:text-xl font-bold text-primary shrink-0">
                     {plan.price}
                   </div>
                 </label>
@@ -123,7 +123,7 @@ export default function ApplyPage() {
             <button
               onClick={handleCheckout}
               disabled={!selectedPlan || loading}
-              className={`inline-block py-4 px-16 rounded-lg text-lg font-bold transition-colors bg-primary hover:bg-primary-light text-bg ${
+              className={`inline-block py-3 sm:py-4 px-10 sm:px-16 rounded-lg text-base sm:text-lg font-bold transition-colors bg-primary hover:bg-primary-light text-bg ${
                 !selectedPlan || loading
                   ? "opacity-50 cursor-not-allowed"
                   : ""

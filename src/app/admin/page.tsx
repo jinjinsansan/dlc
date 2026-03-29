@@ -22,7 +22,7 @@ export default async function AdminDashboard() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-bold mb-8">管理者ダッシュボード</h1>
+      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-4 sm:mb-8">管理者ダッシュボード</h1>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((s) => (
           <Link key={s.href} href={s.href}>

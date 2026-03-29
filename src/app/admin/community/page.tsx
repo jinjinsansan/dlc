@@ -53,15 +53,15 @@ export default function AdminCommunityPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-bold mb-2">コミュニティモデレーション</h1>
-      <p className="text-text-muted text-sm mb-6">計 {posts.length} 件</p>
+      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2">コミュニティモデレーション</h1>
+      <p className="text-text-muted text-sm mb-4 sm:mb-6">計 {posts.length} 件</p>
 
       <div className="space-y-2">
         {posts.map((p) => (
           <Card key={p.id} className={p.pinned ? "border-primary/40" : ""}>
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col sm:flex-row items-start justify-between gap-2 sm:gap-4">
               <div className="min-w-0">
-                <div className="flex items-center gap-2 mb-1">
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1">
                   {p.pinned && <span className="text-primary text-xs font-bold">📌</span>}
                   <span className="text-text-muted text-xs">{CAT_LABELS[p.category] ?? p.category}</span>
                   <span className="text-text-muted text-xs">{p.user_name}</span>

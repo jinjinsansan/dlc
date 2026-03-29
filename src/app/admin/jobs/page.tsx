@@ -53,12 +53,12 @@ export default function AdminJobsPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-bold mb-2">受発注ボード管理</h1>
+      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2">受発注ボード管理</h1>
       <p className="text-text-muted text-sm mb-6">計 {jobs.length} 件</p>
 
       <div className="space-y-2">
         {jobs.map((j) => (
-          <Card key={j.id} className="flex items-start justify-between gap-4">
+          <Card key={j.id} className="flex flex-col sm:flex-row items-start justify-between gap-2 sm:gap-4">
             <div className="min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${

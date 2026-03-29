@@ -53,8 +53,8 @@ export default async function MaterialsPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-bold mb-2">資料ダウンロード</h1>
-      <p className="text-text-muted text-sm mb-8">
+      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2">資料ダウンロード</h1>
+      <p className="text-text-muted text-sm mb-4 sm:mb-8">
         カテゴリ別に資料をダウンロードできます
       </p>
 
@@ -64,7 +64,7 @@ export default async function MaterialsPage() {
           {items.length > 0 ? (
             <div className="space-y-3">
               {items.map((material: Material) => (
-                <Card key={material.id} className="flex items-center justify-between">
+                <Card key={material.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <h3 className="font-bold text-sm">{material.title}</h3>
                     <p className="text-text-muted text-xs mt-1">

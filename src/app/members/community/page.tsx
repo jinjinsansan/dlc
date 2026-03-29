@@ -109,8 +109,8 @@ export default function CommunityPage() {
 
   return (
     <div>
-      <div className="flex items-baseline gap-3 mb-2">
-        <h1 className="font-serif text-2xl font-bold">コミュニティ</h1>
+      <div className="flex flex-wrap items-baseline gap-2 sm:gap-3 mb-2">
+        <h1 className="font-serif text-xl sm:text-2xl font-bold">コミュニティ</h1>
         {totalCount > 0 && (
           <span className="text-text-muted text-sm">全{totalCount}件</span>
         )}

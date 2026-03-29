@@ -88,7 +88,7 @@ export default function MyPagePage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-bold mb-8">マイページ</h1>
+      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-4 sm:mb-8">マイページ</h1>
 
       {/* Profile Edit */}
       <Card className="mb-6">

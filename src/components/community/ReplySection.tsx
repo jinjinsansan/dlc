@@ -86,18 +86,18 @@ export default function ReplySection({
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="flex gap-2">
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
         <input
           type="text"
           value={body}
           onChange={(e) => setBody(e.target.value)}
           placeholder="返信を入力..."
-          className="flex-1 bg-bg border border-border rounded-lg px-4 py-2 text-sm text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
+          className="w-full sm:flex-1 bg-bg border border-border rounded-lg px-4 py-2 text-sm text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
         />
         <button
           type="submit"
           disabled={posting || !body.trim()}
-          className="bg-primary hover:bg-primary-light text-bg font-bold text-sm px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+          className="w-full sm:w-auto bg-primary hover:bg-primary-light text-bg font-bold text-sm px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
         >
           返信
         </button>

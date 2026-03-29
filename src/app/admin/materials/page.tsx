@@ -64,7 +64,7 @@ export default function AdminMaterialsPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-bold mb-6">資料管理</h1>
+      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-4 sm:mb-6">資料管理</h1>
 
       <Card className="mb-8">
         <h2 className="font-bold mb-4">資料をアップロード</h2>
@@ -95,7 +95,7 @@ export default function AdminMaterialsPage() {
 
       <div className="space-y-2">
         {materials.map((m) => (
-          <Card key={m.id} className="flex items-center justify-between gap-4">
+          <Card key={m.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
             <div className="min-w-0">
               <h3 className="font-bold text-sm">{m.title}</h3>
               <p className="text-text-muted text-xs">

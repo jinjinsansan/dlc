@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { isAdmin } from "@/lib/admin";
+import AdminMobileNav from "@/components/layout/AdminMobileNav";
 
 const navItems = [
   { href: "/admin", label: "ダッシュボード" },
@@ -31,16 +32,19 @@ export default async function AdminLayout({
   return (
     <div className="min-h-screen bg-bg text-text-main">
       <header className="fixed top-0 w-full z-50 bg-bg/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/admin" className="font-serif text-xl font-bold text-primary">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
+          <Link href="/admin" className="font-serif text-lg sm:text-xl font-bold text-primary">
             Admin
           </Link>
-          <Link href="/members/dashboard" className="text-text-muted hover:text-text-main text-sm">
-            会員エリアへ
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/members/dashboard" className="hidden sm:block text-text-muted hover:text-text-main text-sm">
+              会員エリアへ
+            </Link>
+            <AdminMobileNav />
+          </div>
         </div>
       </header>
-      <div className="max-w-7xl mx-auto px-4 pt-20 pb-16 flex gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-8 sm:pb-16 flex gap-4 lg:gap-8">
         <aside className="w-52 shrink-0 hidden lg:block">
           <nav className="sticky top-20 space-y-1">
             {navItems.map((item) => (

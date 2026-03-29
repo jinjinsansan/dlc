@@ -141,13 +141,13 @@ export default function JobsPage() {
 
   return (
     <div>
-      <div className="flex items-baseline gap-3 mb-2">
-        <h1 className="font-serif text-2xl font-bold">受発注ボード</h1>
+      <div className="flex flex-wrap items-baseline gap-2 sm:gap-3 mb-2">
+        <h1 className="font-serif text-xl sm:text-2xl font-bold">受発注ボード</h1>
         {totalCount > 0 && (
           <span className="text-text-muted text-sm">全{totalCount}件</span>
         )}
       </div>
-      <p className="text-text-muted text-sm mb-6">
+      <p className="text-text-muted text-sm mb-4 sm:mb-6">
         仲間同士で依頼・受注し合えるボードです
       </p>
 
@@ -155,7 +155,7 @@ export default function JobsPage() {
 
       {/* Admin Direct Request */}
       <Card className="mb-6 border-primary/30">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h3 className="font-bold text-sm">管理者へ直接依頼</h3>
             <p className="text-text-muted text-xs mt-1">
@@ -164,7 +164,7 @@ export default function JobsPage() {
           </div>
           <a
             href={`mailto:${ADMIN_EMAIL}?subject=【直接依頼】`}
-            className="shrink-0 bg-primary hover:bg-primary-light text-bg font-bold text-sm px-4 py-2 rounded-lg transition-colors"
+            className="shrink-0 bg-primary hover:bg-primary-light text-bg font-bold text-sm px-4 py-2 rounded-lg transition-colors text-center"
           >
             メールで依頼
           </a>
@@ -172,8 +172,8 @@ export default function JobsPage() {
       </Card>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-3 mb-6 items-center">
-        <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2 sm:gap-3 mb-4 sm:mb-6 items-center">
+        <div className="flex gap-2 w-full sm:w-auto">
           {[
             { value: "", label: "すべて" },
             { value: "request", label: "依頼したい" },
@@ -197,12 +197,12 @@ export default function JobsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="キーワード検索"
-          className="bg-surface border border-border rounded-lg px-4 py-1.5 text-sm text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
+          className="w-full sm:w-auto bg-surface border border-border rounded-lg px-4 py-1.5 text-sm text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
         />
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value as "new" | "budget")}
-          className="bg-surface border border-border rounded-lg px-3 py-1.5 text-sm text-text-muted focus:outline-none focus:border-primary transition-colors"
+          className="w-full sm:w-auto bg-surface border border-border rounded-lg px-3 py-1.5 text-sm text-text-muted focus:outline-none focus:border-primary transition-colors"
         >
           <option value="new">新着順</option>
           <option value="budget">予算順</option>
@@ -216,7 +216,7 @@ export default function JobsPage() {
             const typeInfo = TYPE_LABELS[job.type] ?? TYPE_LABELS.request;
             return (
               <Card key={job.id} className="hover:border-primary/30 transition-colors">
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
                       <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${typeInfo.color}`}>

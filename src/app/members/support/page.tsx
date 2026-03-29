@@ -34,8 +34,8 @@ export default function SupportPage() {
   if (!member.access.support) {
     return (
       <div>
-        <h1 className="font-serif text-2xl font-bold mb-4">質問・サポート</h1>
-        <Card className="text-center py-12">
+        <h1 className="font-serif text-xl sm:text-2xl font-bold mb-4">質問・サポート</h1>
+        <Card className="text-center py-8 sm:py-12">
           <p className="text-text-muted mb-4">
             この機能は「動画＋メールサポート」以上のプランでご利用いただけます。
           </p>
@@ -133,8 +133,8 @@ function SupportContent({ userId }: { userId: string }) {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-bold mb-2">質問・サポート</h1>
-      <p className="text-text-muted text-sm mb-8">
+      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2">質問・サポート</h1>
+      <p className="text-text-muted text-sm mb-4 sm:mb-8">
         メールで個別相談ができます
       </p>
 
@@ -203,7 +203,7 @@ function SupportContent({ userId }: { userId: string }) {
                   onClick={() => setExpandedId(isExpanded ? null : ticket.id)}
                   className="w-full text-left"
                 >
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1">
                     <span className={`text-xs font-bold ${status.color}`}>
                       {status.label}
                     </span>

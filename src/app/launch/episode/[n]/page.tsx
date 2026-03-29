@@ -26,7 +26,7 @@ export default function EpisodePage({ params }: { params: { n: string } }) {
     <div className="min-h-screen bg-bg text-text-main">
       <Header />
       <WatchedTracker episodeNumber={episodeNum} />
-      <main className="pt-24 pb-16 px-4">
+      <main className="pt-20 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
           <span className="text-primary font-bold text-sm">
             第{episode.number}話 ― {episode.purpose}

@@ -51,7 +51,7 @@ export default function VideoCard({
           <span className="text-text-muted text-sm">動画準備中</span>
         )}
       </div>
-      <div className="flex items-start justify-between gap-2">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-2">
         <div>
           <h3 className="font-bold text-sm">{video.title}</h3>
           {video.description && (

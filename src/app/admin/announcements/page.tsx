@@ -64,7 +64,7 @@ export default function AdminAnnouncementsPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-bold mb-6">お知らせ管理</h1>
+      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-4 sm:mb-6">お知らせ管理</h1>
 
       <Card className="mb-8">
         <h2 className="font-bold mb-4">{editingId ? "編集" : "新規作成"}</h2>

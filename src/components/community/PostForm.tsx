@@ -54,7 +54,7 @@ export default function PostForm({ onPosted }: { onPosted: () => void }) {
   return (
     <Card className="mb-6">
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-2 sm:gap-3">
           {CATEGORIES.map((cat) => (
             <button
               key={cat.value}
