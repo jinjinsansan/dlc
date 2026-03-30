@@ -47,10 +47,10 @@ export default function AdminUsersPage() {
   return (
     <div>
       <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2">会員管理</h1>
-      <p className="text-text-muted text-sm mb-6">計 {users.length} 名</p>
+      <p className="text-text-muted text-sm mb-4 sm:mb-6">計 {users.length} 名</p>
 
       <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="名前またはメールで検索"
-        className="w-full bg-surface border border-border rounded-lg px-4 py-2.5 text-sm text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary mb-6" />
+        className="w-full bg-surface border border-border rounded-lg px-4 py-2.5 text-sm text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary mb-4 sm:mb-6" />
 
       <div className="space-y-2">
         {filtered.map((u) => (

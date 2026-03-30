@@ -54,7 +54,7 @@ export default function AdminJobsPage() {
   return (
     <div>
       <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2">受発注ボード管理</h1>
-      <p className="text-text-muted text-sm mb-6">計 {jobs.length} 件</p>
+      <p className="text-text-muted text-sm mb-4 sm:mb-6">計 {jobs.length} 件</p>
 
       <div className="space-y-2">
         {jobs.map((j) => (

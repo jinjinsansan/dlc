@@ -66,7 +66,7 @@ export default function AdminAnnouncementsPage() {
     <div>
       <h1 className="font-serif text-xl sm:text-2xl font-bold mb-4 sm:mb-6">お知らせ管理</h1>
 
-      <Card className="mb-8">
+      <Card className="mb-6 sm:mb-8">
         <h2 className="font-bold mb-4">{editingId ? "編集" : "新規作成"}</h2>
         <div className="space-y-3">
           <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="タイトル"

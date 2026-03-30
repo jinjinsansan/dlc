@@ -59,7 +59,7 @@ export default async function MaterialsPage() {
       </p>
 
       {materialsByCategory.map(({ category, label, items }) => (
-        <div key={category} className="mb-8">
+        <div key={category} className="mb-6 sm:mb-8">
           <h2 className="font-bold text-lg mb-4">{label}</h2>
           {items.length > 0 ? (
             <div className="space-y-3">

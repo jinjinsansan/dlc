@@ -138,7 +138,7 @@ function SupportContent({ userId }: { userId: string }) {
         メールで個別相談ができます
       </p>
 
-      <Card className="mb-8">
+      <Card className="mb-6 sm:mb-8">
         <h2 className="font-bold mb-4">新しい相談</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

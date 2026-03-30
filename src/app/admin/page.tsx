@@ -26,8 +26,8 @@ export default async function AdminDashboard() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((s) => (
           <Link key={s.href} href={s.href}>
-            <Card className="hover:border-primary/50 transition-colors text-center py-6">
-              <p className="text-3xl font-bold text-primary">{s.value}</p>
+            <Card className="hover:border-primary/50 transition-colors text-center py-3 sm:py-6">
+              <p className="text-2xl sm:text-3xl font-bold text-primary">{s.value}</p>
               <p className="text-text-muted text-sm mt-1">{s.label}</p>
             </Card>
           </Link>

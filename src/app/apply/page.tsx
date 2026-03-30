@@ -68,11 +68,11 @@ export default function ApplyPage() {
           <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4">
             <span className="text-primary">プラン</span>を選択
           </h1>
-          <p className="text-text-muted text-center mb-12">
+          <p className="text-text-muted text-sm sm:text-base text-center mb-8 sm:mb-12">
             お好みのプランを選んでお申し込みください
           </p>
 
-          <div className="space-y-4 mb-10">
+          <div className="space-y-3 sm:space-y-4 mb-8 sm:mb-10">
             {plans.map((plan) => (
               <Card
                 key={plan.id}

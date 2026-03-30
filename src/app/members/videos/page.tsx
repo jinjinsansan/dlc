@@ -40,12 +40,12 @@ export default async function VideosPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-2xl font-bold mb-2">動画ライブラリ</h1>
-      <p className="text-text-muted text-sm mb-8">
+      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2">動画ライブラリ</h1>
+      <p className="text-text-muted text-sm mb-4 sm:mb-8">
         週ごとに講義動画を視聴できます
       </p>
 
-      <div className="space-y-8">
+      <div className="space-y-6 sm:space-y-8">
         {videosByWeek.map(({ week, videos: weekVideos }) => {
           const isUnlocked =
             weekVideos.length > 0 &&

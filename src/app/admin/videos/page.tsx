@@ -62,7 +62,7 @@ export default function AdminVideosPage() {
     <div>
       <h1 className="font-serif text-xl sm:text-2xl font-bold mb-4 sm:mb-6">動画管理</h1>
 
-      <Card className="mb-8">
+      <Card className="mb-6 sm:mb-8">
         <h2 className="font-bold mb-4">動画を追加</h2>
         <div className="space-y-3">
           <div className="grid sm:grid-cols-2 gap-3">
@@ -87,7 +87,7 @@ export default function AdminVideosPage() {
       {weeks.map((w) => {
         const weekVideos = videos.filter((v) => v.week === w);
         return (
-          <div key={w} className="mb-6">
+          <div key={w} className="mb-4 sm:mb-6">
             <h2 className="font-bold mb-3">Week {w} ({weekVideos.length}本)</h2>
             {weekVideos.length > 0 ? (
               <div className="space-y-2">

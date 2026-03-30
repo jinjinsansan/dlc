@@ -43,11 +43,11 @@ export default function LoginPage() {
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-center mb-2">
             ログイン
           </h1>
-          <p className="text-text-muted text-center text-sm mb-8">
+          <p className="text-text-muted text-center text-sm mb-6 sm:mb-8">
             会員エリアにアクセス
           </p>
 
-          <form onSubmit={handleLogin} className="space-y-5">
+          <form onSubmit={handleLogin} className="space-y-4 sm:space-y-5">
             <div>
               <label className="block text-sm font-bold mb-2">
                 メールアドレス

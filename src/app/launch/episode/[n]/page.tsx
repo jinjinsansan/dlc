@@ -31,12 +31,12 @@ export default function EpisodePage({ params }: { params: { n: string } }) {
           <span className="text-primary font-bold text-sm">
             第{episode.number}話 ― {episode.purpose}
           </span>
-          <h1 className="font-serif text-2xl md:text-3xl font-bold mt-2 mb-8">
+          <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold mt-2 mb-5 sm:mb-8">
             {episode.title}
           </h1>
 
           {/* Cloudflare Stream Player */}
-          <div className="w-full aspect-video bg-surface border border-border rounded-xl mb-8 flex items-center justify-center">
+          <div className="w-full aspect-video bg-surface border border-border rounded-xl mb-5 sm:mb-8 flex items-center justify-center">
             <div className="text-center">
               <p className="text-text-muted mb-2">動画プレイヤー</p>
               <p className="text-text-muted text-sm">
@@ -45,20 +45,20 @@ export default function EpisodePage({ params }: { params: { n: string } }) {
             </div>
           </div>
 
-          <p className="text-text-muted leading-relaxed mb-8">
+          <p className="text-text-muted text-sm sm:text-base leading-relaxed mb-6 sm:mb-8">
             {episode.fullDescription}
           </p>
 
           {/* Episode 4: Apply CTA */}
           {episodeNum === 4 && (
-            <div className="bg-surface border border-primary/30 rounded-xl p-8 text-center mb-8">
-              <h2 className="font-serif text-xl font-bold mb-3">
+            <div className="bg-surface border border-primary/30 rounded-xl p-5 sm:p-8 text-center mb-6 sm:mb-8">
+              <h2 className="font-serif text-lg sm:text-xl font-bold mb-3">
                 準備はできましたか？
               </h2>
-              <p className="text-text-muted mb-6">
+              <p className="text-text-muted text-sm sm:text-base mb-4 sm:mb-6">
                 Dlogic Academyで、作れる側の人間になりましょう。
               </p>
-              <Button href="/apply" className="text-lg py-3 px-10">
+              <Button href="/apply" className="text-base sm:text-lg py-3 px-8 sm:px-10">
                 今すぐ申し込む
               </Button>
             </div>

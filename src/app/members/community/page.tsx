@@ -115,13 +115,13 @@ export default function CommunityPage() {
           <span className="text-text-muted text-sm">全{totalCount}件</span>
         )}
       </div>
-      <p className="text-text-muted text-sm mb-6">
+      <p className="text-text-muted text-sm mb-4 sm:mb-6">
         仲間と交流し、学びを深めましょう
       </p>
 
       <PostForm onPosted={handleRefresh} />
 
-      <div className="flex gap-2 mb-6 flex-wrap">
+      <div className="flex gap-2 mb-4 sm:mb-6 flex-wrap">
         {CATEGORIES.map((cat) => (
           <button
             key={cat.value}

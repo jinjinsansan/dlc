@@ -53,11 +53,11 @@ export default function RegisterPage() {
           <h1 className="font-serif text-2xl sm:text-3xl font-bold text-center mb-2">
             会員登録
           </h1>
-          <p className="text-text-muted text-center text-sm mb-8">
+          <p className="text-text-muted text-center text-sm mb-6 sm:mb-8">
             Dlogic Academy会員エリアへの登録
           </p>
 
-          <form onSubmit={handleRegister} className="space-y-5">
+          <form onSubmit={handleRegister} className="space-y-4 sm:space-y-5">
             <div>
               <label className="block text-sm font-bold mb-2">お名前</label>
               <input

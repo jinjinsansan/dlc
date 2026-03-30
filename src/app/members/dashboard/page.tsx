@@ -43,7 +43,7 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <div className="mb-8">
+      <div className="mb-6 sm:mb-8">
         <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2">
           ようこそ、<span className="text-primary">{name}</span> さん
         </h1>
@@ -105,19 +105,19 @@ export default async function DashboardPage() {
       {/* Quick Links */}
       <div className="grid sm:grid-cols-3 gap-4">
         <Link href="/members/videos">
-          <Card className="hover:border-primary/50 transition-colors text-center py-8">
+          <Card className="hover:border-primary/50 transition-colors text-center py-6 sm:py-8">
             <div className="text-3xl mb-2">🎬</div>
             <p className="font-bold text-sm">動画ライブラリ</p>
           </Card>
         </Link>
         <Link href="/members/materials">
-          <Card className="hover:border-primary/50 transition-colors text-center py-8">
+          <Card className="hover:border-primary/50 transition-colors text-center py-6 sm:py-8">
             <div className="text-3xl mb-2">📄</div>
             <p className="font-bold text-sm">資料ダウンロード</p>
           </Card>
         </Link>
         <Link href={access.community ? "/members/community" : "/members/mypage"}>
-          <Card className="hover:border-primary/50 transition-colors text-center py-8">
+          <Card className="hover:border-primary/50 transition-colors text-center py-6 sm:py-8">
             <div className="text-3xl mb-2">{access.community ? "💬" : "👤"}</div>
             <p className="font-bold text-sm">
               {access.community ? "コミュニティ" : "マイページ"}

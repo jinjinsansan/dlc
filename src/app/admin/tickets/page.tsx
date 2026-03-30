@@ -119,7 +119,7 @@ export default function AdminTicketsPage() {
             </button>
 
             {expandedId === t.id && (
-              <div className="mt-3 pt-3 border-t border-border space-y-4">
+              <div className="mt-3 pt-3 border-t border-border space-y-3 sm:space-y-4">
                 <p className="text-text-muted text-sm whitespace-pre-wrap">{t.body}</p>
                 {t.file_url && (
                   <a href={`/api/download?path=${encodeURIComponent(t.file_url)}`} className="text-primary hover:underline text-sm">📎 添付ファイル</a>
