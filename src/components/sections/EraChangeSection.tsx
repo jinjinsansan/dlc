@@ -18,14 +18,10 @@ export default function EraChangeSection() {
     <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
         <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 sm:mb-6">
-          AIは、<span className="text-primary">個人開発の常識</span>を変えた
+          AIは、<br className="sm:hidden" /><span className="text-primary">個人開発の常識</span>を変えた
         </h2>
         <p className="text-text-muted text-sm sm:text-base text-center max-w-2xl mx-auto mb-10 sm:mb-16 leading-relaxed">
-          コードを書かなくてもプロ品質のアプリが作れる時代。
-          <br className="hidden sm:block" />
-          まだほとんどの人がその事実を知らない。
-          <br className="hidden sm:block" />
-          気づいた人から、圧倒的な差がつき始めている。
+          コードを書かなくてもプロ品質のアプリが作れる時代。まだほとんどの人がその事実を知らない。気づいた人から、圧倒的な差がつき始めている。
         </p>
 
         <div className="space-y-6">

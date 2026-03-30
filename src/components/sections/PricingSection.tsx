@@ -48,8 +48,7 @@ export default function PricingSection() {
     <section id="pricing" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
         <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4">
-          あなたのペースで選べる
-          <span className="text-primary">3つのプラン</span>
+          あなたのペースで選べる<br className="sm:hidden" /><span className="text-primary">3つのプラン</span>
         </h2>
         <p className="text-text-muted text-sm sm:text-base text-center mb-10 sm:mb-16">
           一括払い・追加料金なし

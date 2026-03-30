@@ -20,9 +20,7 @@ export default function CTASection() {
         {isOpen ? (
           <>
             <p className="text-text-muted text-sm sm:text-base mb-2 leading-relaxed">
-              第{cohort}期生の募集は限定人数での受付となります。
-              <br className="hidden sm:block" />
-              定員に達し次第、募集を締め切ります。
+              第{cohort}期生の募集は限定人数での受付となります。定員に達し次第、募集を締め切ります。
             </p>
             <p className="text-text-muted text-xs sm:text-sm mb-2">
               締切: {formattedDeadline}
