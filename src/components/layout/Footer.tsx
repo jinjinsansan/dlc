@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className="bg-surface border-t border-border py-8 sm:py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-3 gap-8 mb-8">
+        <div className="grid md:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
           <div>
             <h3 className="font-serif text-lg font-bold text-primary mb-4">
               Dlogic Academy
@@ -50,7 +50,7 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-        <div className="border-t border-border pt-8 text-center text-text-muted text-sm">
+        <div className="border-t border-border pt-6 sm:pt-8 text-center text-text-muted text-xs sm:text-sm">
           &copy; {new Date().getFullYear()} Dlogic Academy. All rights reserved.
         </div>
       </div>

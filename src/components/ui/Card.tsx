@@ -13,7 +13,7 @@ export default function Card({
     <div
       className={`bg-surface rounded-xl border ${
         highlight ? "border-primary" : "border-border"
-      } p-6 ${className}`}
+      } p-4 sm:p-6 ${className}`}
     >
       {children}
     </div>

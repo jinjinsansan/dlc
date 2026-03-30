@@ -48,14 +48,14 @@ export default function CurriculumSection() {
           <div className="absolute left-6 top-0 bottom-0 w-px bg-border md:left-1/2" />
 
           {weeks.map((item, i) => (
-            <div key={i} className="relative pl-16 md:pl-0 mb-8 last:mb-0">
+            <div key={i} className="relative pl-14 sm:pl-16 md:pl-0 mb-5 sm:mb-8 last:mb-0">
               <div
                 className={`md:flex items-center ${
                   i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
                 }`}
               >
                 <div className={`md:w-1/2 ${i % 2 === 0 ? "md:pr-12 md:text-right" : "md:pl-12"}`}>
-                  <div className="bg-surface border border-border rounded-lg p-5 hover:border-primary/50 transition-colors">
+                  <div className="bg-surface border border-border rounded-lg p-3 sm:p-5 hover:border-primary/50 transition-colors">
                     <span className="text-primary font-bold text-sm">
                       Week {item.week}
                     </span>

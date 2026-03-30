@@ -71,13 +71,13 @@ export default function PricingSection() {
               )}
               <h3 className="font-bold text-lg mb-1">{plan.name}</h3>
               <p className="text-text-muted text-sm mb-4">{plan.description}</p>
-              <div className="mb-6">
-                <span className="font-serif text-3xl font-bold text-primary">
+              <div className="mb-4 sm:mb-6">
+                <span className="font-serif text-2xl sm:text-3xl font-bold text-primary">
                   {plan.price}
                 </span>
-                <span className="text-text-muted text-sm ml-1">（税込）</span>
+                <span className="text-text-muted text-xs sm:text-sm ml-1">（税込）</span>
               </div>
-              <ul className="space-y-3 mb-8 flex-1">
+              <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8 flex-1">
                 {plan.features.map((feature, j) => (
                   <li key={j} className="flex items-start gap-2 text-sm">
                     <span className="text-primary mt-0.5">✓</span>

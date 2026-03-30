@@ -19,15 +19,15 @@ export default function CTASection() {
         </h2>
         {isOpen ? (
           <>
-            <p className="text-text-muted mb-2 leading-relaxed">
+            <p className="text-text-muted text-sm sm:text-base mb-2 leading-relaxed">
               第{cohort}期生の募集は限定人数での受付となります。
-              <br />
+              <br className="hidden sm:block" />
               定員に達し次第、募集を締め切ります。
             </p>
-            <p className="text-text-muted text-sm mb-2">
+            <p className="text-text-muted text-xs sm:text-sm mb-2">
               締切: {formattedDeadline}
             </p>
-            <p className="text-primary font-bold text-lg mb-10">
+            <p className="text-primary font-bold text-base sm:text-lg mb-8 sm:mb-10">
               {label}募集中 ― 残り{remainingSlots}枠
             </p>
           </>
@@ -38,14 +38,14 @@ export default function CTASection() {
         )}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           {isOpen && (
-            <Button href="/apply" className="text-lg py-4 px-12">
+            <Button href="/apply" className="text-base sm:text-lg py-3 sm:py-4 px-8 sm:px-12">
               今すぐ申し込む
             </Button>
           )}
           <Button
             href="/launch/episode/1"
             variant="outline"
-            className="text-lg py-4 px-12"
+            className="text-base sm:text-lg py-3 sm:py-4 px-8 sm:px-12"
           >
             まずは無料動画を見る
           </Button>

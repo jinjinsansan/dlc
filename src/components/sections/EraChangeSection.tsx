@@ -22,7 +22,9 @@ export default function EraChangeSection() {
         </h2>
         <p className="text-text-muted text-sm sm:text-base text-center max-w-2xl mx-auto mb-10 sm:mb-16 leading-relaxed">
           コードを書かなくてもプロ品質のアプリが作れる時代。
+          <br className="hidden sm:block" />
           まだほとんどの人がその事実を知らない。
+          <br className="hidden sm:block" />
           気づいた人から、圧倒的な差がつき始めている。
         </p>
 

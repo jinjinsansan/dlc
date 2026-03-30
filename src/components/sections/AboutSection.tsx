@@ -29,7 +29,10 @@ export default function AboutSection() {
           <span className="text-primary">作れる人間を増やす場所</span>です
         </h2>
         <p className="text-text-muted text-sm sm:text-base text-center max-w-2xl mx-auto mb-10 sm:mb-16 leading-relaxed">
-          競馬AIの作り方を教えるが、本質は「何でも作れる力」を身につけること。
+          競馬AIの作り方を教えるが、本質は
+          <br className="hidden sm:block" />
+          「何でも作れる力」を身につけること。
+          <br className="sm:hidden" />
           学ぶだけでなく、仲間と作り、依頼し合えるコミュニティ。
         </p>
 

@@ -9,9 +9,9 @@ export default function HeroSection() {
 
       <div className="relative z-10 max-w-4xl mx-auto">
         <h1 className="font-serif text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 leading-tight">
-          10年前には不可能だった。
-          <br />
-          <span className="text-primary">今日から、あなたにもできる。</span>
+          <span className="block sm:inline">10年前には不可能だった。</span>
+          <br className="hidden sm:block" />
+          <span className="block sm:inline text-primary">今日から、あなたにもできる。</span>
         </h1>
         <p className="text-text-muted text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed">
           ノーコードで本格競馬AIを作った私が、その全てを教えます。
