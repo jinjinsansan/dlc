@@ -18,7 +18,7 @@ export default function CurriculumSection() {
     },
     {
       week: 5,
-      title: "予測ロジック・スコアリング設計",
+      title: "API連携・AI機能の組み込み",
     },
     {
       week: 6,
