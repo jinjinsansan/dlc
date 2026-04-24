@@ -12,7 +12,7 @@ export default function LaunchPage() {
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem("dlogic-watched");
+      const stored = localStorage.getItem("abl-watched");
       if (stored) setWatched(JSON.parse(stored));
     } catch {}
   }, []);

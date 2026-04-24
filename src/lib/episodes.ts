@@ -17,11 +17,11 @@ export const episodes: Episode[] = [
   },
   {
     number: 2,
-    title: "Dlogicはこうして生まれた",
+    title: "私のAIプロダクトはこうして生まれた",
     description: "開発実録・使ったツール・失敗談",
     purpose: "信頼構築・実績提示",
     fullDescription:
-      "競馬AI予測サービス「Dlogic」の開発実録をお見せします。どんなツールを使い、どんな失敗を経て、どうやって完成させたのか。リアルなストーリーをお届けします。",
+      "AIプロダクトの開発実録をお見せします。どんなツールを使い、どんな失敗を経て、どうやって完成させたのか。リアルなストーリーをお届けします。",
   },
   {
     number: 3,
@@ -33,10 +33,10 @@ export const episodes: Episode[] = [
   },
   {
     number: 4,
-    title: "Dlogic Academy、始まります",
+    title: "AI Builders Lab、始まります",
     description: "サロン全貌・料金・申し込み方法",
     purpose: "クロージング・CTA",
     fullDescription:
-      "Dlogic Academyの全貌を公開。カリキュラム詳細、料金プラン、申し込み方法を詳しくご説明します。",
+      "AI Builders Labの全貌を公開。カリキュラム詳細、料金プラン、申し込み方法を詳しくご説明します。",
   },
 ];

@@ -3,9 +3,9 @@ import Card from "@/components/ui/Card";
 export default function AchievementSection() {
   const achievements = [
     {
-      title: "Dlogic",
-      description: "AI競馬予測サービス - 本格的な機械学習による競馬予測を実現",
-      tag: "競馬AI",
+      title: "AIデータ分析ツール",
+      description: "リアルタイムデータ分析・予測サービスをAIで開発",
+      tag: "データ分析",
     },
     {
       title: "AIガチャゲーム",

@@ -13,7 +13,7 @@ export default function HeroSection() {
           <span className="text-primary">今日から、あなたにも<br className="sm:hidden" />できる。</span>
         </h1>
         <p className="text-text-muted text-sm sm:text-lg md:text-xl max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed">
-          ノーコードで本格競馬AIを作った私が、その全てを教えます。競馬AIの作り方を学ぶ。でも身につくのは、何でも作れる力です。
+          AIを使って複数のプロダクトを生み出した私が、その全てを教えます。AIプロダクトの作り方を学ぶ。そして身につくのは、何でも作れる力です。
         </p>
         <Button href="/launch/episode/1" className="text-base sm:text-lg py-3 sm:py-4 px-8 sm:px-12">
           無料ローンチ動画を見る

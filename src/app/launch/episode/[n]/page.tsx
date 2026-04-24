@@ -56,7 +56,7 @@ export default function EpisodePage({ params }: { params: { n: string } }) {
                 準備はできましたか？
               </h2>
               <p className="text-text-muted text-sm sm:text-base mb-4 sm:mb-6">
-                Dlogic Academyで、作れる側の人間になりましょう。
+                AI Builders Labで、作れる側の人間になりましょう。
               </p>
               <Button href="/apply" className="text-base sm:text-lg py-3 px-8 sm:px-10">
                 今すぐ申し込む

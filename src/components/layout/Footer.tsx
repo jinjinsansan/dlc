@@ -7,10 +7,10 @@ export default function Footer() {
         <div className="grid md:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
           <div>
             <h3 className="font-serif text-lg font-bold text-primary mb-4">
-              Dlogic Academy
+              AI Builders Lab
             </h3>
             <p className="text-text-muted text-sm leading-relaxed">
-              ノーコードで本格競馬AIを作った実績者が教える、
+              AIで複数のプロダクトを生み出した実績者が教える、
               AI個人開発者養成コミュニティ
             </p>
           </div>
@@ -51,7 +51,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-border pt-6 sm:pt-8 text-center text-text-muted text-xs sm:text-sm">
-          &copy; {new Date().getFullYear()} Dlogic Academy. All rights reserved.
+          &copy; {new Date().getFullYear()} AI Builders Lab. All rights reserved.
         </div>
       </div>
     </footer>

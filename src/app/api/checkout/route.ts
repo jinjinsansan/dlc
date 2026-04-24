@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
           price_data: {
             currency: "jpy",
             product_data: {
-              name: `Dlogic Academy - ${plan.name}`,
+              name: `AI Builders Lab - ${plan.name}`,
               description: plan.description,
             },
             unit_amount: plan.price,
