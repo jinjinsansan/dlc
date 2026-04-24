@@ -2,35 +2,35 @@ export default function CurriculumSection() {
   const weeks = [
     {
       week: 1,
-      title: "Claude Codeとは・環境構築・AIへの指示の出し方",
+      title: "はじめてのClaude Code — 入れて、話しかけて、感動する",
     },
     {
       week: 2,
-      title: "サービス設計の考え方・仕様書の書き方",
+      title: "日本語だけでWebページを作る",
     },
     {
       week: 3,
-      title: "Next.js + Supabaseの基本構成",
+      title: "デザインをAIに注文する — プロの見た目に仕上げる",
     },
     {
       week: 4,
-      title: "フロントエンド制作（LP・UI）",
+      title: "機能を言葉で追加する — ログイン・データ保存",
     },
     {
       week: 5,
-      title: "API連携・AI機能の組み込み",
+      title: "AIの力をアプリに入れる — チャット・要約・分析",
     },
     {
       week: 6,
-      title: "決済・サブスク機能の実装",
+      title: "完成させて世界に公開する — URLが生まれる瞬間",
     },
     {
       week: 7,
-      title: "デプロイ・本番運用・VPS管理",
+      title: "お金を受け取れるようにする — 決済機能の導入",
     },
     {
       week: 8,
-      title: "集客・マネタイズ・次のプロダクトへの展開",
+      title: "お客さんを集めて稼ぐ — SNS告知・最初の売上",
     },
   ];
 
@@ -41,7 +41,7 @@ export default function CurriculumSection() {
           <span className="text-primary">8週間</span>で、あなたは変わる
         </h2>
         <p className="text-text-muted text-sm sm:text-base text-center mb-10 sm:mb-16">
-          実践重視のカリキュラムで、ゼロからプロダクト完成まで導きます
+          コードは1行も書きません。Claude Codeに日本語で話しかけるだけ。
         </p>
 
         <div className="relative">
@@ -59,7 +59,7 @@ export default function CurriculumSection() {
                     <span className="text-primary font-bold text-sm">
                       Week {item.week}
                     </span>
-                    <h3 className="font-bold mt-1">{item.title}</h3>
+                    <h3 className="font-bold mt-1 text-sm sm:text-base">{item.title}</h3>
                   </div>
                 </div>
                 <div className="absolute left-4 md:left-1/2 md:-translate-x-1/2 w-4 h-4 bg-primary rounded-full border-2 border-bg top-5" />
