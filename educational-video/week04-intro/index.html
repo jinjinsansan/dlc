@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #0a0a0f;
+        font-family: "Noto Sans JP", sans-serif;
+        color: #f0f0f0;
+      }
+      .serif {
+        font-family: "Noto Serif JP", serif;
+      }
+      .clip {
+        position: absolute;
+        opacity: 0;
+      }
+
+      /* ─── Background layers ─── */
+      .bg-base {
+        inset: 0;
+        background:
+          radial-gradient(circle at 50% 20%, rgba(201, 168, 76, 0.18), transparent 55%),
+          radial-gradient(circle at 50% 80%, rgba(201, 168, 76, 0.06), transparent 60%),
+          #0a0a0f;
+        opacity: 1 !important;
+      }
+      .bg-vignette {
+        inset: 0;
+        background: radial-gradient(circle at center, transparent 50%, rgba(0, 0, 0, 0.65) 100%);
+        opacity: 1 !important;
+        pointer-events: none;
+      }
+      .bg-glow {
+        top: 50%;
+        left: 50%;
+        width: 1200px;
+        height: 1200px;
+        margin-top: -600px;
+        margin-left: -600px;
+        background: radial-gradient(circle, rgba(232, 201, 106, 0.25) 0%, transparent 60%);
+        filter: blur(40px);
+        border-radius: 50%;
+      }
+
+      /* ─── Brand badge ─── */
+      .brand-badge {
+        top: 40px;
+        right: 60px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 24px;
+        background: rgba(201, 168, 76, 0.1);
+        border: 1px solid rgba(201, 168, 76, 0.4);
+        border-radius: 999px;
+        backdrop-filter: blur(8px);
+      }
+      .brand-badge .dot {
+        width: 10px;
+        height: 10px;
+        background: #c9a84c;
+        border-radius: 50%;
+        box-shadow: 0 0 12px rgba(201, 168, 76, 0.8);
+      }
+      .brand-badge .text {
+        font-family: "Noto Serif JP", serif;
+        font-weight: 700;
+        font-size: 22px;
+        color: #e8c96a;
+        letter-spacing: 0.08em;
+      }
+
+      /* ─── Scene 1: Hook ─── */
+      .hook-line-1 {
+        top: 380px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-family: "Noto Serif JP", serif;
+        font-weight: 700;
+        font-size: 72px;
+        color: #f0f0f0;
+        letter-spacing: 0.04em;
+      }
+      .hook-line-2 {
+        top: 510px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-family: "Noto Serif JP", serif;
+        font-weight: 900;
+        font-size: 96px;
+        color: #f0f0f0;
+        letter-spacing: 0.04em;
+      }
+      .hook-line-2 .accent {
+        color: #e8c96a;
+        text-shadow: 0 0 30px rgba(232, 201, 106, 0.6);
+      }
+      .hook-deco-line {
+        top: 670px;
+        left: 50%;
+        margin-left: -1px;
+        width: 2px;
+        height: 0;
+        background: linear-gradient(to bottom, transparent, #c9a84c, transparent);
+      }
+
+      /* ─── Scene 2: Title ─── */
+      .week-label {
+        top: 320px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-family: "Noto Sans JP", sans-serif;
+        font-weight: 500;
+        font-size: 36px;
+        color: #c9a84c;
+        letter-spacing: 0.5em;
+        text-indent: 0.5em;
+      }
+      .week-number {
+        top: 380px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-family: "Noto Serif JP", serif;
+        font-weight: 900;
+        font-size: 240px;
+        color: #f0f0f0;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        background: linear-gradient(180deg, #f0f0f0 0%, #e8c96a 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .week-title {
+        top: 680px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-family: "Noto Serif JP", serif;
+        font-weight: 700;
+        font-size: 72px;
+        color: #f0f0f0;
+        letter-spacing: 0.04em;
+      }
+      .week-divider {
+        top: 800px;
+        left: 50%;
+        margin-left: -100px;
+        width: 200px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+      }
+      .week-tagline {
+        top: 850px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-family: "Noto Sans JP", sans-serif;
+        font-weight: 400;
+        font-size: 30px;
+        color: #8888aa;
+        letter-spacing: 0.2em;
+      }
+
+      /* ─── Scene 3: 3 Steps ─── */
+      .steps-header {
+        top: 200px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-family: "Noto Serif JP", serif;
+        font-weight: 700;
+        font-size: 56px;
+        color: #f0f0f0;
+        letter-spacing: 0.04em;
+      }
+      .steps-header .accent {
+        color: #e8c96a;
+      }
+      .steps-container {
+        top: 380px;
+        left: 200px;
+        width: 1520px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .step-card {
+        position: relative;
+        width: 380px;
+        height: 380px;
+        background: linear-gradient(180deg, rgba(18, 18, 30, 0.95), rgba(18, 18, 30, 0.7));
+        border: 2px solid rgba(201, 168, 76, 0.3);
+        border-radius: 24px;
+        padding: 36px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        backdrop-filter: blur(12px);
+      }
+      .step-num {
+        font-family: "Noto Serif JP", serif;
+        font-weight: 900;
+        font-size: 96px;
+        color: #c9a84c;
+        line-height: 1;
+        margin-bottom: 24px;
+        text-shadow: 0 0 30px rgba(201, 168, 76, 0.4);
+      }
+      .step-title {
+        font-family: "Noto Serif JP", serif;
+        font-weight: 700;
+        font-size: 42px;
+        color: #f0f0f0;
+        margin-bottom: 16px;
+        letter-spacing: 0.05em;
+      }
+      .step-time {
+        font-family: "Noto Sans JP", sans-serif;
+        font-weight: 700;
+        font-size: 24px;
+        color: #c9a84c;
+        letter-spacing: 0.1em;
+      }
+      .step-arrow {
+        font-family: "Noto Serif JP", serif;
+        font-size: 56px;
+        color: #c9a84c;
+        font-weight: 300;
+      }
+      .steps-bottom {
+        top: 820px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-family: "Noto Sans JP", sans-serif;
+        font-weight: 500;
+        font-size: 32px;
+        color: #c9a84c;
+        letter-spacing: 0.15em;
+      }
+
+      /* ─── Scene 4: Promise ─── */
+      .promise-pretext {
+        top: 280px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-family: "Noto Sans JP", sans-serif;
+        font-weight: 500;
+        font-size: 48px;
+        color: #8888aa;
+        letter-spacing: 0.1em;
+      }
+      .promise-quote {
+        top: 410px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-family: "Noto Serif JP", serif;
+        font-weight: 900;
+        font-size: 130px;
+        color: #f0f0f0;
+        letter-spacing: 0.02em;
+      }
+      .promise-quote .accent {
+        background: linear-gradient(180deg, #e8c96a 0%, #c9a84c 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: none;
+      }
+      .promise-after {
+        top: 600px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-family: "Noto Serif JP", serif;
+        font-weight: 700;
+        font-size: 56px;
+        color: #f0f0f0;
+        letter-spacing: 0.05em;
+      }
+      .promise-decoration {
+        top: 760px;
+        left: 50%;
+        margin-left: -300px;
+        width: 600px;
+        text-align: center;
+        font-family: "Noto Sans JP", sans-serif;
+        font-weight: 500;
+        font-size: 26px;
+        color: #c9a84c;
+        letter-spacing: 0.4em;
+      }
+
+      /* ─── Scene 5: CTA ─── */
+      .cta-pre {
+        top: 320px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-family: "Noto Sans JP", sans-serif;
+        font-weight: 500;
+        font-size: 36px;
+        color: #8888aa;
+        letter-spacing: 0.3em;
+      }
+      .cta-main {
+        top: 410px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-family: "Noto Serif JP", serif;
+        font-weight: 900;
+        font-size: 160px;
+        color: #f0f0f0;
+        letter-spacing: 0.04em;
+      }
+      .cta-main .accent {
+        background: linear-gradient(180deg, #f0f0f0 0%, #e8c96a 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .cta-brand {
+        top: 660px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-family: "Noto Serif JP", serif;
+        font-weight: 700;
+        font-size: 64px;
+        color: #c9a84c;
+        letter-spacing: 0.12em;
+        text-shadow: 0 0 40px rgba(201, 168, 76, 0.5);
+      }
+      .cta-divider {
+        top: 780px;
+        left: 50%;
+        margin-left: -150px;
+        width: 300px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+      }
+      .cta-press {
+        top: 820px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-family: "Noto Sans JP", sans-serif;
+        font-weight: 500;
+        font-size: 28px;
+        color: #8888aa;
+        letter-spacing: 0.4em;
+      }
+      .cta-press .blink {
+        color: #c9a84c;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="30"
+      data-width="1920"
+      data-height="1080"
+    >
+      <!-- ═══════════ Background (always visible) ═══════════ -->
+      <div class="clip bg-base" id="bg-base" data-start="0" data-duration="30" data-track-index="0"></div>
+      <div class="clip bg-glow" id="bg-glow" data-start="0" data-duration="30" data-track-index="1"></div>
+      <div class="clip bg-vignette" id="bg-vignette" data-start="0" data-duration="30" data-track-index="2"></div>
+
+      <!-- Brand badge (visible from Scene 2 onward) -->
+      <div class="clip brand-badge" id="brand-badge" data-start="4" data-duration="26" data-track-index="3">
+        <div class="dot"></div>
+        <div class="text">AI Builders Lab</div>
+      </div>
+
+      <!-- ═══════════ Scene 1: Hook (0-4s) ═══════════ -->
+      <div class="clip hook-line-1" id="hook-line-1" data-start="0" data-duration="4" data-track-index="4">
+        ただのページが、
+      </div>
+      <div class="clip hook-line-2" id="hook-line-2" data-start="0.8" data-duration="3.2" data-track-index="5">
+        動くアプリに<span class="accent">化ける</span>。
+      </div>
+      <div class="clip hook-deco-line" id="hook-deco" data-start="2.0" data-duration="2" data-track-index="6"></div>
+
+      <!-- ═══════════ Scene 2: Title (4-9s) ═══════════ -->
+      <div class="clip week-label" id="week-label" data-start="4" data-duration="5" data-track-index="7">
+        WEEK 04
+      </div>
+      <div class="clip week-number" id="week-number" data-start="4.2" data-duration="4.8" data-track-index="8">
+        4
+      </div>
+      <div class="clip week-title" id="week-title" data-start="5.0" data-duration="4" data-track-index="9">
+        <span style="color:#e8c96a">機能</span>を言葉で追加する
+      </div>
+      <div class="clip week-divider" id="week-divider" data-start="5.5" data-duration="3.5" data-track-index="10"></div>
+      <div class="clip week-tagline" id="week-tagline" data-start="5.8" data-duration="3.2" data-track-index="11">
+        D A T A &nbsp;・&nbsp; L O G I N &nbsp;・&nbsp; M E M B E R
+      </div>
+
+      <!-- ═══════════ Scene 3: 3 Steps (9-19s) ═══════════ -->
+      <div class="clip steps-header" id="steps-header" data-start="9" data-duration="10" data-track-index="12">
+        今週で<span class="accent">本物のアプリ</span>になる
+      </div>
+
+      <div class="clip steps-container" id="steps-container" data-start="9.5" data-duration="9.5" data-track-index="13">
+        <div class="step-card" id="step-card-1">
+          <div class="step-num">1</div>
+          <div class="step-title">Supabase</div>
+          <div class="step-time">30 分</div>
+        </div>
+        <div class="step-arrow" id="step-arrow-1">→</div>
+        <div class="step-card" id="step-card-2">
+          <div class="step-num">2</div>
+          <div class="step-title">ログイン</div>
+          <div class="step-time">20 分</div>
+        </div>
+        <div class="step-arrow" id="step-arrow-2">→</div>
+        <div class="step-card" id="step-card-3">
+          <div class="step-num">3</div>
+          <div class="step-title">マイページ</div>
+          <div class="step-time">15 分</div>
+        </div>
+      </div>
+
+      <div class="clip steps-bottom" id="steps-bottom" data-start="13" data-duration="6" data-track-index="14">
+        ・ DB が、本当にあなたを覚える ・
+      </div>
+
+      <!-- ═══════════ Scene 4: Promise (19-25s) ═══════════ -->
+      <div class="clip promise-pretext" id="promise-pretext" data-start="19" data-duration="6" data-track-index="15">
+        管理画面を見た瞬間、あなたは
+      </div>
+      <div class="clip promise-quote" id="promise-quote" data-start="19.6" data-duration="5.4" data-track-index="16">
+        <span class="accent">「保存された…！」</span>
+      </div>
+      <div class="clip promise-after" id="promise-after" data-start="20.8" data-duration="4.2" data-track-index="17">
+        と、自分のデータが宿った事実に静かに震える。
+      </div>
+      <div class="clip promise-decoration" id="promise-deco" data-start="22" data-duration="3" data-track-index="18">
+        ・ ・ ・
+      </div>
+
+      <!-- ═══════════ Scene 5: CTA (25-30s) ═══════════ -->
+      <div class="clip cta-pre" id="cta-pre" data-start="25" data-duration="5" data-track-index="19">
+        S H A L L &nbsp;&nbsp; W E &nbsp;&nbsp; B E G I N
+      </div>
+      <div class="clip cta-main" id="cta-main" data-start="25.3" data-duration="4.7" data-track-index="20">
+        さあ、<span class="accent">動かそう</span>。
+      </div>
+      <div class="clip cta-brand" id="cta-brand" data-start="26.5" data-duration="3.5" data-track-index="21">
+        AI Builders Lab
+      </div>
+      <div class="clip cta-divider" id="cta-divider" data-start="27" data-duration="3" data-track-index="22"></div>
+      <div class="clip cta-press" id="cta-press" data-start="27.3" data-duration="2.7" data-track-index="23">
+        W E E K &nbsp; 04 &nbsp;&nbsp; <span class="blink">▶</span> &nbsp;&nbsp; S T A R T
+      </div>
+    
+      <!-- ═══════════ Audio: BGM + Narration ═══════════ -->
+      <audio
+        id="bgm"
+        class="clip"
+        data-start="0"
+        data-duration="30"
+        data-volume="0.32"
+        data-track-index="24"
+        src="assets/bgm.wav"
+      ></audio>
+      <audio
+        id="narration"
+        class="clip"
+        data-start="1.0"
+        data-duration="29"
+        data-volume="1.0"
+        data-track-index="25"
+        src="assets/narration.wav"
+      ></audio>
+
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // ─── Background subtle pulse (always running) ───
+      tl.to(
+        "#bg-glow",
+        {
+          scale: 1.08,
+          opacity: 0.85,
+          duration: 4,
+          repeat: 6,
+          yoyo: true,
+          ease: "sine.inOut",
+        },
+        0
+      );
+
+      // ─── Scene 1: Hook (0-4s) ───
+      tl.fromTo("#hook-line-1", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 0);
+      tl.fromTo("#hook-line-2", { opacity: 0, y: 50, scale: 0.95 }, { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: "power3.out" }, 0.8);
+      tl.fromTo("#hook-deco", { height: 0, opacity: 0 }, { height: 80, opacity: 1, duration: 0.8, ease: "power2.out" }, 2.0);
+
+      // Hook fade out
+      tl.to(["#hook-line-1", "#hook-line-2", "#hook-deco"], { opacity: 0, y: -30, duration: 0.6, ease: "power2.in" }, 3.4);
+
+      // ─── Brand badge fade in (4s onward) ───
+      tl.fromTo("#brand-badge", { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }, 4.0);
+
+      // ─── Scene 2: Title (4-9s) ───
+      tl.fromTo("#week-label", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 4.0);
+      tl.fromTo("#week-number", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 1.2, ease: "back.out(1.4)" }, 4.2);
+      tl.fromTo("#week-title", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 5.0);
+      tl.fromTo("#week-divider", { width: 0, opacity: 0 }, { width: 200, opacity: 1, duration: 0.8, ease: "power2.out" }, 5.5);
+      tl.fromTo("#week-tagline", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 5.8);
+
+      // Title scene fade out
+      tl.to(
+        ["#week-label", "#week-number", "#week-title", "#week-divider", "#week-tagline"],
+        { opacity: 0, y: -20, duration: 0.6, ease: "power2.in" },
+        8.4
+      );
+
+      // ─── Scene 3: 3 Steps (9-19s) ───
+      tl.fromTo("#steps-header", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 9.0);
+
+      // Container container becomes visible (cards animate within)
+      tl.to("#steps-container", { opacity: 1, duration: 0.01 }, 9.5);
+
+      // Cards stagger in
+      tl.fromTo("#step-card-1", { opacity: 0, y: 60, scale: 0.85 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "back.out(1.5)" }, 9.6);
+      tl.fromTo("#step-arrow-1", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, 10.2);
+      tl.fromTo("#step-card-2", { opacity: 0, y: 60, scale: 0.85 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "back.out(1.5)" }, 10.5);
+      tl.fromTo("#step-arrow-2", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, 11.1);
+      tl.fromTo("#step-card-3", { opacity: 0, y: 60, scale: 0.85 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "back.out(1.5)" }, 11.4);
+
+      // Card glow pulse
+      tl.to(
+        ["#step-card-1", "#step-card-2", "#step-card-3"],
+        {
+          borderColor: "rgba(232, 201, 106, 0.7)",
+          duration: 1.2,
+          repeat: 3,
+          yoyo: true,
+          ease: "sine.inOut",
+          stagger: 0.15,
+        },
+        12.5
+      );
+
+      tl.fromTo("#steps-bottom", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 13.0);
+
+      // Steps scene fade out
+      tl.to(
+        ["#steps-header", "#steps-container", "#steps-bottom"],
+        { opacity: 0, y: -20, duration: 0.6, ease: "power2.in" },
+        18.4
+      );
+
+      // ─── Scene 4: Promise (19-25s) ───
+      tl.fromTo("#promise-pretext", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 19.0);
+      tl.fromTo("#promise-quote", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 1.0, ease: "back.out(1.6)" }, 19.6);
+
+      // Quote glow pulse
+      tl.to(
+        "#promise-quote",
+        {
+          textShadow: "0 0 60px rgba(232, 201, 106, 0.8)",
+          duration: 1.2,
+          repeat: 2,
+          yoyo: true,
+          ease: "sine.inOut",
+        },
+        20.8
+      );
+
+      tl.fromTo("#promise-after", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 20.8);
+      tl.fromTo("#promise-deco", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" }, 22.0);
+
+      // Promise scene fade out
+      tl.to(
+        ["#promise-pretext", "#promise-quote", "#promise-after", "#promise-deco"],
+        { opacity: 0, y: -20, duration: 0.5, ease: "power2.in" },
+        24.5
+      );
+
+      // ─── Scene 5: CTA (25-30s) ───
+      tl.fromTo("#cta-pre", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 25.0);
+      tl.fromTo("#cta-main", { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.9, ease: "back.out(1.4)" }, 25.3);
+      tl.fromTo("#cta-brand", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 26.5);
+
+      // Brand glow
+      tl.to(
+        "#cta-brand",
+        {
+          textShadow: "0 0 60px rgba(201, 168, 76, 0.9)",
+          duration: 1.0,
+          repeat: 2,
+          yoyo: true,
+          ease: "sine.inOut",
+        },
+        27.5
+      );
+
+      tl.fromTo("#cta-divider", { width: 0, opacity: 0, marginLeft: 0 }, { width: 300, opacity: 1, marginLeft: -150, duration: 0.6, ease: "power2.out" }, 27.0);
+      tl.fromTo("#cta-press", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 27.3);
+
+      // Final blink on press indicator
+      tl.to("#cta-press .blink", { opacity: 0.3, duration: 0.4, repeat: 4, yoyo: true, ease: "sine.inOut" }, 28.2);
+
+      // Total duration sentinel
+      tl.to({}, { duration: 0.01 }, 30);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,3 @@
+コードを一行も書かずに、本物のアプリを作る。
+Week 1、はじめての Claude Code。
+さあ、始めよう。AI Builders Lab。
