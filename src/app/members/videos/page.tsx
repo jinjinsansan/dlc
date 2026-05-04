@@ -7,7 +7,9 @@ interface Video {
   week: number;
   title: string;
   description: string | null;
+  storage_path: string | null;
   cloudflare_video_id: string | null;
+  duration_seconds: number | null;
   unlocked_at: string | null;
 }
 
@@ -19,8 +21,9 @@ export default async function VideosPage() {
 
   const { data: videos } = await supabase
     .from("videos")
-    .select("id, week, title, description, cloudflare_video_id, unlocked_at")
-    .order("week", { ascending: true });
+    .select("id, week, title, description, storage_path, cloudflare_video_id, duration_seconds, unlocked_at")
+    .order("week", { ascending: true })
+    .order("sort_order", { ascending: true });
 
   // Get watched video IDs
   const { data: watches } = await supabase
