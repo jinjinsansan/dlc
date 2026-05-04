@@ -10,7 +10,7 @@ export default function Footer() {
               AI Builders Lab
             </h3>
             <p className="text-text-muted text-sm leading-relaxed">
-              AIで複数のプロダクトを生み出した実績者が教える、
+              ノーコードで本格競馬予想AIを作った実績者が教える、
               AI個人開発者養成コミュニティ
             </p>
           </div>

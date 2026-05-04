@@ -25,7 +25,7 @@ export default function HeroSection() {
           <span className="text-primary">今日から、あなたにも<br className="sm:hidden" />できる。</span>
         </h1>
         <p className="text-text-muted text-sm sm:text-lg md:text-xl max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
-          AIを使って10以上のプロダクトを生み出した開発者が、<br className="hidden sm:block" />
+          ノーコードで本格<span className="text-primary font-bold">競馬予想AI</span>を作った私が、<br className="hidden sm:block" />
           コードを1行も書かずにプロ品質のアプリを作る方法を、<br className="hidden sm:block" />
           8週間で全て教えます。
         </p>

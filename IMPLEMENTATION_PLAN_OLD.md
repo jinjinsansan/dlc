@@ -1,9 +1,11 @@
-# Dlogic Academy - ステップバイステップ実装計画書
+# AI Builders Lab - ステップバイステップ実装計画書（旧版・参考用）
+
+> 旧称「Dlogic Academy」時代の計画書です。現行プロジェクトは AI Builders Lab。最新仕様は `ai-builders-lab-spec.md` を参照。
 
 ## 全体構成
 
 ```
-dlogic-academy/
+ai-builders-lab/
 ├── src/
 │   ├── app/
 │   │   ├── layout.tsx              ← ルートレイアウト（Google Fonts読込）
@@ -86,7 +88,7 @@ dlogic-academy/
 - [ ] Section 1: ヒーロー（キャッチ + CTA + 背景エフェクト）
 - [ ] Section 2: 時代の変化（タイムライン/対比ビジュアル）
 - [ ] Section 3: 実績・証拠（サービス画面カード）
-- [ ] Section 4: Dlogic Academyとは（3カラムアイコン）
+- [ ] Section 4: AI Builders Labとは（3カラムアイコン）
 - [ ] Section 5: カリキュラム概要（8週間タイムライン）
 - [ ] Section 6: 料金プラン（3プランカード）
 - [ ] Section 7: FAQ（アコーディオン）
@@ -188,7 +190,7 @@ dlogic-academy/
 ### Vercel設定
 1. GitHubリポジトリ連携
 2. 環境変数設定（全キー）
-3. ドメイン設定（dlogic-academy.com等）
+3. ドメイン設定（academy.dlogicai.in）
 
 ### Stripe設定
 1. 商品・価格作成（4プラン）
