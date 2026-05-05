@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Card from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
+import AdminPageHead from "@/components/layout/AdminPageHead";
 
 interface Post {
   id: string;
@@ -53,7 +54,7 @@ export default function AdminCommunityPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2">コミュニティモデレーション</h1>
+      <AdminPageHead num="06" kicker="COMMUNITY" title="コミュニティモデレーション" intro="投稿のピン留め・削除・通報対応" />
       <p className="text-text-muted text-sm mb-4 sm:mb-6">計 {posts.length} 件</p>
 
       <div className="space-y-2">

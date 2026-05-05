@@ -1,77 +1,116 @@
-import Link from "next/link";
+import PublicHeader from "@/components/layout/PublicHeader";
+
+const items: [string, string][] = [
+  ["販売事業者名", "AI Builders Lab 運営事務局"],
+  ["代表者", "請求があった場合に遅滞なく開示いたします"],
+  ["所在地", "請求があった場合に遅滞なく開示いたします"],
+  ["電話番号", "請求があった場合に遅滞なく開示いたします"],
+  ["メールアドレス", "info@ai-builders-lab.com（仮）"],
+  [
+    "販売価格",
+    "動画のみプラン: ¥49,800（税込）\n動画＋メールサポートプラン: ¥98,000（税込）\nZoom 型プラン: ¥150,000（税込）\nコミュニティ月額: ¥2,980〜¥4,980 / 月（税込）",
+  ],
+  ["支払方法", "クレジットカード（Stripe 決済）"],
+  ["支払時期", "購入時に即時決済"],
+  ["商品の引渡時期", "決済完了後、即時にサービスをご利用いただけます"],
+  [
+    "返品・キャンセルについて",
+    "デジタルコンテンツの性質上、購入後の返品・返金はお受けしておりません。ただし、受講開始から 14 日以内、第 1 週の動画視聴前であれば全額返金いたします。",
+  ],
+  [
+    "動作環境",
+    "インターネット接続環境、最新の Web ブラウザ（Chrome、Safari、Edge 等）",
+  ],
+];
 
 export default function TokushohoPage() {
   return (
-    <div className="min-h-screen bg-bg text-text-main">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
-        <Link
-          href="/"
-          className="text-text-muted hover:text-primary text-sm mb-8 inline-block transition-colors"
-        >
-          ← TOPへ戻る
-        </Link>
-        <h1 className="font-serif text-3xl font-bold mb-8">
-          特定商取引法に基づく表記
-        </h1>
-        <div className="space-y-6 text-sm leading-relaxed">
-          <dl className="space-y-4">
-            <div className="border-b border-border pb-4">
-              <dt className="font-bold mb-1">販売事業者名</dt>
-              <dd className="text-text-muted">AI Builders Lab 運営事務局</dd>
-            </div>
-            <div className="border-b border-border pb-4">
-              <dt className="font-bold mb-1">代表者</dt>
-              <dd className="text-text-muted">請求があった場合に遅滞なく開示いたします</dd>
-            </div>
-            <div className="border-b border-border pb-4">
-              <dt className="font-bold mb-1">所在地</dt>
-              <dd className="text-text-muted">請求があった場合に遅滞なく開示いたします</dd>
-            </div>
-            <div className="border-b border-border pb-4">
-              <dt className="font-bold mb-1">電話番号</dt>
-              <dd className="text-text-muted">請求があった場合に遅滞なく開示いたします</dd>
-            </div>
-            <div className="border-b border-border pb-4">
-              <dt className="font-bold mb-1">メールアドレス</dt>
-              <dd className="text-text-muted">info@ai-builders-lab.com（仮）</dd>
-            </div>
-            <div className="border-b border-border pb-4">
-              <dt className="font-bold mb-1">販売価格</dt>
-              <dd className="text-text-muted">
-                動画のみプラン: ¥49,800（税込）<br />
-                動画＋メールサポートプラン: ¥98,000（税込）<br />
-                Zoom型プラン: ¥150,000（税込）<br />
-                コミュニティ月額: ¥2,980〜¥4,980/月（税込）
-              </dd>
-            </div>
-            <div className="border-b border-border pb-4">
-              <dt className="font-bold mb-1">支払方法</dt>
-              <dd className="text-text-muted">クレジットカード（Stripe決済）</dd>
-            </div>
-            <div className="border-b border-border pb-4">
-              <dt className="font-bold mb-1">支払時期</dt>
-              <dd className="text-text-muted">購入時に即時決済</dd>
-            </div>
-            <div className="border-b border-border pb-4">
-              <dt className="font-bold mb-1">商品の引渡時期</dt>
-              <dd className="text-text-muted">決済完了後、即時にサービスをご利用いただけます</dd>
-            </div>
-            <div className="border-b border-border pb-4">
-              <dt className="font-bold mb-1">返品・キャンセルについて</dt>
-              <dd className="text-text-muted">
-                デジタルコンテンツの性質上、購入後の返品・返金はお受けしておりません。
-                ただし、サービスに重大な瑕疵があった場合は個別にご相談ください。
-              </dd>
-            </div>
-            <div>
-              <dt className="font-bold mb-1">動作環境</dt>
-              <dd className="text-text-muted">
-                インターネット接続環境、最新のWebブラウザ（Chrome、Safari、Edge等）
-              </dd>
-            </div>
-          </dl>
+    <div style={{ minHeight: "100vh" }}>
+      <PublicHeader />
+      <main
+        style={{
+          maxWidth: 760,
+          margin: "0 auto",
+          padding: "140px 32px 100px",
+        }}
+      >
+        <div style={{ textAlign: "center", marginBottom: 64 }}>
+          <div
+            className="font-mono-jp"
+            style={{
+              fontSize: 11,
+              color: "var(--color-primary)",
+              letterSpacing: "0.3em",
+              marginBottom: 16,
+            }}
+          >
+            LEGAL · COMMERCIAL TRANSACTIONS
+          </div>
+          <h1
+            className="font-serif-jp"
+            style={{
+              fontSize: 44,
+              fontWeight: 700,
+              letterSpacing: "-0.01em",
+              lineHeight: 1.2,
+            }}
+          >
+            特定商取引法
+            <span style={{ color: "var(--color-primary)", fontStyle: "italic" }}>
+              に基づく表記
+            </span>
+          </h1>
         </div>
-      </div>
+
+        <dl style={{ display: "flex", flexDirection: "column", margin: 0, padding: 0 }}>
+          {items.map(([k, v], i) => (
+            <div
+              key={i}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "200px 1fr",
+                gap: 24,
+                padding: "24px 0",
+                borderBottom: "1px solid var(--color-border-hair)",
+              }}
+            >
+              <dt
+                className="font-mono-jp"
+                style={{
+                  fontSize: 11,
+                  color: "var(--color-text-dim)",
+                  letterSpacing: "0.15em",
+                  paddingTop: 4,
+                }}
+              >
+                {k.toUpperCase()}
+              </dt>
+              <dd
+                style={{
+                  fontSize: 14,
+                  color: "var(--color-text-muted)",
+                  lineHeight: 1.9,
+                  whiteSpace: "pre-line",
+                  margin: 0,
+                }}
+              >
+                <div
+                  className="font-serif-jp"
+                  style={{
+                    fontSize: 13,
+                    color: "var(--color-text)",
+                    fontWeight: 700,
+                    marginBottom: 4,
+                  }}
+                >
+                  {k}
+                </div>
+                {v}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </main>
     </div>
   );
 }

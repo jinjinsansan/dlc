@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Card from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
+import AdminPageHead from "@/components/layout/AdminPageHead";
 
 interface Material {
   id: string;
@@ -64,7 +65,7 @@ export default function AdminMaterialsPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-4 sm:mb-6">資料管理</h1>
+      <AdminPageHead num="04" kicker="MATERIALS" title="資料管理" intro="PDF 教材のアップロード・カテゴリ分類" />
 
       <Card className="mb-6 sm:mb-8">
         <h2 className="font-bold mb-4">資料をアップロード</h2>

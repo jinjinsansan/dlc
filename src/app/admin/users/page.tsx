@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Card from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
+import AdminPageHead from "@/components/layout/AdminPageHead";
 
 interface User {
   id: string;
@@ -46,7 +47,7 @@ export default function AdminUsersPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2">会員管理</h1>
+      <AdminPageHead num="05" kicker="USERS" title="会員管理" intro="会員一覧・プラン変更・退会処理" />
       <p className="text-text-muted text-sm mb-4 sm:mb-6">計 {users.length} 名</p>
 
       <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="名前またはメールで検索"

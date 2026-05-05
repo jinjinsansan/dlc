@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Card from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
+import AdminPageHead from "@/components/layout/AdminPageHead";
 
 interface TicketReply {
   id: string;
@@ -90,7 +91,7 @@ export default function AdminTicketsPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2">サポートチケット管理</h1>
+      <AdminPageHead num="08" kicker="TICKETS" title="サポートチケット管理" intro="問い合わせ対応・ステータス管理" />
       <p className="text-text-muted text-sm mb-4 sm:mb-6">計 {tickets.length} 件</p>
 
       <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">

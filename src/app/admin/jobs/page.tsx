@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Card from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
+import AdminPageHead from "@/components/layout/AdminPageHead";
 
 interface Job {
   id: string;
@@ -53,7 +54,7 @@ export default function AdminJobsPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2">受発注ボード管理</h1>
+      <AdminPageHead num="07" kicker="JOBS" title="受発注ボード管理" intro="案件の編集・承認・削除" />
       <p className="text-text-muted text-sm mb-4 sm:mb-6">計 {jobs.length} 件</p>
 
       <div className="space-y-2">

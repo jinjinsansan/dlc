@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Card from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
+import AdminPageHead from "@/components/layout/AdminPageHead";
 
 interface Video {
   id: string;
@@ -60,7 +61,7 @@ export default function AdminVideosPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-4 sm:mb-6">動画管理</h1>
+      <AdminPageHead num="03" kicker="VIDEOS" title="動画管理" intro="Week 別動画のメタデータ管理・公開制御" />
 
       <Card className="mb-6 sm:mb-8">
         <h2 className="font-bold mb-4">動画を追加</h2>
