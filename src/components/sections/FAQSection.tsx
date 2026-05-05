@@ -1,44 +1,110 @@
-import Accordion from "@/components/ui/Accordion";
-
-const faqItems = [
-  {
-    question: "プログラミング経験がなくても大丈夫ですか？",
-    answer:
-      "はい、全く問題ありません。本カリキュラムはノーコード・AIを活用した開発手法を教えるため、プログラミングの事前知識は不要です。AIへの指示の出し方から丁寧に解説します。",
-  },
-  {
-    question: "競馬の知識がなくても受講できますか？",
-    answer:
-      "もちろんです。講師が競馬予想AIを開発した経験を持つため題材としても用いますが、本質は「AIを使って何でも作れる力」を身につけることです。競馬に興味がなくても、学んだスキルはあらゆるプロダクト開発に応用できます。",
-  },
-  {
-    question: "動画はいつまで視聴できますか？",
-    answer:
-      "購入いただいた動画は無期限で視聴可能です。何度でも繰り返し学習にお使いいただけます。",
-  },
-  {
-    question: "Zoom型は録画を後から見られますか？",
-    answer:
-      "はい、全てのZoom講座は録画されます。リアルタイムで参加できなかった場合も、後から録画で学習できます。",
-  },
-  {
-    question: "返金保証はありますか？",
-    answer:
-      "申し込み後7日以内であれば、全額返金いたします。詳しくは特定商取引法に基づく表記をご確認ください。",
-  },
-];
+import SectionHead from "./SectionHead";
 
 export default function FAQSection() {
+  const items: [string, string][] = [
+    [
+      "プログラミング経験がなくても大丈夫ですか？",
+      "大丈夫です。本講座はプログラミング未経験者を前提に設計されています。コードを書く時間より、AIに正しく指示を出す練習に重点を置きます。",
+    ],
+    [
+      "競馬の知識がなくても受講できますか？",
+      "問題ありません。題材として競馬AIに触れますが、本質は「何でも作れる力」の習得です。8週間で作るプロダクトはあなた自身のアイデアで構いません。",
+    ],
+    [
+      "動画はいつまで視聴できますか？",
+      "無期限です。一度購入すれば、講座終了後もずっと視聴できます。",
+    ],
+    [
+      "Zoom型は録画を後から見られますか？",
+      "はい。全Zoomセッションは録画され、24時間以内にアーカイブとしてアップされます。当日参加できなくても問題ありません。",
+    ],
+    [
+      "返金保証はありますか？",
+      "受講開始から14日以内、第1週の動画視聴前であれば全額返金いたします。",
+    ],
+  ];
+
   return (
-    <section id="faq" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-surface/50">
-      <div className="max-w-3xl mx-auto">
-        <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4">
-          よくある<span className="text-primary">質問</span>
-        </h2>
-        <p className="text-text-muted text-sm sm:text-base text-center mb-8 sm:mb-12">
-          お申し込み前に気になる点をご確認ください
-        </p>
-        <Accordion items={faqItems} />
+    <section
+      id="faq"
+      style={{
+        padding: "160px 48px",
+        borderBottom: "1px solid var(--color-border-hair)",
+      }}
+    >
+      <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+        <SectionHead
+          num="06"
+          kicker="QUESTIONS"
+          title={
+            <>
+              気になることに、
+              <br />
+              <span style={{ color: "var(--color-primary)", fontStyle: "italic" }}>
+                ひとつずつ。
+              </span>
+            </>
+          }
+        />
+        <div style={{ borderTop: "1px solid var(--color-border-hair)" }}>
+          {items.map(([q, a], i) => (
+            <details
+              key={i}
+              style={{ borderBottom: "1px solid var(--color-border-hair)" }}
+            >
+              <summary
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "60px 1fr auto",
+                  gap: 24,
+                  alignItems: "center",
+                  padding: "28px 0",
+                  cursor: "pointer",
+                  listStyle: "none",
+                }}
+              >
+                <span
+                  className="font-mono-jp"
+                  style={{
+                    fontSize: 12,
+                    color: "var(--color-text-dim)",
+                    letterSpacing: "0.15em",
+                  }}
+                >
+                  Q.0{i + 1}
+                </span>
+                <h3
+                  className="font-serif-jp"
+                  style={{ fontSize: 20, fontWeight: 400 }}
+                >
+                  {q}
+                </h3>
+                <span
+                  className="font-mono-jp"
+                  style={{ fontSize: 14, color: "var(--color-primary)" }}
+                >
+                  +
+                </span>
+              </summary>
+              <div
+                style={{
+                  padding: "0 0 32px 84px",
+                  maxWidth: 800,
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: 15,
+                    color: "var(--color-text-muted)",
+                    lineHeight: 1.9,
+                  }}
+                >
+                  {a}
+                </p>
+              </div>
+            </details>
+          ))}
+        </div>
       </div>
     </section>
   );

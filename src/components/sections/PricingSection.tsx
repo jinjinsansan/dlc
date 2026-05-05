@@ -1,37 +1,40 @@
-import Card from "@/components/ui/Card";
-import Button from "@/components/ui/Button";
+import Link from "next/link";
+import SectionHead from "./SectionHead";
 
 export default function PricingSection() {
   const plans = [
     {
+      id: "video",
       name: "動画のみ",
-      price: "¥49,800",
-      description: "全講義動画アーカイブ閲覧",
-      features: [
-        "全8週分の講義動画",
-        "動画は無期限で視聴可能",
-        "資料ダウンロード",
-      ],
-      highlight: false,
+      tag: "ARCHIVE",
+      price: "49,800",
+      sub: "一括",
+      body: "全講義動画アーカイブ閲覧。自分のペースで学ぶ。",
+      features: ["全8週分の講義動画", "無期限視聴", "資料ダウンロード"],
     },
     {
-      name: "動画 + メールサポート",
-      price: "¥98,000",
-      description: "動画閲覧 + 個別メール相談",
+      id: "mail",
+      name: "動画 + メール",
+      tag: "RECOMMENDED",
+      price: "98,000",
+      sub: "一括",
+      body: "動画 + 個別メール相談。質問は無制限。",
       features: [
         "全8週分の講義動画",
-        "動画は無期限で視聴可能",
+        "無期限視聴",
         "資料ダウンロード",
         "個別メール相談（無制限）",
         "質問への優先回答",
       ],
-      highlight: true,
-      badge: "おすすめ",
+      featured: true,
     },
     {
+      id: "zoom",
       name: "Zoom型（1期生）",
-      price: "¥150,000",
-      description: "8週間×週1回2時間Zoom（録画あり）",
+      tag: "COHORT 01",
+      price: "150,000",
+      sub: "一括",
+      body: "8週間×週1回2時間のライブZoom講座（録画あり）。",
       features: [
         "全8週分の講義動画",
         "週1回のライブZoom講座",
@@ -40,58 +43,199 @@ export default function PricingSection() {
         "Zoomでの直接質問",
         "卒業後6ヶ月コミュニティ無料",
       ],
-      highlight: false,
     },
   ];
 
   return (
-    <section id="pricing" className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5xl mx-auto">
-        <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4">
-          あなたのペースで選べる<br className="sm:hidden" /><span className="text-primary">3つのプラン</span>
-        </h2>
-        <p className="text-text-muted text-sm sm:text-base text-center mb-10 sm:mb-16">
-          一括払い・追加料金なし
-        </p>
+    <section
+      id="pricing"
+      style={{
+        padding: "160px 48px",
+        borderBottom: "1px solid var(--color-border-hair)",
+      }}
+    >
+      <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+        <SectionHead
+          num="05"
+          kicker="ENROLMENT / 3 PLANS"
+          title={
+            <>
+              あなたのペースで、
+              <br />
+              <span style={{ color: "var(--color-primary)", fontStyle: "italic" }}>
+                選べる。
+              </span>
+            </>
+          }
+          intro="全プラン一括払い、追加料金なし。Stripeでの安全な決済。"
+        />
 
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-          {plans.map((plan, i) => (
-            <Card
-              key={i}
-              highlight={plan.highlight}
-              className={`relative flex flex-col ${
-                plan.highlight ? "md:-mt-4 md:mb-4" : ""
-              }`}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: 1,
+            background: "var(--color-border-hair)",
+            border: "1px solid var(--color-border-hair)",
+          }}
+        >
+          {plans.map((p, idx) => (
+            <div
+              key={p.id}
+              style={{
+                background: p.featured
+                  ? "linear-gradient(180deg, rgba(201,168,76,0.08), var(--color-bg))"
+                  : "var(--color-bg)",
+                padding: 48,
+                position: "relative",
+                display: "flex",
+                flexDirection: "column",
+              }}
             >
-              {plan.badge && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-bg text-xs font-bold px-4 py-1 rounded-full">
-                  {plan.badge}
-                </span>
+              {p.featured && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 2,
+                    background: "var(--color-primary)",
+                  }}
+                />
               )}
-              <h3 className="font-bold text-lg mb-1">{plan.name}</h3>
-              <p className="text-text-muted text-sm mb-4">{plan.description}</p>
-              <div className="mb-4 sm:mb-6">
-                <span className="font-serif text-2xl sm:text-3xl font-bold text-primary">
-                  {plan.price}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "baseline",
+                  marginBottom: 24,
+                }}
+              >
+                <span
+                  className="font-mono-jp"
+                  style={{
+                    fontSize: 10,
+                    color: p.featured
+                      ? "var(--color-primary)"
+                      : "var(--color-text-dim)",
+                    letterSpacing: "0.2em",
+                  }}
+                >
+                  {p.tag}
                 </span>
-                <span className="text-text-muted text-xs sm:text-sm ml-1">（税込）</span>
+                <span
+                  className="font-mono-jp"
+                  style={{
+                    fontSize: 10,
+                    color: "var(--color-text-dim)",
+                    letterSpacing: "0.15em",
+                  }}
+                >
+                  0{idx + 1} / 03
+                </span>
               </div>
-              <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8 flex-1">
-                {plan.features.map((feature, j) => (
-                  <li key={j} className="flex items-start gap-2 text-sm">
-                    <span className="text-primary mt-0.5">✓</span>
-                    <span className="text-text-muted">{feature}</span>
+              <h3
+                className="font-serif-jp"
+                style={{ fontSize: 28, fontWeight: 700, marginBottom: 8 }}
+              >
+                {p.name}
+              </h3>
+              <p
+                style={{
+                  fontSize: 13,
+                  color: "var(--color-text-muted)",
+                  marginBottom: 32,
+                  lineHeight: 1.7,
+                }}
+              >
+                {p.body}
+              </p>
+              <div
+                style={{
+                  marginBottom: 32,
+                  display: "flex",
+                  alignItems: "baseline",
+                  gap: 8,
+                }}
+              >
+                <span
+                  className="font-serif-jp"
+                  style={{ fontSize: 14, color: "var(--color-text-muted)" }}
+                >
+                  ¥
+                </span>
+                <span
+                  className="font-serif-jp"
+                  style={{
+                    fontSize: 56,
+                    fontWeight: 700,
+                    color: p.featured
+                      ? "var(--color-primary)"
+                      : "var(--color-text)",
+                    lineHeight: 1,
+                    letterSpacing: "-0.02em",
+                    fontFeatureSettings: '"tnum"',
+                  }}
+                >
+                  {p.price}
+                </span>
+                <span
+                  className="font-mono-jp"
+                  style={{
+                    fontSize: 11,
+                    color: "var(--color-text-dim)",
+                    letterSpacing: "0.15em",
+                    marginLeft: 8,
+                  }}
+                >
+                  {p.sub.toUpperCase()}
+                </span>
+              </div>
+              <ul
+                style={{
+                  listStyle: "none",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 12,
+                  marginBottom: 40,
+                  flex: 1,
+                  padding: 0,
+                }}
+              >
+                {p.features.map((f, i) => (
+                  <li
+                    key={i}
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      fontSize: 14,
+                      color: "var(--color-text-muted)",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: "var(--color-primary)",
+                        fontFamily: "var(--font-mono)",
+                        fontSize: 11,
+                        marginTop: 4,
+                      }}
+                    >
+                      —
+                    </span>
+                    <span>{f}</span>
                   </li>
                 ))}
               </ul>
-              <Button
+              <Link
                 href="/apply"
-                variant={plan.highlight ? "primary" : "outline"}
-                className="w-full text-center"
+                className={`btn ${p.featured ? "btn-primary" : "btn-ghost"}`}
+                style={{ width: "100%", justifyContent: "center" }}
               >
-                申し込む
-              </Button>
-            </Card>
+                申し込む <span className="arrow">→</span>
+              </Link>
+            </div>
           ))}
         </div>
       </div>

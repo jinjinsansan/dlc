@@ -2,22 +2,151 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════ Design Tokens (Editorial Mono) ═══════════ */
 :root {
+  /* Backgrounds */
   --color-bg: #0a0a0f;
+  --color-bg-deep: #06060a;
   --color-surface: #12121e;
+  --color-surface-2: #181828;
+
+  /* Primary (gold) */
   --color-primary: #c9a84c;
   --color-primary-light: #e8c96a;
+  --color-primary-dim: #8a7434;
+
+  /* Text */
   --color-text: #f0f0f0;
   --color-text-muted: #8888aa;
+  --color-text-dim: #555571;
+
+  /* Borders */
   --color-border: #2a2a3e;
+  --color-border-hair: #1c1c2c;
+
+  /* Fonts */
+  --font-serif: var(--font-noto-serif), "Noto Serif JP", "Hiragino Mincho ProN", serif;
+  --font-sans: var(--font-noto-sans), "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", ui-monospace, monospace;
+}
+
+/* ═══════════ Base styles ═══════════ */
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  color: var(--color-text);
   background: var(--color-bg);
-  font-family: var(--font-noto-sans), "Noto Sans JP", sans-serif;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-feature-settings: "palt";
+  line-height: 1.7;
 }
 
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+
+/* ═══════════ Typography helpers ═══════════ */
+.font-serif-jp { font-family: var(--font-serif); }
+.font-mono-jp {
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.tate {
+  writing-mode: vertical-rl;
+  font-family: var(--font-serif);
+  letter-spacing: 0.3em;
+}
+
+.num {
+  font-family: var(--font-serif);
+  font-feature-settings: "tnum";
+  color: var(--color-text-dim);
+}
+
+/* ═══════════ Utility components ═══════════ */
+.hr-hair { border-top: 1px solid var(--color-border-hair); }
+
+.section-rule {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--color-text-dim);
+}
+.section-rule::before,
+.section-rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--color-border-hair);
+}
+
+/* Buttons (Editorial style) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 28px;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  border: 1px solid transparent;
+  transition: all .25s ease;
+  cursor: pointer;
+}
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-bg-deep);
+}
+.btn-primary:hover {
+  background: var(--color-primary-light);
+  transform: translateY(-1px);
+}
+.btn-ghost {
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+.btn-ghost:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+.btn .arrow { transition: transform .25s; }
+.btn:hover .arrow { transform: translateX(4px); }
+
+/* Form input */
+.form-input {
+  background: var(--color-bg-deep);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 12px 16px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  transition: border-color .2s;
+}
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--color-bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--color-border); }
+::-webkit-scrollbar-thumb:hover { background: var(--color-primary-dim); }
+
+/* ═══════════ Tailwind utilities ═══════════ */
 @layer utilities {
   .text-balance {
     text-wrap: balance;

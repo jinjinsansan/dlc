@@ -1,53 +1,186 @@
+import SectionHead from "./SectionHead";
+
 export default function EraChangeSection() {
-  const comparisons = [
-    {
-      before: "プログラミング言語を何年も学習",
-      after: "AIに日本語で指示するだけ",
-    },
-    {
-      before: "チーム開発・外注で数百万円",
-      after: "個人で、ほぼゼロコストで開発",
-    },
-    {
-      before: "アイデアから完成まで数ヶ月〜数年",
-      after: "数日〜数週間でプロダクト完成",
-    },
+  const before = [
+    "プログラミング言語の習得に1〜2年",
+    "エンジニアを雇うと月100万円〜",
+    "デザイナー、インフラ、別途必要",
+    "完成まで半年〜1年が当たり前",
+  ];
+  const now = [
+    "日本語でAIに話しかけるだけ",
+    "初期費用 月¥3,000のAIサブスクのみ",
+    "デザインも実装もAIが代行",
+    "最短で1日、長くて2週間で完成",
   ];
 
   return (
-    <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5xl mx-auto">
-        <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 sm:mb-6">
-          AIは、<br className="sm:hidden" /><span className="text-primary">個人開発の常識</span>を変えた
-        </h2>
-        <p className="text-text-muted text-sm sm:text-base text-center max-w-2xl mx-auto mb-10 sm:mb-16 leading-relaxed">
-          コードを書かなくてもプロ品質のアプリが作れる時代。まだほとんどの人がその事実を知らない。気づいた人から、圧倒的な差がつき始めている。
-        </p>
+    <section
+      id="about"
+      style={{
+        padding: "160px 48px",
+        borderBottom: "1px solid var(--color-border-hair)",
+      }}
+    >
+      <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+        <SectionHead
+          num="01"
+          kicker="THE TURNING POINT"
+          title={
+            <>
+              個人開発の常識は、
+              <br />
+              <span style={{ color: "var(--color-primary)", fontStyle: "italic" }}>
+                静かに、しかし完全に
+              </span>
+              、置き換わった。
+            </>
+          }
+        />
 
-        <div className="space-y-6">
-          {comparisons.map((item, i) => (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1px 1fr",
+            gap: 0,
+            alignItems: "stretch",
+          }}
+        >
+          {/* Then */}
+          <div style={{ paddingRight: 64 }}>
             <div
-              key={i}
-              className="grid md:grid-cols-[1fr_auto_1fr] gap-3 sm:gap-4 items-center"
+              className="font-mono-jp"
+              style={{
+                fontSize: 11,
+                color: "var(--color-text-dim)",
+                letterSpacing: "0.2em",
+                marginBottom: 24,
+              }}
             >
-              <div className="bg-surface border border-border rounded-lg p-4 sm:p-6 text-center">
-                <div className="text-text-muted text-xs mb-2 uppercase tracking-wider">
-                  10年前
-                </div>
-                <p className="text-text-muted text-sm sm:text-base line-through">{item.before}</p>
-              </div>
-              <div className="text-primary text-xl sm:text-2xl font-bold text-center md:block">
-                <span className="hidden md:inline">→</span>
-                <span className="md:hidden">↓</span>
-              </div>
-              <div className="bg-surface border border-primary/30 rounded-lg p-4 sm:p-6 text-center">
-                <div className="text-primary text-xs mb-2 uppercase tracking-wider">
-                  今
-                </div>
-                <p className="text-text-main text-sm sm:text-base font-bold">{item.after}</p>
-              </div>
+              — BEFORE / 2015
             </div>
-          ))}
+            <h3
+              className="font-serif-jp"
+              style={{
+                fontSize: 36,
+                lineHeight: 1.3,
+                fontWeight: 400,
+                color: "var(--color-text-dim)",
+                marginBottom: 32,
+              }}
+            >
+              アイデアがあっても、
+              <br />
+              作れる人にしか作れなかった。
+            </h3>
+            <ul
+              style={{
+                listStyle: "none",
+                display: "flex",
+                flexDirection: "column",
+                gap: 16,
+              }}
+            >
+              {before.map((t, i) => (
+                <li
+                  key={i}
+                  style={{
+                    display: "flex",
+                    gap: 16,
+                    fontSize: 15,
+                    color: "var(--color-text-muted)",
+                  }}
+                >
+                  <span className="font-mono-jp" style={{ color: "var(--color-text-dim)" }}>
+                    0{i + 1}
+                  </span>
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Divider */}
+          <div style={{ width: 1, background: "var(--color-border-hair)" }} />
+
+          {/* Now */}
+          <div style={{ paddingLeft: 64 }}>
+            <div
+              className="font-mono-jp"
+              style={{
+                fontSize: 11,
+                color: "var(--color-primary)",
+                letterSpacing: "0.2em",
+                marginBottom: 24,
+              }}
+            >
+              — NOW / 2026
+            </div>
+            <h3
+              className="font-serif-jp"
+              style={{
+                fontSize: 36,
+                lineHeight: 1.3,
+                fontWeight: 700,
+                color: "var(--color-text)",
+                marginBottom: 32,
+              }}
+            >
+              アイデアがあれば、
+              <br />
+              <span style={{ color: "var(--color-primary)" }}>誰でも作れる。</span>
+            </h3>
+            <ul
+              style={{
+                listStyle: "none",
+                display: "flex",
+                flexDirection: "column",
+                gap: 16,
+              }}
+            >
+              {now.map((t, i) => (
+                <li
+                  key={i}
+                  style={{
+                    display: "flex",
+                    gap: 16,
+                    fontSize: 15,
+                    color: "var(--color-text)",
+                  }}
+                >
+                  <span className="font-mono-jp" style={{ color: "var(--color-primary)" }}>
+                    0{i + 1}
+                  </span>
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Pull quote */}
+        <div
+          style={{
+            marginTop: 120,
+            padding: "64px 0",
+            borderTop: "1px solid var(--color-border-hair)",
+            borderBottom: "1px solid var(--color-border-hair)",
+            textAlign: "center",
+          }}
+        >
+          <span
+            className="font-serif-jp"
+            style={{
+              fontSize: "clamp(28px, 3.5vw, 48px)",
+              lineHeight: 1.4,
+              fontStyle: "italic",
+              color: "var(--color-text)",
+            }}
+          >
+            「気づいた人から、
+            <span style={{ color: "var(--color-primary)" }}>圧倒的な差</span>
+            がつき始めている。」
+          </span>
         </div>
       </div>
     </section>
