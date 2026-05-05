@@ -309,8 +309,13 @@ html, body {
 }
 
 /* ── Scene container (full screen, centered) ── */
+/* 親 .clip には auto サイズなので、.scene を viewport (1920x1080) に直接固定する */
 .scene {
-  inset: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 1920px;
+  height: 1080px;
   display: flex;
   flex-direction: column;
   justify-content: center;
