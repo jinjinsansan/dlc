@@ -13,22 +13,13 @@ AUDIO_DIR = ROOT / "audio"
 WEEKS = list(range(1, 9))
 
 
-# index.html に挿入する audio スニペット
-AUDIO_SNIPPET_TEMPLATE = """      <!-- ═══════════ Audio: BGM + Narration ═══════════ -->
-      <audio
-        id="bgm"
-        class="clip"
-        data-start="0"
-        data-duration="30"
-        data-volume="0.32"
-        data-track-index="24"
-        src="assets/bgm.wav"
-      ></audio>
+# index.html に挿入する audio スニペット (ナレーションのみ・BGM なし)
+AUDIO_SNIPPET_TEMPLATE = """      <!-- ═══════════ Audio: Narration ═══════════ -->
       <audio
         id="narration"
         class="clip"
-        data-start="1.0"
-        data-duration="29"
+        data-start="1.5"
+        data-duration="14"
         data-volume="1.0"
         data-track-index="25"
         src="assets/narration.wav"
@@ -41,30 +32,27 @@ def update_week(week_num: int) -> None:
     week_dir = ROOT / f"week{week_num:02d}-intro"
     assert week_dir.exists(), f"missing dir: {week_dir}"
 
-    # 1. Create assets/ and copy audio files
+    # 1. Create assets/ and copy narration WAV
     assets_dir = week_dir / "assets"
     assets_dir.mkdir(exist_ok=True)
 
-    bgm_src = AUDIO_DIR / "bgm.wav"
     narr_src = AUDIO_DIR / f"narration_week{week_num:02d}.wav"
-
-    shutil.copy2(bgm_src, assets_dir / "bgm.wav")
     shutil.copy2(narr_src, assets_dir / "narration.wav")
 
     # 2. Update index.html: add audio tags before the closing </div> of root
     index_path = week_dir / "index.html"
     html = index_path.read_text(encoding="utf-8")
 
-    # Idempotent: remove existing audio block if present
+    # Idempotent: remove any existing audio block
     html = re.sub(
-        r"      <!-- ═══════════ Audio: BGM \+ Narration ═══════════ ═══ -->.*?</audio>\n\n",
-        "",
+        r"\n\s*<!-- ═══════════ Audio:[^>]*-->.*?</audio>\s*\n\s*\n",
+        "\n\n",
         html,
         flags=re.DOTALL,
     )
-    # Older single-line audio entries
-    html = re.sub(r'\s*<audio[^>]*?id="(bgm|narration)"[^>]*?></audio>\n?', "", html)
-    html = re.sub(r"      <!-- ═══════════ Audio: BGM \+ Narration ═══════════ -->\n", "", html)
+    # Single-line audio entries fallback
+    html = re.sub(r'\s*<audio[^>]*?id="(bgm|narration)"[^>]*?(?:></audio>|>.*?</audio>)\s*\n', "", html, flags=re.DOTALL)
+    html = re.sub(r"\s*<!-- ═══════════ Audio[^>]*-->\s*\n", "\n", html)
 
     # Insert the new audio snippet just before </div> of #root
     closing_pattern = re.compile(r'(\s+)(</div>\s*\n\s*<script>)', re.DOTALL)
