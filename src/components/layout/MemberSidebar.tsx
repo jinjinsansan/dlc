@@ -3,50 +3,187 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { PlanAccess } from "@/lib/plans";
+import { getPlanLabel } from "@/lib/plans";
 
 interface NavItem {
   href: string;
-  label: string;
+  jp: string;
+  en: string;
   accessKey?: keyof PlanAccess;
 }
 
 const navItems: NavItem[] = [
-  { href: "/members/dashboard", label: "ダッシュボード" },
-  { href: "/members/videos", label: "動画ライブラリ", accessKey: "videos" },
-  { href: "/members/materials", label: "資料ダウンロード", accessKey: "materials" },
-  { href: "/members/community", label: "コミュニティ", accessKey: "community" },
-  { href: "/members/support", label: "質問・サポート", accessKey: "support" },
-  { href: "/members/jobs", label: "受発注ボード", accessKey: "jobs" },
-  { href: "/members/mypage", label: "マイページ" },
+  { href: "/members/dashboard", jp: "ダッシュボード", en: "DASHBOARD" },
+  { href: "/members/videos", jp: "動画ライブラリ", en: "VIDEOS", accessKey: "videos" },
+  { href: "/members/materials", jp: "資料", en: "MATERIALS", accessKey: "materials" },
+  { href: "/members/community", jp: "コミュニティ", en: "COMMUNITY", accessKey: "community" },
+  { href: "/members/jobs", jp: "受発注ボード", en: "JOBS", accessKey: "jobs" },
+  { href: "/members/support", jp: "サポート", en: "SUPPORT", accessKey: "support" },
+  { href: "/members/mypage", jp: "マイページ", en: "MY PAGE" },
 ];
 
-export default function MemberSidebar({ access }: { access: PlanAccess }) {
+interface Props {
+  access: PlanAccess;
+  name: string;
+  plan: string | null;
+}
+
+export default function MemberSidebar({ access, name, plan }: Props) {
   const pathname = usePathname();
+  const initial = name.charAt(0) || "M";
+  const planLabel = getPlanLabel(plan).toUpperCase();
 
   return (
-    <aside className="w-64 shrink-0 hidden lg:block">
-      <nav className="sticky top-20 space-y-1">
-        {navItems.map((item) => {
+    <aside
+      style={{
+        background: "var(--color-bg-deep)",
+        borderRight: "1px solid var(--color-border-hair)",
+        padding: "32px 0",
+        position: "sticky",
+        top: 0,
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      {/* Brand */}
+      <div
+        style={{
+          padding: "0 32px 32px",
+          borderBottom: "1px solid var(--color-border-hair)",
+        }}
+      >
+        <Link
+          href="/"
+          className="font-serif-jp"
+          style={{ fontSize: 20, fontWeight: 700, display: "block" }}
+        >
+          AI Builders <span style={{ color: "var(--color-primary)" }}>Lab</span>
+        </Link>
+        <span
+          className="font-mono-jp"
+          style={{
+            fontSize: 10,
+            color: "var(--color-text-dim)",
+            letterSpacing: "0.18em",
+          }}
+        >
+          MEMBERS · COHORT 01
+        </span>
+      </div>
+
+      {/* Nav */}
+      <nav style={{ padding: "32px 0", flex: 1 }}>
+        {navItems.map((item, i) => {
           const allowed = !item.accessKey || access[item.accessKey];
-          const active = pathname === item.href;
-
           if (!allowed) return null;
-
+          const active = pathname === item.href;
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`block px-4 py-2.5 rounded-lg text-sm transition-colors ${
-                active
-                  ? "bg-primary/10 text-primary font-bold border-l-2 border-primary"
-                  : "text-text-muted hover:text-text-main hover:bg-surface"
-              }`}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "32px 1fr",
+                gap: 16,
+                alignItems: "center",
+                padding: "14px 32px",
+                background: active
+                  ? "linear-gradient(90deg, rgba(201,168,76,0.08), transparent)"
+                  : "transparent",
+                borderLeft: active
+                  ? "2px solid var(--color-primary)"
+                  : "2px solid transparent",
+                textDecoration: "none",
+              }}
             >
-              {item.label}
+              <span
+                className="font-serif-jp"
+                style={{
+                  fontSize: 12,
+                  color: active ? "var(--color-primary)" : "var(--color-text-dim)",
+                  fontFeatureSettings: '"tnum"',
+                }}
+              >
+                0{i + 1}
+              </span>
+              <div>
+                <div
+                  style={{
+                    fontSize: 14,
+                    color: active ? "var(--color-text)" : "var(--color-text-muted)",
+                    fontWeight: active ? 700 : 400,
+                  }}
+                >
+                  {item.jp}
+                </div>
+                <div
+                  className="font-mono-jp"
+                  style={{
+                    fontSize: 9,
+                    color: "var(--color-text-dim)",
+                    letterSpacing: "0.18em",
+                  }}
+                >
+                  {item.en}
+                </div>
+              </div>
             </Link>
           );
         })}
       </nav>
+
+      {/* User chip */}
+      <div
+        style={{
+          padding: "24px 32px",
+          borderTop: "1px solid var(--color-border-hair)",
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+        }}
+      >
+        <div
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: "50%",
+            background: "var(--color-surface)",
+            border: "1px solid var(--color-border)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "var(--color-primary)",
+            fontFamily: "var(--font-serif)",
+            fontWeight: 700,
+          }}
+        >
+          {initial}
+        </div>
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <div
+            style={{
+              fontSize: 13,
+              fontWeight: 500,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {name}
+          </div>
+          <div
+            className="font-mono-jp"
+            style={{
+              fontSize: 10,
+              color: "var(--color-text-dim)",
+              letterSpacing: "0.15em",
+            }}
+          >
+            {planLabel}
+          </div>
+        </div>
+      </div>
     </aside>
   );
 }
