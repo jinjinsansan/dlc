@@ -1,143 +1,462 @@
 "use client";
 
 import { useState } from "react";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import Card from "@/components/ui/Card";
+import Link from "next/link";
 
-const plans = [
+const PLANS = [
   {
     id: "video-only",
     name: "動画のみ",
-    price: "¥49,800",
-    description: "全講義動画アーカイブ閲覧",
+    tag: "ARCHIVE",
+    price: "49,800",
+    body: "全講義動画アーカイブ閲覧。自分のペースで学ぶ。",
+    features: ["全8週分の講義動画", "無期限視聴", "資料ダウンロード"],
   },
   {
     id: "video-email",
-    name: "動画 + メールサポート",
-    price: "¥98,000",
-    description: "動画閲覧 + 個別メール相談",
-    recommended: true,
+    name: "動画 + メール",
+    tag: "RECOMMENDED",
+    price: "98,000",
+    body: "動画 + 個別メール相談。質問は無制限。",
+    features: ["動画のみの全特典", "個別メール相談（無制限）", "質問への優先回答"],
+    featured: true,
   },
   {
     id: "zoom",
-    name: "Zoom型（1期生）",
-    price: "¥150,000",
-    description: "8週間×週1回2時間Zoom（録画あり）",
+    name: "Zoom型",
+    tag: "COHORT 01",
+    price: "150,000",
+    body: "8週間×週1回2時間のライブZoom講座。",
+    features: [
+      "動画+メールの全特典",
+      "週1回のライブZoom講座",
+      "Zoomでの直接質問",
+      "卒業後6ヶ月コミュニティ無料",
+    ],
   },
 ];
 
+function HeaderApply() {
+  return (
+    <header
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 100,
+        background: "rgba(10,10,15,0.85)",
+        backdropFilter: "blur(12px)",
+        borderBottom: "1px solid var(--color-border-hair)",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1440,
+          margin: "0 auto",
+          padding: "20px 48px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Link href="/" className="font-serif-jp" style={{ fontSize: 22, fontWeight: 700 }}>
+          AI Builders <span style={{ color: "var(--color-primary)" }}>Lab</span>
+        </Link>
+        <Link
+          href="/"
+          className="font-mono-jp"
+          style={{
+            fontSize: 11,
+            color: "var(--color-text-muted)",
+            letterSpacing: "0.18em",
+          }}
+        >
+          ← BACK TO HOME
+        </Link>
+      </div>
+    </header>
+  );
+}
+
+function Steps({ active }: { active: number }) {
+  const steps = ["プラン選択", "決済", "完了"];
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        maxWidth: 600,
+        margin: "0 auto 80px",
+        position: "relative",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          top: 16,
+          left: 30,
+          right: 30,
+          height: 1,
+          background: "var(--color-border-hair)",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          top: 16,
+          left: 30,
+          width: `${(active / 2) * 100}%`,
+          maxWidth: "calc(100% - 60px)",
+          height: 1,
+          background: "var(--color-primary)",
+          transition: "width .3s",
+        }}
+      />
+      {steps.map((s, i) => (
+        <div key={i} style={{ position: "relative", textAlign: "center", flex: 1 }}>
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              border: `1px solid ${i <= active ? "var(--color-primary)" : "var(--color-border)"}`,
+              background: i <= active ? "var(--color-primary)" : "var(--color-bg)",
+              color: i <= active ? "var(--color-bg-deep)" : "var(--color-text-dim)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto",
+              fontSize: 13,
+              fontWeight: 700,
+              fontFamily: "var(--font-serif)",
+              position: "relative",
+              zIndex: 1,
+            }}
+          >
+            {i + 1}
+          </div>
+          <div
+            className="font-mono-jp"
+            style={{
+              fontSize: 10,
+              marginTop: 12,
+              color: i <= active ? "var(--color-text)" : "var(--color-text-dim)",
+              letterSpacing: "0.15em",
+            }}
+          >
+            {s}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function ApplyPage() {
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [planId, setPlanId] = useState<string>("video-email");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const plan = PLANS.find((p) => p.id === planId) ?? PLANS[1];
+
   const handleCheckout = async () => {
-    if (!selectedPlan) return;
     setLoading(true);
     setError(null);
-
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ planId: selectedPlan }),
+        body: JSON.stringify({ planId }),
       });
-
       const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "エラーが発生しました");
-      }
-
-      if (data.url) {
-        window.location.href = data.url;
-      }
+      if (!res.ok) throw new Error(data.error || "エラーが発生しました");
+      if (data.url) window.location.href = data.url;
     } catch (err) {
       setError(err instanceof Error ? err.message : "エラーが発生しました");
-    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-bg text-text-main">
-      <Header />
-      <main className="pt-20 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto">
-          <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4">
-            <span className="text-primary">プラン</span>を選択
+    <>
+      <HeaderApply />
+      <main style={{ padding: "140px 48px 120px" }}>
+        <div style={{ maxWidth: 1080, margin: "0 auto" }}>
+          <div className="eyebrow" style={{ textAlign: "center", marginBottom: 24 }}>
+            — ENROLMENT
+          </div>
+          <h1
+            className="font-serif-jp"
+            style={{
+              fontSize: "clamp(40px, 5vw, 64px)",
+              fontWeight: 700,
+              textAlign: "center",
+              marginBottom: 80,
+              letterSpacing: "-0.01em",
+              lineHeight: 1.1,
+            }}
+          >
+            <span style={{ color: "var(--color-primary)", fontStyle: "italic" }}>申し込み</span>
+            を進める
           </h1>
-          <p className="text-text-muted text-sm sm:text-base text-center mb-8 sm:mb-12">
-            お好みのプランを選んでお申し込みください
-          </p>
 
-          <div className="space-y-3 sm:space-y-4 mb-8 sm:mb-10">
-            {plans.map((plan) => (
-              <Card
-                key={plan.id}
-                highlight={selectedPlan === plan.id}
-                className={`cursor-pointer transition-all ${
-                  selectedPlan === plan.id
-                    ? "ring-2 ring-primary"
-                    : "hover:border-primary/30"
-                }`}
+          <Steps active={0} />
+
+          {/* Plan selection */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 1,
+              background: "var(--color-border-hair)",
+              border: "1px solid var(--color-border-hair)",
+            }}
+          >
+            {PLANS.map((p) => (
+              <label
+                key={p.id}
+                style={{
+                  background:
+                    planId === p.id
+                      ? "linear-gradient(180deg, rgba(201,168,76,0.08), var(--color-bg))"
+                      : "var(--color-bg)",
+                  padding: 40,
+                  cursor: "pointer",
+                  position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
+                  outline: planId === p.id ? "1px solid var(--color-primary)" : "none",
+                  outlineOffset: -1,
+                  transition: "all .2s",
+                }}
               >
-                <label className="flex items-start sm:items-center gap-3 sm:gap-4 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="plan"
-                    value={plan.id}
-                    checked={selectedPlan === plan.id}
-                    onChange={() => setSelectedPlan(plan.id)}
-                    className="w-5 h-5 accent-[#c9a84c] mt-1 sm:mt-0 shrink-0"
+                <input
+                  type="radio"
+                  checked={planId === p.id}
+                  onChange={() => setPlanId(p.id)}
+                  style={{ position: "absolute", opacity: 0 }}
+                />
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 24 }}>
+                  <span
+                    className="font-mono-jp"
+                    style={{
+                      fontSize: 10,
+                      color: p.featured ? "var(--color-primary)" : "var(--color-text-dim)",
+                      letterSpacing: "0.2em",
+                    }}
+                  >
+                    {p.tag}
+                  </span>
+                  <span
+                    style={{
+                      width: 18,
+                      height: 18,
+                      borderRadius: "50%",
+                      border: `1px solid ${planId === p.id ? "var(--color-primary)" : "var(--color-border)"}`,
+                      background: planId === p.id ? "var(--color-primary)" : "transparent",
+                    }}
                   />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                      <h3 className="font-bold text-base sm:text-lg">{plan.name}</h3>
-                      {plan.recommended && (
-                        <span className="bg-primary/20 text-primary text-xs px-2 py-0.5 rounded-full">
-                          おすすめ
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-text-muted text-sm mt-1">
-                      {plan.description}
-                    </p>
-                  </div>
-                  <div className="font-serif text-lg sm:text-xl font-bold text-primary shrink-0">
-                    {plan.price}
-                  </div>
-                </label>
-              </Card>
+                </div>
+                <h3
+                  className="font-serif-jp"
+                  style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}
+                >
+                  {p.name}
+                </h3>
+                <p
+                  style={{
+                    fontSize: 13,
+                    color: "var(--color-text-muted)",
+                    marginBottom: 24,
+                    lineHeight: 1.7,
+                  }}
+                >
+                  {p.body}
+                </p>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 24 }}>
+                  <span className="font-serif-jp" style={{ fontSize: 12 }}>
+                    ¥
+                  </span>
+                  <span
+                    className="font-serif-jp"
+                    style={{
+                      fontSize: 44,
+                      fontWeight: 700,
+                      color: planId === p.id ? "var(--color-primary)" : "var(--color-text)",
+                      lineHeight: 1,
+                      fontFeatureSettings: '"tnum"',
+                    }}
+                  >
+                    {p.price}
+                  </span>
+                </div>
+                <ul
+                  style={{
+                    listStyle: "none",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 10,
+                    flex: 1,
+                    padding: 0,
+                    margin: 0,
+                  }}
+                >
+                  {p.features.map((f, j) => (
+                    <li
+                      key={j}
+                      style={{
+                        display: "flex",
+                        gap: 12,
+                        fontSize: 13,
+                        color: "var(--color-text-muted)",
+                      }}
+                    >
+                      <span
+                        style={{
+                          color: "var(--color-primary)",
+                          fontFamily: "var(--font-mono)",
+                          fontSize: 10,
+                        }}
+                      >
+                        —
+                      </span>
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+              </label>
             ))}
           </div>
 
-          {error && (
-            <div className="text-red-400 text-center mb-4 text-sm">
-              {error}
+          {/* Selected summary */}
+          <div
+            style={{
+              maxWidth: 560,
+              margin: "60px auto 0",
+              background: "var(--color-surface)",
+              padding: 32,
+              border: "1px solid var(--color-border-hair)",
+            }}
+          >
+            <div
+              className="font-mono-jp"
+              style={{
+                fontSize: 10,
+                color: "var(--color-text-dim)",
+                letterSpacing: "0.2em",
+                marginBottom: 12,
+              }}
+            >
+              SELECTED
             </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "baseline",
+              }}
+            >
+              <span
+                className="font-serif-jp"
+                style={{ fontSize: 22, fontWeight: 700 }}
+              >
+                {plan.name}
+              </span>
+              <span
+                className="font-serif-jp"
+                style={{
+                  fontSize: 32,
+                  fontWeight: 700,
+                  color: "var(--color-primary)",
+                }}
+              >
+                ¥{plan.price}
+              </span>
+            </div>
+          </div>
+
+          {/* Payment notice */}
+          <div
+            style={{
+              maxWidth: 560,
+              margin: "32px auto 0",
+              padding: 32,
+              border: "1px solid var(--color-border)",
+              background: "var(--color-surface)",
+              textAlign: "center",
+            }}
+          >
+            <div
+              className="font-mono-jp"
+              style={{
+                fontSize: 11,
+                color: "var(--color-text-dim)",
+                letterSpacing: "0.2em",
+                marginBottom: 12,
+              }}
+            >
+              SECURE PAYMENT BY
+            </div>
+            <div
+              className="font-serif-jp"
+              style={{
+                fontSize: 32,
+                fontWeight: 700,
+                color: "var(--color-primary)",
+                marginBottom: 16,
+              }}
+            >
+              Stripe
+            </div>
+            <p
+              style={{
+                fontSize: 13,
+                color: "var(--color-text-muted)",
+                lineHeight: 1.7,
+              }}
+            >
+              「決済に進む」を押すと Stripe の安全な決済画面に移動します。
+              <br />
+              クレジットカード情報は当サイトに保存されません。
+            </p>
+          </div>
+
+          {error && (
+            <p
+              style={{
+                color: "#ef4444",
+                textAlign: "center",
+                marginTop: 24,
+                fontSize: 14,
+              }}
+            >
+              {error}
+            </p>
           )}
 
-          <div className="text-center">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: 40,
+            }}
+          >
             <button
               onClick={handleCheckout}
-              disabled={!selectedPlan || loading}
-              className={`inline-block py-3 sm:py-4 px-10 sm:px-16 rounded-lg text-base sm:text-lg font-bold transition-colors bg-primary hover:bg-primary-light text-bg ${
-                !selectedPlan || loading
-                  ? "opacity-50 cursor-not-allowed"
-                  : ""
-              }`}
+              disabled={loading}
+              className="btn btn-primary"
+              style={{
+                opacity: loading ? 0.5 : 1,
+                padding: "22px 48px",
+                fontSize: 15,
+              }}
             >
-              {loading ? "処理中..." : "決済に進む"}
+              {loading ? "処理中..." : "決済に進む"} <span className="arrow">→</span>
             </button>
-            <p className="text-text-muted text-sm mt-4">
-              Stripeの安全な決済画面に移動します
-            </p>
           </div>
         </div>
       </main>
-      <Footer />
-    </div>
+    </>
   );
 }
