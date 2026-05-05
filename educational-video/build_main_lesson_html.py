@@ -1,251 +1,38 @@
 """
-Week 1 本編動画用の HTML composition を生成する。
+Week N 本編動画用の HTML composition を生成する (--week 引数で切替可能)。
 
-35 シーンをテンプレート化して 1 つの index.html に出力。
-各シーンは固有の data-track-index を持ち、GSAP timeline で同期。
+Usage:
+  python build_main_lesson_html.py --week 1
+  python build_main_lesson_html.py --week 2
+  ...
+
+audio/main_lesson_scenes/weekNN_data.py + weekNN_visual.py を読み、
+week0N-main/index.html を出力。
 """
 
 from __future__ import annotations
 
+import argparse
+import importlib
 import sys
 from pathlib import Path
 from typing import Callable
 
 ROOT = Path(__file__).parent
-sys.path.insert(0, str(ROOT / "audio" / "main_lesson_scenes"))
-from week01_data import WEEK01_MAIN_SCENES, TOTAL_DURATION  # type: ignore
+SCENES_DIR = ROOT / "audio" / "main_lesson_scenes"
+sys.path.insert(0, str(SCENES_DIR))
 
-OUTPUT = ROOT / "week01-main" / "index.html"
 WIDTH = 1920
 HEIGHT = 1080
 
 # トラック割当
-# 0-2: 背景 / 3: ブランドバッジ / 10〜: シーン要素 / 200〜: 音声
 SCENE_TRACK_BASE = 10
-TRACKS_PER_SCENE = 6  # 各シーン 6 トラックまで
+TRACKS_PER_SCENE = 6
 AUDIO_TRACK_BASE = 200
 
 
 # ─────────────────────────────────────────────────────────────────────────
-# シーン視覚データ (各シーンの type + 内容)
-# ─────────────────────────────────────────────────────────────────────────
-SCENE_VISUAL: dict[str, dict] = {
-    "O1": {
-        "type": "welcome",
-        "title": "ようこそ。",
-        "subtitle": "Week 1 — はじめての Claude Code",
-    },
-    "O2": {
-        "type": "promise",
-        "pretext": "30 分後、あなたの PC で。",
-        "main": "本物のアプリが、",
-        "main_accent": "動いている",
-        "post": "コードは、1 行も書かない。",
-    },
-    "1-1": {"type": "chapter", "num": "1", "title": "Claude Code って、何?"},
-    "1-2": {
-        "type": "comparison",
-        "left_label": "普通の AI",
-        "left_text": "「メモ帳の作り方を教えて」\n→ 文字で説明してくれる",
-        "left_role": "知識豊富な相談相手",
-        "right_label": "Claude Code",
-        "right_text": "「メモ帳を作って」\n→ 本当にアプリを作る",
-        "right_role": "手を動かす部下",
-        "highlight": "right",
-    },
-    "1-3": {
-        "type": "statement",
-        "main": "クロード・コードは、",
-        "main_accent": "実際に手を動かす",
-        "sub": "文章で答えるのではなく、PC の中でファイルを作り、コードを書き、アプリを動かす。",
-    },
-    "1-4": {
-        "type": "duo",
-        "left_label": "普通の AI",
-        "left_role": "= 相談相手",
-        "right_label": "Claude Code",
-        "right_role": "= 部下",
-    },
-    "1-5": {
-        "type": "iconography",
-        "header": "日本語で頼むだけで、何が作れる?",
-        "items": [
-            {"icon": "📱", "label": "アプリ"},
-            {"icon": "🌐", "label": "Web サイト"},
-            {"icon": "🤖", "label": "AI 機能"},
-            {"icon": "💳", "label": "決済機能"},
-        ],
-    },
-    "1-6": {
-        "type": "statement",
-        "main": "Claude Code = ",
-        "main_accent": "あなたの優秀な部下",
-        "sub": "日本語で頼むと、本当に動いてくれる。",
-    },
-    "2-1": {"type": "chapter", "num": "2", "title": "なぜ、今がチャンスなのか"},
-    "2-2": {
-        "type": "comparison",
-        "left_label": "10 年前",
-        "left_text": "・プログラミング言語を\n  数年学習\n・外注で数百万円",
-        "left_role": "ハードルが高すぎた",
-        "right_label": "今",
-        "right_text": "・日本語で頼むだけ\n・30 分で完成\n・誰でも作れる",
-        "right_role": "革命が起きた",
-        "highlight": "right",
-    },
-    "2-3": {
-        "type": "big_statement",
-        "main": "革命",
-        "sub": "日本語 ・ 30 分 ・ 無料 ・ 誰でも",
-    },
-    "2-4": {
-        "type": "stats",
-        "big": "99 %",
-        "label": "の人は、まだ気づいていない。",
-        "footer": "気づいた人から、圧倒的な差がつく。",
-    },
-    "3-1": {"type": "chapter", "num": "3", "title": "PC にインストールしよう"},
-    "3-2": {
-        "type": "terminal",
-        "label": "Mac の方",
-        "lines": [
-            "1. ⌘ + Space",
-            "2. 「ターミナル」と打つ",
-            "3. Enter",
-        ],
-        "footer": "黒い画面が開いたら成功",
-    },
-    "3-3": {
-        "type": "terminal",
-        "label": "Windows の方",
-        "lines": [
-            "1. Windows キー",
-            "2. 「PowerShell」と打つ",
-            "3. Enter",
-        ],
-        "footer": "青い画面が開いたら成功",
-    },
-    "3-3b": {
-        "type": "terminal_cmd",
-        "label": "インストールコマンド",
-        "command": "npm install -g @anthropic-ai/claude-code",
-        "footer": "コピー & ペースト → Enter",
-    },
-    "3-4": {
-        "type": "terminal_cmd",
-        "label": "起動",
-        "command": "claude\n>",
-        "footer": "矢印 (>) が出たら成功 ✨",
-    },
-    "3-5": {
-        "type": "checklist",
-        "header": "うまくいかなかったら",
-        "items": [
-            "ターミナルを再起動",
-            "コミュニティに投稿",
-            "30 分以内に必ず解決",
-        ],
-        "footer": "1 人で抱え込まない、これが鉄則",
-    },
-    "4-1": {"type": "chapter", "num": "4", "title": "最初の一言を、話しかけてみよう"},
-    "4-2": {
-        "type": "terminal_cmd",
-        "label": "最初の挨拶",
-        "command": "> こんにちは\n\n✓ こんにちは!\n  お手伝いできることはありますか?",
-        "footer": "AI が返事をくれた = 接続成功",
-    },
-    "4-3": {
-        "type": "terminal_cmd",
-        "label": "ファイルを作ってもらう",
-        "command": "> このフォルダに hello.txt を作って\n\n✓ 作成: hello.txt",
-        "footer": "本当にファイルが PC の中に生まれる",
-    },
-    "4-4": {
-        "type": "big_statement",
-        "main": "動いた。",
-        "sub": "あなたの世界は、今、変わり始めた。",
-    },
-    "5-1": {"type": "chapter", "num": "5", "title": "メモ帳アプリを、作ってもらおう"},
-    "5-2": {
-        "type": "terminal_cmd",
-        "label": "フォルダ移動 + 起動",
-        "command": "$ cd ~/my-apps\n$ claude\n>",
-        "footer": "作業フォルダに入って、Claude Code 起動",
-    },
-    "5-3": {
-        "type": "terminal_cmd",
-        "label": "一言で完成",
-        "command": "> シンプルなメモ帳アプリを作って。\n  白い背景で、文字が自動保存されるやつ。\n\n✓ index.html\n✓ style.css\n✓ app.js",
-        "footer": "Claude Code が必要なファイルを自動生成",
-    },
-    "5-4": {
-        "type": "statement",
-        "main": "ダブルクリック → ",
-        "main_accent": "ブラウザで動く",
-        "sub": "文字を打って、閉じて、もう一度開いても、書いた内容が残っている。",
-    },
-    "5-5": {
-        "type": "big_statement",
-        "main": "あなたは、作れる人になった。",
-        "sub": "おめでとう。",
-    },
-    "6-1": {"type": "chapter", "num": "6", "title": "上手に頼む 5 つのコツ"},
-    "6-2": {
-        "type": "tip",
-        "num": "1",
-        "tip": "具体的に",
-        "bad": "「メモ帳作って」",
-        "good": "「白背景、文字保存つきメモ帳」",
-    },
-    "6-3": {
-        "type": "tip",
-        "num": "2",
-        "tip": "一度に 1 つだけ",
-        "bad": "5 個同時にお願い",
-        "good": "1 個ずつ完成 → 次へ",
-    },
-    "6-4": {
-        "type": "tip",
-        "num": "3",
-        "tip": "例を見せる",
-        "bad": "「いい感じに」",
-        "good": "「Notion みたいに」",
-    },
-    "6-5": {
-        "type": "tip",
-        "num": "4",
-        "tip": "ここを → こうして",
-        "bad": "「なんか違う」",
-        "good": "「タイトル色を黒に」",
-    },
-    "6-6": {
-        "type": "tip",
-        "num": "5",
-        "tip": "褒めてから直す",
-        "bad": "「ダメ、直して」",
-        "good": "「最高!1 点だけ…」",
-    },
-    "7-1": {
-        "type": "checklist",
-        "header": "今週の宿題",
-        "items": [
-            "好きなアプリを 3 つ作る",
-            "スクリーンショットを撮る",
-            "コミュニティに投稿",
-        ],
-        "footer": "電卓・占い・ゲーム、何でも OK",
-    },
-    "7-2": {
-        "type": "closing",
-        "main": "Week 2 で、",
-        "main_accent": "また会いましょう",
-        "sub": "あなたは、もう作れる人です。",
-    },
-}
-
-
-# ─────────────────────────────────────────────────────────────────────────
-# CSS (全シーンで使うスタイル)
+# CSS (全テンプレート共通)
 # ─────────────────────────────────────────────────────────────────────────
 CSS = """
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -308,14 +95,11 @@ html, body {
   color: #e8c96a; letter-spacing: 0.08em;
 }
 
-/* ── Scene container (full screen, centered) ── */
-/* 親 .clip には auto サイズなので、.scene を viewport (1920x1080) に直接固定する */
+/* ── Scene container (full-viewport, centered) ── */
 .scene {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 1920px;
-  height: 1080px;
+  top: 0; left: 0;
+  width: 1920px; height: 1080px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -449,7 +233,7 @@ html, body {
   background: linear-gradient(90deg, transparent, #c9a84c, transparent);
 }
 
-/* ── Comparison (left vs right) ── */
+/* ── Comparison ── */
 .comparison-container {
   display: flex;
   gap: 60px;
@@ -479,9 +263,7 @@ html, body {
   color: #c9c9d8;
   margin-bottom: 30px;
 }
-.comparison-card.highlight .comparison-label {
-  color: #e8c96a;
-}
+.comparison-card.highlight .comparison-label { color: #e8c96a; }
 .comparison-text {
   font-family: "Noto Sans JP", sans-serif;
   font-weight: 500;
@@ -502,13 +284,8 @@ html, body {
   width: 100%;
 }
 
-/* ── Duo (small left/right comparison) ── */
-.duo-container {
-  display: flex;
-  gap: 80px;
-  align-items: center;
-  justify-content: center;
-}
+/* ── Duo ── */
+.duo-container { display: flex; gap: 80px; align-items: center; justify-content: center; }
 .duo-side { text-align: center; }
 .duo-label {
   font-family: "Noto Serif JP", serif;
@@ -524,12 +301,11 @@ html, body {
   color: #c9a84c;
 }
 .duo-divider {
-  width: 4px;
-  height: 200px;
+  width: 4px; height: 200px;
   background: linear-gradient(180deg, transparent, #c9a84c, transparent);
 }
 
-/* ── Iconography (4 items) ── */
+/* ── Iconography ── */
 .icon-header {
   font-family: "Noto Serif JP", serif;
   font-weight: 700;
@@ -545,18 +321,13 @@ html, body {
   width: 100%;
 }
 .icon-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: flex; flex-direction: column; align-items: center;
   padding: 40px;
   background: rgba(18, 18, 30, 0.8);
   border: 1px solid rgba(201, 168, 76, 0.3);
   border-radius: 24px;
 }
-.icon-emoji {
-  font-size: 120px;
-  margin-bottom: 20px;
-}
+.icon-emoji { font-size: 120px; margin-bottom: 20px; }
 .icon-label {
   font-family: "Noto Serif JP", serif;
   font-weight: 700;
@@ -610,9 +381,7 @@ html, body {
   box-shadow: 0 0 40px rgba(201, 168, 76, 0.2);
 }
 .terminal-window .header {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 30px;
+  display: flex; gap: 8px; margin-bottom: 30px;
 }
 .terminal-window .header span {
   width: 14px; height: 14px; border-radius: 50%;
@@ -649,16 +418,13 @@ html, body {
   margin-bottom: 50px;
 }
 .checklist-items {
-  display: flex;
-  flex-direction: column;
+  display: flex; flex-direction: column;
   gap: 24px;
   width: 100%;
   max-width: 1100px;
 }
 .checklist-item {
-  display: flex;
-  align-items: center;
-  gap: 30px;
+  display: flex; align-items: center; gap: 30px;
   padding: 30px 40px;
   background: rgba(18, 18, 30, 0.85);
   border: 1px solid rgba(201, 168, 76, 0.4);
@@ -705,11 +471,8 @@ html, body {
   margin: 20px 0 60px;
 }
 .tip-examples {
-  display: flex;
-  gap: 50px;
-  align-items: stretch;
-  width: 100%;
-  max-width: 1400px;
+  display: flex; gap: 50px; align-items: stretch;
+  width: 100%; max-width: 1400px;
 }
 .tip-example {
   flex: 1;
@@ -734,24 +497,6 @@ html, body {
   font-size: 32px;
   color: #f0f0f0;
 }
-
-/* ── Chapter pill (top center small label always visible during chapter) ── */
-.chapter-pill {
-  position: absolute;
-  top: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 12px 32px;
-  background: rgba(201, 168, 76, 0.1);
-  border: 1px solid rgba(201, 168, 76, 0.4);
-  border-radius: 999px;
-  font-family: "Noto Sans JP", sans-serif;
-  font-weight: 500;
-  font-size: 22px;
-  color: #e8c96a;
-  letter-spacing: 0.3em;
-  z-index: 90;
-}
 """
 
 
@@ -760,255 +505,219 @@ html, body {
 # ─────────────────────────────────────────────────────────────────────────
 
 def el(scene_id: str, sub: str, track: int, start: float, duration: float, content: str, classes: str = "") -> str:
-    """1 つの timeline 要素を生成"""
+    safe_id = scene_id.replace("-", "_")
     return (
-        f'<div class="clip {classes}" id="s-{scene_id}-{sub}" '
+        f'<div class="clip {classes}" id="s-{safe_id}-{sub}" '
         f'data-start="{start}" data-duration="{duration}" data-track-index="{track}">'
         f'{content}</div>'
     )
 
 
-def render_welcome(s_id: str, start: float, dur: float, data: dict, track_base: int) -> tuple[str, str]:
+def _id(scene_id: str) -> str:
+    return scene_id.replace("-", "_")
+
+
+def render_welcome(s_id, start, dur, data, track_base):
+    sid = _id(s_id)
     html = el(s_id, "scene", track_base, start, dur,
-        f'<div class="scene">'
-        f'  <div class="welcome-title serif">{data["title"]}</div>'
-        f'  <div class="welcome-subtitle">{data["subtitle"]}</div>'
-        f'</div>',
-    )
+        f'<div class="scene"><div class="welcome-title serif">{data["title"]}</div>'
+        f'<div class="welcome-subtitle">{data["subtitle"]}</div></div>')
     tl = (
-        f'tl.fromTo("#s-{s_id}-scene", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.8, ease: "power2.out" }}, {start});\n'
-        f'tl.to("#s-{s_id}-scene", {{ opacity: 0, duration: 0.8, ease: "power2.in" }}, {start + dur - 0.8});\n'
+        f'tl.fromTo("#s-{sid}-scene", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.8, ease: "power2.out" }}, {start});\n'
+        f'tl.to("#s-{sid}-scene", {{ opacity: 0, duration: 0.8, ease: "power2.in" }}, {start + dur - 0.8});\n'
     )
     return html, tl
 
 
-def render_promise(s_id: str, start: float, dur: float, data: dict, track_base: int) -> tuple[str, str]:
+def render_promise(s_id, start, dur, data, track_base):
+    sid = _id(s_id)
     html = el(s_id, "scene", track_base, start, dur,
-        f'<div class="scene">'
-        f'  <div class="promise-pretext">{data["pretext"]}</div>'
-        f'  <div class="promise-main">{data["main"]}<span class="accent">{data["main_accent"]}</span>。</div>'
-        f'  <div class="promise-post">{data["post"]}</div>'
-        f'</div>',
-    )
+        f'<div class="scene"><div class="promise-pretext">{data["pretext"]}</div>'
+        f'<div class="promise-main">{data["main"]}<span class="accent">{data["main_accent"]}</span>。</div>'
+        f'<div class="promise-post">{data["post"]}</div></div>')
     tl = (
-        f'tl.fromTo("#s-{s_id}-scene", {{ opacity: 0, scale: 0.95 }}, {{ opacity: 1, scale: 1, duration: 1.0, ease: "power2.out" }}, {start});\n'
-        f'tl.to("#s-{s_id}-scene", {{ opacity: 0, duration: 0.8, ease: "power2.in" }}, {start + dur - 0.8});\n'
+        f'tl.fromTo("#s-{sid}-scene", {{ opacity: 0, scale: 0.95 }}, {{ opacity: 1, scale: 1, duration: 1.0, ease: "power2.out" }}, {start});\n'
+        f'tl.to("#s-{sid}-scene", {{ opacity: 0, duration: 0.8, ease: "power2.in" }}, {start + dur - 0.8});\n'
     )
     return html, tl
 
 
-def render_chapter(s_id: str, start: float, dur: float, data: dict, track_base: int) -> tuple[str, str]:
+def render_chapter(s_id, start, dur, data, track_base):
+    sid = _id(s_id)
     html = el(s_id, "scene", track_base, start, dur,
-        f'<div class="scene">'
-        f'  <div class="chapter-num">CHAPTER {data["num"]}</div>'
-        f'  <div class="chapter-num-big serif">{data["num"]}</div>'
-        f'  <div class="chapter-title">{data["title"]}</div>'
-        f'  <div class="chapter-divider"></div>'
-        f'</div>',
-    )
+        f'<div class="scene"><div class="chapter-num">CHAPTER {data["num"]}</div>'
+        f'<div class="chapter-num-big serif">{data["num"]}</div>'
+        f'<div class="chapter-title">{data["title"]}</div>'
+        f'<div class="chapter-divider"></div></div>')
     tl = (
-        f'tl.fromTo("#s-{s_id}-scene", {{ opacity: 0, y: 30 }}, {{ opacity: 1, y: 0, duration: 0.9, ease: "back.out(1.4)" }}, {start});\n'
-        f'tl.to("#s-{s_id}-scene", {{ opacity: 0, y: -20, duration: 0.7, ease: "power2.in" }}, {start + dur - 0.7});\n'
+        f'tl.fromTo("#s-{sid}-scene", {{ opacity: 0, y: 30 }}, {{ opacity: 1, y: 0, duration: 0.9, ease: "back.out(1.4)" }}, {start});\n'
+        f'tl.to("#s-{sid}-scene", {{ opacity: 0, y: -20, duration: 0.7, ease: "power2.in" }}, {start + dur - 0.7});\n'
     )
     return html, tl
 
 
-def render_comparison(s_id: str, start: float, dur: float, data: dict, track_base: int) -> tuple[str, str]:
+def render_comparison(s_id, start, dur, data, track_base):
+    sid = _id(s_id)
     left_h = "highlight" if data.get("highlight") == "left" else ""
     right_h = "highlight" if data.get("highlight") == "right" else ""
     html = el(s_id, "scene", track_base, start, dur,
-        f'<div class="scene">'
-        f'  <div class="comparison-container">'
-        f'    <div class="comparison-card {left_h}">'
-        f'      <div class="comparison-label">{data["left_label"]}</div>'
-        f'      <div class="comparison-text">{data["left_text"]}</div>'
-        f'      <div class="comparison-role">{data["left_role"]}</div>'
-        f'    </div>'
-        f'    <div class="comparison-card {right_h}">'
-        f'      <div class="comparison-label">{data["right_label"]}</div>'
-        f'      <div class="comparison-text">{data["right_text"]}</div>'
-        f'      <div class="comparison-role">{data["right_role"]}</div>'
-        f'    </div>'
-        f'  </div>'
-        f'</div>',
-    )
+        f'<div class="scene"><div class="comparison-container">'
+        f'<div class="comparison-card {left_h}"><div class="comparison-label">{data["left_label"]}</div>'
+        f'<div class="comparison-text">{data["left_text"]}</div>'
+        f'<div class="comparison-role">{data["left_role"]}</div></div>'
+        f'<div class="comparison-card {right_h}"><div class="comparison-label">{data["right_label"]}</div>'
+        f'<div class="comparison-text">{data["right_text"]}</div>'
+        f'<div class="comparison-role">{data["right_role"]}</div></div>'
+        f'</div></div>')
     tl = (
-        f'tl.fromTo("#s-{s_id}-scene", {{ opacity: 0, y: 20 }}, {{ opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }}, {start});\n'
-        f'tl.to("#s-{s_id}-scene", {{ opacity: 0, y: -15, duration: 0.6, ease: "power2.in" }}, {start + dur - 0.6});\n'
+        f'tl.fromTo("#s-{sid}-scene", {{ opacity: 0, y: 20 }}, {{ opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }}, {start});\n'
+        f'tl.to("#s-{sid}-scene", {{ opacity: 0, y: -15, duration: 0.6, ease: "power2.in" }}, {start + dur - 0.6});\n'
     )
     return html, tl
 
 
-def render_statement(s_id: str, start: float, dur: float, data: dict, track_base: int) -> tuple[str, str]:
+def render_statement(s_id, start, dur, data, track_base):
+    sid = _id(s_id)
     accent_html = f'<span class="accent">{data["main_accent"]}</span>' if data.get("main_accent") else ""
     html = el(s_id, "scene", track_base, start, dur,
-        f'<div class="scene">'
-        f'  <div class="statement-main">{data["main"]}{accent_html}</div>'
-        f'  <div class="statement-sub">{data.get("sub", "")}</div>'
-        f'</div>',
-    )
+        f'<div class="scene"><div class="statement-main">{data["main"]}{accent_html}</div>'
+        f'<div class="statement-sub">{data.get("sub", "")}</div></div>')
     tl = (
-        f'tl.fromTo("#s-{s_id}-scene", {{ opacity: 0, scale: 0.95 }}, {{ opacity: 1, scale: 1, duration: 0.9, ease: "back.out(1.3)" }}, {start});\n'
-        f'tl.to("#s-{s_id}-scene", {{ opacity: 0, duration: 0.7, ease: "power2.in" }}, {start + dur - 0.7});\n'
+        f'tl.fromTo("#s-{sid}-scene", {{ opacity: 0, scale: 0.95 }}, {{ opacity: 1, scale: 1, duration: 0.9, ease: "back.out(1.3)" }}, {start});\n'
+        f'tl.to("#s-{sid}-scene", {{ opacity: 0, duration: 0.7, ease: "power2.in" }}, {start + dur - 0.7});\n'
     )
     return html, tl
 
 
-def render_big_statement(s_id: str, start: float, dur: float, data: dict, track_base: int) -> tuple[str, str]:
+def render_big_statement(s_id, start, dur, data, track_base):
+    sid = _id(s_id)
     html = el(s_id, "scene", track_base, start, dur,
-        f'<div class="scene">'
-        f'  <div class="big-statement-main serif">{data["main"]}</div>'
-        f'  <div class="big-statement-sub">{data.get("sub", "")}</div>'
-        f'</div>',
-    )
+        f'<div class="scene"><div class="big-statement-main serif">{data["main"]}</div>'
+        f'<div class="big-statement-sub">{data.get("sub", "")}</div></div>')
     tl = (
-        f'tl.fromTo("#s-{s_id}-scene", {{ opacity: 0, scale: 0.5 }}, {{ opacity: 1, scale: 1, duration: 1.2, ease: "back.out(1.6)" }}, {start});\n'
-        f'tl.to("#s-{s_id}-scene", {{ opacity: 0, duration: 0.8, ease: "power2.in" }}, {start + dur - 0.8});\n'
+        f'tl.fromTo("#s-{sid}-scene", {{ opacity: 0, scale: 0.5 }}, {{ opacity: 1, scale: 1, duration: 1.2, ease: "back.out(1.6)" }}, {start});\n'
+        f'tl.to("#s-{sid}-scene", {{ opacity: 0, duration: 0.8, ease: "power2.in" }}, {start + dur - 0.8});\n'
     )
     return html, tl
 
 
-def render_duo(s_id: str, start: float, dur: float, data: dict, track_base: int) -> tuple[str, str]:
+def render_duo(s_id, start, dur, data, track_base):
+    sid = _id(s_id)
     html = el(s_id, "scene", track_base, start, dur,
-        f'<div class="scene">'
-        f'  <div class="duo-container">'
-        f'    <div class="duo-side">'
-        f'      <div class="duo-label">{data["left_label"]}</div>'
-        f'      <div class="duo-role">{data["left_role"]}</div>'
-        f'    </div>'
-        f'    <div class="duo-divider"></div>'
-        f'    <div class="duo-side">'
-        f'      <div class="duo-label">{data["right_label"]}</div>'
-        f'      <div class="duo-role">{data["right_role"]}</div>'
-        f'    </div>'
-        f'  </div>'
-        f'</div>',
-    )
+        f'<div class="scene"><div class="duo-container">'
+        f'<div class="duo-side"><div class="duo-label">{data["left_label"]}</div>'
+        f'<div class="duo-role">{data["left_role"]}</div></div>'
+        f'<div class="duo-divider"></div>'
+        f'<div class="duo-side"><div class="duo-label">{data["right_label"]}</div>'
+        f'<div class="duo-role">{data["right_role"]}</div></div>'
+        f'</div></div>')
     tl = (
-        f'tl.fromTo("#s-{s_id}-scene", {{ opacity: 0, y: 20 }}, {{ opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }}, {start});\n'
-        f'tl.to("#s-{s_id}-scene", {{ opacity: 0, duration: 0.6, ease: "power2.in" }}, {start + dur - 0.6});\n'
+        f'tl.fromTo("#s-{sid}-scene", {{ opacity: 0, y: 20 }}, {{ opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }}, {start});\n'
+        f'tl.to("#s-{sid}-scene", {{ opacity: 0, duration: 0.6, ease: "power2.in" }}, {start + dur - 0.6});\n'
     )
     return html, tl
 
 
-def render_iconography(s_id: str, start: float, dur: float, data: dict, track_base: int) -> tuple[str, str]:
+def render_iconography(s_id, start, dur, data, track_base):
+    sid = _id(s_id)
     items_html = "".join(
         f'<div class="icon-item"><div class="icon-emoji">{i["icon"]}</div><div class="icon-label">{i["label"]}</div></div>'
         for i in data["items"]
     )
     html = el(s_id, "scene", track_base, start, dur,
-        f'<div class="scene">'
-        f'  <div class="icon-header serif">{data["header"]}</div>'
-        f'  <div class="icon-grid">{items_html}</div>'
-        f'</div>',
-    )
+        f'<div class="scene"><div class="icon-header serif">{data["header"]}</div>'
+        f'<div class="icon-grid">{items_html}</div></div>')
     tl = (
-        f'tl.fromTo("#s-{s_id}-scene", {{ opacity: 0, y: 20 }}, {{ opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }}, {start});\n'
-        f'tl.to("#s-{s_id}-scene", {{ opacity: 0, duration: 0.6, ease: "power2.in" }}, {start + dur - 0.6});\n'
+        f'tl.fromTo("#s-{sid}-scene", {{ opacity: 0, y: 20 }}, {{ opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }}, {start});\n'
+        f'tl.to("#s-{sid}-scene", {{ opacity: 0, duration: 0.6, ease: "power2.in" }}, {start + dur - 0.6});\n'
     )
     return html, tl
 
 
-def render_stats(s_id: str, start: float, dur: float, data: dict, track_base: int) -> tuple[str, str]:
+def render_stats(s_id, start, dur, data, track_base):
+    sid = _id(s_id)
     html = el(s_id, "scene", track_base, start, dur,
-        f'<div class="scene">'
-        f'  <div class="stats-big serif">{data["big"]}</div>'
-        f'  <div class="stats-label">{data["label"]}</div>'
-        f'  <div class="stats-footer">{data["footer"]}</div>'
-        f'</div>',
-    )
+        f'<div class="scene"><div class="stats-big serif">{data["big"]}</div>'
+        f'<div class="stats-label">{data["label"]}</div>'
+        f'<div class="stats-footer">{data["footer"]}</div></div>')
     tl = (
-        f'tl.fromTo("#s-{s_id}-scene", {{ opacity: 0, scale: 0.6 }}, {{ opacity: 1, scale: 1, duration: 1.2, ease: "back.out(1.5)" }}, {start});\n'
-        f'tl.to("#s-{s_id}-scene", {{ opacity: 0, duration: 0.8, ease: "power2.in" }}, {start + dur - 0.8});\n'
+        f'tl.fromTo("#s-{sid}-scene", {{ opacity: 0, scale: 0.6 }}, {{ opacity: 1, scale: 1, duration: 1.2, ease: "back.out(1.5)" }}, {start});\n'
+        f'tl.to("#s-{sid}-scene", {{ opacity: 0, duration: 0.8, ease: "power2.in" }}, {start + dur - 0.8});\n'
     )
     return html, tl
 
 
-def render_terminal(s_id: str, start: float, dur: float, data: dict, track_base: int) -> tuple[str, str]:
+def render_terminal(s_id, start, dur, data, track_base):
+    sid = _id(s_id)
     lines = "\n".join(data["lines"])
     html = el(s_id, "scene", track_base, start, dur,
-        f'<div class="scene">'
-        f'  <div class="terminal-label">{data["label"]}</div>'
-        f'  <div class="terminal-window">'
-        f'    <div class="header"><span></span><span></span><span></span></div>'
-        f'    <div class="terminal-content">{lines}</div>'
-        f'  </div>'
-        f'  <div class="terminal-footer">{data["footer"]}</div>'
-        f'</div>',
-    )
+        f'<div class="scene"><div class="terminal-label">{data["label"]}</div>'
+        f'<div class="terminal-window"><div class="header"><span></span><span></span><span></span></div>'
+        f'<div class="terminal-content">{lines}</div></div>'
+        f'<div class="terminal-footer">{data["footer"]}</div></div>')
     tl = (
-        f'tl.fromTo("#s-{s_id}-scene", {{ opacity: 0, y: 30 }}, {{ opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }}, {start});\n'
-        f'tl.to("#s-{s_id}-scene", {{ opacity: 0, duration: 0.6, ease: "power2.in" }}, {start + dur - 0.6});\n'
+        f'tl.fromTo("#s-{sid}-scene", {{ opacity: 0, y: 30 }}, {{ opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }}, {start});\n'
+        f'tl.to("#s-{sid}-scene", {{ opacity: 0, duration: 0.6, ease: "power2.in" }}, {start + dur - 0.6});\n'
     )
     return html, tl
 
 
-def render_terminal_cmd(s_id: str, start: float, dur: float, data: dict, track_base: int) -> tuple[str, str]:
+def render_terminal_cmd(s_id, start, dur, data, track_base):
+    sid = _id(s_id)
     html = el(s_id, "scene", track_base, start, dur,
-        f'<div class="scene">'
-        f'  <div class="terminal-label">{data["label"]}</div>'
-        f'  <div class="terminal-window">'
-        f'    <div class="header"><span></span><span></span><span></span></div>'
-        f'    <div class="terminal-content">{data["command"]}</div>'
-        f'  </div>'
-        f'  <div class="terminal-footer">{data["footer"]}</div>'
-        f'</div>',
-    )
+        f'<div class="scene"><div class="terminal-label">{data["label"]}</div>'
+        f'<div class="terminal-window"><div class="header"><span></span><span></span><span></span></div>'
+        f'<div class="terminal-content">{data["command"]}</div></div>'
+        f'<div class="terminal-footer">{data["footer"]}</div></div>')
     tl = (
-        f'tl.fromTo("#s-{s_id}-scene", {{ opacity: 0, y: 30 }}, {{ opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }}, {start});\n'
-        f'tl.to("#s-{s_id}-scene", {{ opacity: 0, duration: 0.6, ease: "power2.in" }}, {start + dur - 0.6});\n'
+        f'tl.fromTo("#s-{sid}-scene", {{ opacity: 0, y: 30 }}, {{ opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }}, {start});\n'
+        f'tl.to("#s-{sid}-scene", {{ opacity: 0, duration: 0.6, ease: "power2.in" }}, {start + dur - 0.6});\n'
     )
     return html, tl
 
 
-def render_checklist(s_id: str, start: float, dur: float, data: dict, track_base: int) -> tuple[str, str]:
+def render_checklist(s_id, start, dur, data, track_base):
+    sid = _id(s_id)
     items_html = "".join(
         f'<div class="checklist-item"><div class="checklist-checkbox"></div><div class="checklist-text">{item}</div></div>'
         for item in data["items"]
     )
     html = el(s_id, "scene", track_base, start, dur,
-        f'<div class="scene">'
-        f'  <div class="checklist-header serif">{data["header"]}</div>'
-        f'  <div class="checklist-items">{items_html}</div>'
-        f'  <div class="checklist-footer">{data["footer"]}</div>'
-        f'</div>',
-    )
+        f'<div class="scene"><div class="checklist-header serif">{data["header"]}</div>'
+        f'<div class="checklist-items">{items_html}</div>'
+        f'<div class="checklist-footer">{data["footer"]}</div></div>')
     tl = (
-        f'tl.fromTo("#s-{s_id}-scene", {{ opacity: 0, y: 20 }}, {{ opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }}, {start});\n'
-        f'tl.to("#s-{s_id}-scene", {{ opacity: 0, duration: 0.6, ease: "power2.in" }}, {start + dur - 0.6});\n'
+        f'tl.fromTo("#s-{sid}-scene", {{ opacity: 0, y: 20 }}, {{ opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }}, {start});\n'
+        f'tl.to("#s-{sid}-scene", {{ opacity: 0, duration: 0.6, ease: "power2.in" }}, {start + dur - 0.6});\n'
     )
     return html, tl
 
 
-def render_tip(s_id: str, start: float, dur: float, data: dict, track_base: int) -> tuple[str, str]:
+def render_tip(s_id, start, dur, data, track_base):
+    sid = _id(s_id)
     html = el(s_id, "scene", track_base, start, dur,
-        f'<div class="scene">'
-        f'  <div class="tip-num serif">{data["num"]}</div>'
-        f'  <div class="tip-text serif">{data["tip"]}</div>'
-        f'  <div class="tip-examples">'
-        f'    <div class="tip-example bad"><div class="tip-mark">✗</div><div class="tip-example-text">{data["bad"]}</div></div>'
-        f'    <div class="tip-example good"><div class="tip-mark">✓</div><div class="tip-example-text">{data["good"]}</div></div>'
-        f'  </div>'
-        f'</div>',
-    )
+        f'<div class="scene"><div class="tip-num serif">{data["num"]}</div>'
+        f'<div class="tip-text serif">{data["tip"]}</div>'
+        f'<div class="tip-examples">'
+        f'<div class="tip-example bad"><div class="tip-mark">✗</div><div class="tip-example-text">{data["bad"]}</div></div>'
+        f'<div class="tip-example good"><div class="tip-mark">✓</div><div class="tip-example-text">{data["good"]}</div></div>'
+        f'</div></div>')
     tl = (
-        f'tl.fromTo("#s-{s_id}-scene", {{ opacity: 0, scale: 0.92 }}, {{ opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.4)" }}, {start});\n'
-        f'tl.to("#s-{s_id}-scene", {{ opacity: 0, duration: 0.5, ease: "power2.in" }}, {start + dur - 0.5});\n'
+        f'tl.fromTo("#s-{sid}-scene", {{ opacity: 0, scale: 0.92 }}, {{ opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.4)" }}, {start});\n'
+        f'tl.to("#s-{sid}-scene", {{ opacity: 0, duration: 0.5, ease: "power2.in" }}, {start + dur - 0.5});\n'
     )
     return html, tl
 
 
-def render_closing(s_id: str, start: float, dur: float, data: dict, track_base: int) -> tuple[str, str]:
+def render_closing(s_id, start, dur, data, track_base):
+    sid = _id(s_id)
     accent_html = f'<span class="accent">{data["main_accent"]}</span>' if data.get("main_accent") else ""
     html = el(s_id, "scene", track_base, start, dur,
-        f'<div class="scene">'
-        f'  <div class="statement-main">{data["main"]}{accent_html}</div>'
-        f'  <div class="statement-sub">{data.get("sub", "")}</div>'
-        f'</div>',
-    )
+        f'<div class="scene"><div class="statement-main">{data["main"]}{accent_html}</div>'
+        f'<div class="statement-sub">{data.get("sub", "")}</div></div>')
     tl = (
-        f'tl.fromTo("#s-{s_id}-scene", {{ opacity: 0 }}, {{ opacity: 1, duration: 1.2, ease: "power2.out" }}, {start});\n'
-        f'tl.to("#s-{s_id}-scene", {{ opacity: 0, duration: 1.5, ease: "power2.in" }}, {start + dur - 1.5});\n'
+        f'tl.fromTo("#s-{sid}-scene", {{ opacity: 0 }}, {{ opacity: 1, duration: 1.2, ease: "power2.out" }}, {start});\n'
+        f'tl.to("#s-{sid}-scene", {{ opacity: 0, duration: 1.5, ease: "power2.in" }}, {start + dur - 1.5});\n'
     )
     return html, tl
 
@@ -1032,20 +741,33 @@ RENDERERS: dict[str, Callable] = {
 
 
 # ─────────────────────────────────────────────────────────────────────────
-# メイン: HTML 全体を組み立て
+# 動的読み込み
 # ─────────────────────────────────────────────────────────────────────────
 
-def build() -> str:
+def load_week(week_num: int) -> tuple[list, dict, float]:
+    """指定 week のデータをロード"""
+    data_module = importlib.import_module(f"week{week_num:02d}_data")
+    visual_module = importlib.import_module(f"week{week_num:02d}_visual")
+
+    var_name = f"WEEK{week_num:02d}_MAIN_SCENES"
+    scenes = getattr(data_module, var_name)
+    visual = getattr(visual_module, "SCENE_VISUAL")
+    total = getattr(data_module, "TOTAL_DURATION", 600.0)
+    return scenes, visual, total
+
+
+def build(week_num: int) -> str:
+    scenes, visual_data, total_duration = load_week(week_num)
+
     scene_html_parts: list[str] = []
     timeline_parts: list[str] = []
     audio_html_parts: list[str] = []
 
-    for i, (scene_id, start, max_dur, _text) in enumerate(WEEK01_MAIN_SCENES):
-        visual = SCENE_VISUAL.get(scene_id)
+    for i, (scene_id, start, max_dur, _text) in enumerate(scenes):
+        visual = visual_data.get(scene_id)
         if not visual:
             print(f"WARN: no visual data for scene {scene_id}")
             continue
-
         renderer = RENDERERS.get(visual["type"])
         if not renderer:
             print(f"WARN: no renderer for type {visual['type']}")
@@ -1056,12 +778,10 @@ def build() -> str:
         scene_html_parts.append(html)
         timeline_parts.append(tl)
 
-        # オーディオタグ
-        audio_path = f"assets/main_lesson_scenes/week01_{scene_id.replace('-', '_')}.wav"
+        audio_path = f"assets/main_lesson_scenes/week{week_num:02d}_{scene_id.replace('-', '_')}.wav"
         audio_track = AUDIO_TRACK_BASE + i
-        # data-duration はシーン尺と同じにする (音声が短ければ自然と終わる)
         audio_html_parts.append(
-            f'<audio class="clip" id="a-{scene_id}" '
+            f'<audio class="clip" id="a-{scene_id.replace("-", "_")}" '
             f'data-start="{start}" data-duration="{max_dur}" data-track-index="{audio_track}" '
             f'data-volume="1.0" src="{audio_path}"></audio>'
         )
@@ -1082,23 +802,19 @@ def build() -> str:
     <style>{CSS}</style>
   </head>
   <body>
-    <div id="root" data-composition-id="main" data-start="0" data-duration="{TOTAL_DURATION}" data-width="{WIDTH}" data-height="{HEIGHT}">
+    <div id="root" data-composition-id="main" data-start="0" data-duration="{total_duration}" data-width="{WIDTH}" data-height="{HEIGHT}">
 
-      <!-- Background (always visible) -->
-      <div class="clip bg-base" id="bg-base" data-start="0" data-duration="{TOTAL_DURATION}" data-track-index="0"></div>
-      <div class="clip bg-glow" id="bg-glow" data-start="0" data-duration="{TOTAL_DURATION}" data-track-index="1"></div>
-      <div class="clip bg-vignette" id="bg-vignette" data-start="0" data-duration="{TOTAL_DURATION}" data-track-index="2"></div>
+      <div class="clip bg-base" id="bg-base" data-start="0" data-duration="{total_duration}" data-track-index="0"></div>
+      <div class="clip bg-glow" id="bg-glow" data-start="0" data-duration="{total_duration}" data-track-index="1"></div>
+      <div class="clip bg-vignette" id="bg-vignette" data-start="0" data-duration="{total_duration}" data-track-index="2"></div>
 
-      <!-- Brand badge (visible from 0:30 onward, after opening) -->
-      <div class="clip brand-badge" id="brand-badge" data-start="30" data-duration="{TOTAL_DURATION - 30}" data-track-index="3">
+      <div class="clip brand-badge" id="brand-badge" data-start="30" data-duration="{total_duration - 30}" data-track-index="3">
         <div class="dot"></div>
         <div class="text">AI Builders Lab</div>
       </div>
 
-      <!-- ═══════════ Scenes ═══════════ -->
       {scene_html}
 
-      <!-- ═══════════ Audio ═══════════ -->
       {audio_html}
 
     </div>
@@ -1107,16 +823,12 @@ def build() -> str:
       window.__timelines = window.__timelines || {{}};
       const tl = gsap.timeline({{ paused: true }});
 
-      // Background subtle pulse
       tl.to("#bg-glow", {{ scale: 1.06, opacity: 0.85, duration: 5, repeat: 60, yoyo: true, ease: "sine.inOut" }}, 0);
-
-      // Brand badge fade-in
       tl.fromTo("#brand-badge", {{ opacity: 0, x: 20 }}, {{ opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }}, 30);
 
-      // Scenes
       {timeline_js}
 
-      tl.to({{}}, {{ duration: 0.01 }}, {TOTAL_DURATION});
+      tl.to({{}}, {{ duration: 0.01 }}, {total_duration});
       window.__timelines["main"] = tl;
     </script>
   </body>
@@ -1125,10 +837,16 @@ def build() -> str:
 
 
 def main() -> None:
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    html = build()
-    OUTPUT.write_text(html, encoding="utf-8")
-    print(f"OK: {OUTPUT} ({len(html):,} bytes, {len(WEEK01_MAIN_SCENES)} scenes)")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--week", type=int, required=True, help="Week number (1-8)")
+    args = parser.parse_args()
+
+    output = ROOT / f"week{args.week:02d}-main" / "index.html"
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    html = build(args.week)
+    output.write_text(html, encoding="utf-8")
+    print(f"OK: {output} ({len(html):,} bytes)")
 
 
 if __name__ == "__main__":
