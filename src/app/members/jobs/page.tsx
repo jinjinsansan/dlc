@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useMember } from "@/components/members/MemberContext";
 import JobForm from "@/components/jobs/JobForm";
 import { ADMIN_EMAIL } from "@/lib/admin";
+import PageHead from "@/components/members/PageHead";
 
 interface Job {
   id: string;
@@ -141,15 +142,21 @@ export default function JobsPage() {
 
   return (
     <div>
-      <div className="flex flex-wrap items-baseline gap-2 sm:gap-3 mb-2">
-        <h1 className="font-serif text-xl sm:text-2xl font-bold">受発注ボード</h1>
-        {totalCount > 0 && (
-          <span className="text-text-muted text-sm">全{totalCount}件</span>
-        )}
-      </div>
-      <p className="text-text-muted text-sm mb-4 sm:mb-6">
-        仲間同士で依頼・受注し合えるボードです
-      </p>
+      <PageHead
+        num="05"
+        kicker="JOBS"
+        title={
+          <>
+            受発注ボード
+            {totalCount > 0 && (
+              <span style={{ fontSize: 18, color: "var(--color-text-dim)", marginLeft: 16, fontWeight: 400 }}>
+                全 {totalCount} 件
+              </span>
+            )}
+          </>
+        }
+        intro="仲間同士で依頼・受注し合えるボードです。卒業後の独立への第一歩に。"
+      />
 
       <JobForm onPosted={handleRefresh} />
 

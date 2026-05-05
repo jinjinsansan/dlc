@@ -5,6 +5,7 @@ import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { createClient } from "@/lib/supabase/client";
 import { getPlanLabel } from "@/lib/plans";
+import PageHead from "@/components/members/PageHead";
 
 interface Profile {
   name: string;
@@ -88,7 +89,12 @@ export default function MyPagePage() {
 
   return (
     <div>
-      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-4 sm:mb-8">マイページ</h1>
+      <PageHead
+        num="07"
+        kicker="MY PAGE"
+        title="マイページ"
+        intro="プロフィール編集・プラン確認・退会申請ができます。"
+      />
 
       {/* Profile Edit */}
       <Card className="mb-6">

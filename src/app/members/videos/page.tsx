@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import Card from "@/components/ui/Card";
 import VideoCard from "@/components/members/VideoCard";
+import PageHead from "@/components/members/PageHead";
 
 interface Video {
   id: string;
@@ -43,10 +44,12 @@ export default async function VideosPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2">動画ライブラリ</h1>
-      <p className="text-text-muted text-sm mb-4 sm:mb-8">
-        週ごとに講義動画を視聴できます
-      </p>
+      <PageHead
+        num="02"
+        kicker="VIDEOS"
+        title="動画ライブラリ"
+        intro="週ごとに講義動画を視聴できます。50% 視聴で自動的に視聴済みになります。"
+      />
 
       <div className="space-y-6 sm:space-y-8">
         {videosByWeek.map(({ week, videos: weekVideos }) => {

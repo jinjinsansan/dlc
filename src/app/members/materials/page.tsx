@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import Card from "@/components/ui/Card";
 import { FileText, BookOpen, Wrench, Map, GraduationCap, MessageCircle, FileCode } from "lucide-react";
+import PageHead from "@/components/members/PageHead";
 
 interface Material {
   id: string;
@@ -67,12 +68,12 @@ export default async function MaterialsPage() {
 
   return (
     <div>
-      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2">
-        資料ダウンロード
-      </h1>
-      <p className="text-text-muted text-sm mb-6 sm:mb-10">
-        Week 別教材・フレーズ集・トラブルシューティング等を PDF でダウンロードできます
-      </p>
+      <PageHead
+        num="03"
+        kicker="MATERIALS"
+        title="資料ダウンロード"
+        intro="Week 別教材・フレーズ集・トラブルシューティング等を PDF でダウンロードできます。"
+      />
 
       {CATEGORIES.map(({ key, label, icon: Icon }) => {
         const items = accessibleMaterials.filter(

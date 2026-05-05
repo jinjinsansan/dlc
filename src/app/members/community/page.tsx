@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useMember } from "@/components/members/MemberContext";
 import PostForm from "@/components/community/PostForm";
 import PostItem from "@/components/community/PostItem";
+import PageHead from "@/components/members/PageHead";
 
 const CATEGORIES = [
   { value: "", label: "すべて" },
@@ -109,15 +110,21 @@ export default function CommunityPage() {
 
   return (
     <div>
-      <div className="flex flex-wrap items-baseline gap-2 sm:gap-3 mb-2">
-        <h1 className="font-serif text-xl sm:text-2xl font-bold">コミュニティ</h1>
-        {totalCount > 0 && (
-          <span className="text-text-muted text-sm">全{totalCount}件</span>
-        )}
-      </div>
-      <p className="text-text-muted text-sm mb-4 sm:mb-6">
-        仲間と交流し、学びを深めましょう
-      </p>
+      <PageHead
+        num="04"
+        kicker="COMMUNITY"
+        title={
+          <>
+            コミュニティ
+            {totalCount > 0 && (
+              <span style={{ fontSize: 18, color: "var(--color-text-dim)", marginLeft: 16, fontWeight: 400 }}>
+                全 {totalCount} 件
+              </span>
+            )}
+          </>
+        }
+        intro="仲間と交流し、学びを深めましょう。質問・自己紹介・作ったもの報告・雑談、何でも歓迎です。"
+      />
 
       <PostForm onPosted={handleRefresh} />
 

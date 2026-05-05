@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import Card from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
 import { useMember } from "@/components/members/MemberContext";
+import PageHead from "@/components/members/PageHead";
 
 interface TicketReply {
   id: string;
@@ -34,7 +35,7 @@ export default function SupportPage() {
   if (!member.access.support) {
     return (
       <div>
-        <h1 className="font-serif text-xl sm:text-2xl font-bold mb-4">質問・サポート</h1>
+        <PageHead num="06" kicker="SUPPORT" title="質問・サポート" />
         <Card className="text-center py-8 sm:py-12">
           <p className="text-text-muted mb-4">
             この機能は「動画＋メールサポート」以上のプランでご利用いただけます。
@@ -133,10 +134,12 @@ function SupportContent({ userId }: { userId: string }) {
 
   return (
     <div>
-      <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2">質問・サポート</h1>
-      <p className="text-text-muted text-sm mb-4 sm:mb-8">
-        メールで個別相談ができます
-      </p>
+      <PageHead
+        num="06"
+        kicker="SUPPORT"
+        title="質問・サポート"
+        intro="メールで個別相談ができます。1〜2 営業日以内にご返信します。"
+      />
 
       <Card className="mb-6 sm:mb-8">
         <h2 className="font-bold mb-4">新しい相談</h2>
