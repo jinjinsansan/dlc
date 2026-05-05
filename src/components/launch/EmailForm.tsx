@@ -5,7 +5,9 @@ import { createClient } from "@/lib/supabase/client";
 
 export default function EmailForm() {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
+    "idle"
+  );
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -22,7 +24,7 @@ export default function EmailForm() {
       if (error) throw error;
 
       setStatus("success");
-      setMessage("登録ありがとうございます！");
+      setMessage("✓ 登録完了。次回公開時にお送りします。");
       setEmail("");
     } catch {
       setStatus("error");
@@ -30,38 +32,46 @@ export default function EmailForm() {
     }
   };
 
+  if (status === "success") {
+    return (
+      <div
+        style={{
+          padding: 16,
+          background: "rgba(201,168,76,0.08)",
+          border: "1px solid rgba(201,168,76,0.3)",
+          fontSize: 13,
+          color: "var(--color-primary)",
+        }}
+      >
+        {message}
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-surface border border-border rounded-xl p-6 mt-8">
-      <h3 className="font-bold text-sm mb-2">最新情報を受け取る</h3>
-      <p className="text-text-muted text-sm mb-4">
-        メールアドレスを登録すると、新着動画や特別なお知らせをお届けします。
-      </p>
-      <form onSubmit={handleSubmit} className="flex gap-3">
+    <>
+      <form onSubmit={handleSubmit} style={{ display: "flex", gap: 12 }}>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="your@email.com"
+          placeholder="you@example.com"
           required
-          className="flex-1 bg-bg border border-border rounded-lg px-4 py-2 text-sm text-text-main placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors"
+          className="form-input"
+          style={{ flex: 1 }}
         />
         <button
           type="submit"
           disabled={status === "loading"}
-          className="bg-primary hover:bg-primary-light text-bg font-bold px-6 py-2 rounded-lg text-sm transition-colors disabled:opacity-50"
+          className="btn btn-primary"
+          style={{ padding: "14px 24px", fontSize: 13, opacity: status === "loading" ? 0.5 : 1 }}
         >
-          {status === "loading" ? "送信中..." : "登録"}
+          {status === "loading" ? "送信中..." : "登録"} <span className="arrow">→</span>
         </button>
       </form>
-      {message && (
-        <p
-          className={`text-sm mt-3 ${
-            status === "success" ? "text-green-400" : "text-red-400"
-          }`}
-        >
-          {message}
-        </p>
+      {status === "error" && (
+        <p style={{ color: "#ef4444", fontSize: 13, marginTop: 12 }}>{message}</p>
       )}
-    </div>
+    </>
   );
 }

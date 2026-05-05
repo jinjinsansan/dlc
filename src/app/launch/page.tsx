@@ -2,10 +2,52 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import Card from "@/components/ui/Card";
 import { episodes } from "@/lib/episodes";
+
+function PublicHeader() {
+  return (
+    <header
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 100,
+        background: "rgba(10,10,15,0.85)",
+        backdropFilter: "blur(12px)",
+        borderBottom: "1px solid var(--color-border-hair)",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1440,
+          margin: "0 auto",
+          padding: "20px 48px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Link href="/" className="font-serif-jp" style={{ fontSize: 22, fontWeight: 700 }}>
+          AI Builders <span style={{ color: "var(--color-primary)" }}>Lab</span>
+        </Link>
+        <Link
+          href="/"
+          className="font-mono-jp"
+          style={{
+            fontSize: 11,
+            color: "var(--color-text-muted)",
+            letterSpacing: "0.18em",
+          }}
+        >
+          ← BACK TO HOME
+        </Link>
+      </div>
+    </header>
+  );
+}
+
+const EPISODE_DURATIONS = ["14:32", "18:45", "16:20", "22:10"];
 
 export default function LaunchPage() {
   const [watched, setWatched] = useState<number[]>([]);
@@ -18,43 +60,174 @@ export default function LaunchPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-bg text-text-main">
-      <Header />
-      <main className="pt-20 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4">
-            無料ローンチ<span className="text-primary">動画シリーズ</span>
-          </h1>
-          <p className="text-text-muted text-sm sm:text-base text-center mb-8 sm:mb-12">
-            全4話であなたの可能性が変わる
-          </p>
-
-          <div className="grid sm:grid-cols-2 gap-6">
-            {episodes.map((ep) => (
-              <Link key={ep.number} href={`/launch/episode/${ep.number}`}>
-                <Card className="hover:border-primary/50 transition-colors cursor-pointer h-full relative">
-                  {watched.includes(ep.number) && (
-                    <span className="absolute top-3 right-3 bg-primary text-bg text-xs font-bold px-2 py-1 rounded-full">
-                      視聴済み
-                    </span>
-                  )}
-                  <div className="w-full aspect-video bg-bg rounded-lg mb-4 flex items-center justify-center">
-                    <span className="text-primary text-4xl font-serif font-bold">
-                      {ep.number}
-                    </span>
-                  </div>
-                  <span className="text-primary text-sm font-bold">
-                    第{ep.number}話
-                  </span>
-                  <h2 className="font-bold text-lg mt-1 mb-2">{ep.title}</h2>
-                  <p className="text-text-muted text-sm">{ep.description}</p>
-                </Card>
-              </Link>
-            ))}
+    <div style={{ minHeight: "100vh", background: "var(--color-bg-deep)" }}>
+      <PublicHeader />
+      <main
+        style={{
+          maxWidth: 1280,
+          margin: "0 auto",
+          padding: "140px 48px 120px",
+        }}
+      >
+        <div style={{ textAlign: "center", marginBottom: 80 }}>
+          <div
+            className="font-mono-jp"
+            style={{
+              fontSize: 11,
+              color: "var(--color-primary)",
+              letterSpacing: "0.3em",
+              marginBottom: 16,
+            }}
+          >
+            LAUNCH SERIES · 4 EPISODES
           </div>
+          <h1
+            className="font-serif-jp"
+            style={{
+              fontSize: "clamp(40px, 5vw, 64px)",
+              fontWeight: 700,
+              letterSpacing: "-0.02em",
+              lineHeight: 1.1,
+            }}
+          >
+            無料公開{" "}
+            <span style={{ color: "var(--color-primary)", fontStyle: "italic" }}>
+              動画
+            </span>{" "}
+            シリーズ
+          </h1>
+          <p
+            style={{
+              fontSize: 16,
+              color: "var(--color-text-muted)",
+              lineHeight: 1.9,
+              marginTop: 24,
+              maxWidth: 560,
+              margin: "24px auto 0",
+            }}
+          >
+            第1期募集に先立ち、AI Builders Lab がなぜ生まれたか、
+            何をどう教えるのかを 4 本の動画で公開しています。
+          </p>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: 32,
+          }}
+        >
+          {episodes.map((ep, i) => {
+            const dur = EPISODE_DURATIONS[i] ?? "—";
+            const isWatched = watched.includes(ep.number);
+            return (
+              <Link
+                key={ep.number}
+                href={`/launch/episode/${ep.number}`}
+                style={{
+                  display: "block",
+                  background: "var(--color-bg)",
+                  border: "1px solid var(--color-border-hair)",
+                  textDecoration: "none",
+                }}
+              >
+                <div
+                  style={{
+                    aspectRatio: "16/9",
+                    background:
+                      "linear-gradient(135deg, #1a1a2a, #0a0a0f)",
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderBottom: "1px solid var(--color-border-hair)",
+                  }}
+                >
+                  <div
+                    className="font-serif-jp"
+                    style={{
+                      position: "absolute",
+                      top: 24,
+                      left: 32,
+                      fontSize: 14,
+                      color: "var(--color-primary)",
+                      fontFeatureSettings: '"tnum"',
+                    }}
+                  >
+                    Ep. {String(ep.number).padStart(2, "0")}
+                  </div>
+                  <div
+                    style={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: "50%",
+                      border: "2px solid var(--color-primary)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "var(--color-primary)",
+                      fontSize: 28,
+                    }}
+                  >
+                    ▶
+                  </div>
+                  <div
+                    className="font-mono-jp"
+                    style={{
+                      position: "absolute",
+                      bottom: 24,
+                      right: 32,
+                      fontSize: 11,
+                      color: "var(--color-text-muted)",
+                      letterSpacing: "0.15em",
+                    }}
+                  >
+                    {dur}
+                  </div>
+                  {isWatched && (
+                    <div
+                      className="font-mono-jp"
+                      style={{
+                        position: "absolute",
+                        bottom: 24,
+                        left: 32,
+                        fontSize: 10,
+                        color: "var(--color-primary)",
+                        letterSpacing: "0.2em",
+                      }}
+                    >
+                      ✓ WATCHED
+                    </div>
+                  )}
+                </div>
+                <div style={{ padding: 32 }}>
+                  <h3
+                    className="font-serif-jp"
+                    style={{
+                      fontSize: 24,
+                      fontWeight: 700,
+                      marginBottom: 12,
+                      color: "var(--color-text)",
+                    }}
+                  >
+                    {ep.title}
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: 13,
+                      color: "var(--color-text-muted)",
+                      lineHeight: 1.8,
+                    }}
+                  >
+                    {ep.description}
+                  </p>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </main>
-      <Footer />
     </div>
   );
 }
