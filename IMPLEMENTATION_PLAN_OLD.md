@@ -190,7 +190,7 @@ ai-builders-lab/
 ### Vercel設定
 1. GitHubリポジトリ連携
 2. 環境変数設定（全キー）
-3. ドメイン設定（academy.dlogicai.in）
+3. ドメイン設定（academy.anatouai.com）
 
 ### Stripe設定
 1. 商品・価格作成（4プラン）

@@ -117,7 +117,7 @@ export default function Footer() {
             color: "var(--color-text-dim)",
           }}
         >
-          <span>© {new Date().getFullYear()} AI BUILDERS LAB / ACADEMY.DLOGICAI.IN</span>
+          <span>© {new Date().getFullYear()} AI BUILDERS LAB / ACADEMY.ANATOUAI.COM</span>
           <span>DESIGNED IN TOKYO</span>
         </div>
       </div>

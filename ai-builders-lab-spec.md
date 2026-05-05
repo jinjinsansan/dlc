@@ -73,7 +73,7 @@
 ## 5. サイト構成
 
 ```
-academy.dlogicai.in/
+academy.anatouai.com/
 │
 ├── /                    ← TOPページ（LP）
 ├── /launch              ← ローンチページ（動画シリーズ）
@@ -361,4 +361,4 @@ CLOUDFLARE_STREAM_API_TOKEN=
 
 ## 15. ドメイン
 
-- **本番**: `academy.dlogicai.in`
+- **本番**: `academy.anatouai.com`
