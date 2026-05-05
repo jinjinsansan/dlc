@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  margin: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: #0a0a0f;
+  font-family: "Noto Sans JP", sans-serif;
+  color: #f0f0f0;
+}
+.serif { font-family: "Noto Serif JP", serif; }
+.mono { font-family: "JetBrains Mono", "Consolas", monospace; }
+.clip { position: absolute; opacity: 0; }
+
+/* ── Background layers ── */
+.bg-base {
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(201, 168, 76, 0.15), transparent 55%),
+    radial-gradient(circle at 50% 80%, rgba(201, 168, 76, 0.05), transparent 60%),
+    #0a0a0f;
+  opacity: 1 !important;
+}
+.bg-vignette {
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 50%, rgba(0, 0, 0, 0.65) 100%);
+  opacity: 1 !important;
+  pointer-events: none;
+}
+.bg-glow {
+  top: 50%; left: 50%;
+  width: 1400px; height: 1400px;
+  margin-top: -700px; margin-left: -700px;
+  background: radial-gradient(circle, rgba(232, 201, 106, 0.20) 0%, transparent 60%);
+  filter: blur(40px);
+  border-radius: 50%;
+}
+
+/* ── Brand badge ── */
+.brand-badge {
+  top: 40px; right: 60px;
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 24px;
+  background: rgba(201, 168, 76, 0.1);
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  z-index: 100;
+}
+.brand-badge .dot {
+  width: 10px; height: 10px;
+  background: #c9a84c; border-radius: 50%;
+  box-shadow: 0 0 12px rgba(201, 168, 76, 0.8);
+}
+.brand-badge .text {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 700; font-size: 22px;
+  color: #e8c96a; letter-spacing: 0.08em;
+}
+
+/* ── Scene container (full-viewport, centered) ── */
+.scene {
+  position: fixed;
+  top: 0; left: 0;
+  width: 1920px; height: 1080px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 80px;
+  text-align: center;
+}
+
+/* ── Welcome / Promise / Statement / Big Statement / Closing ── */
+.welcome-title, .closing-title {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 900;
+  font-size: 180px;
+  background: linear-gradient(180deg, #f0f0f0 0%, #e8c96a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 30px;
+  line-height: 1.2;
+}
+.welcome-subtitle, .closing-subtitle {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 500;
+  font-size: 48px;
+  color: #c9c9d8;
+  letter-spacing: 0.05em;
+}
+
+.promise-pretext {
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 500;
+  font-size: 56px;
+  color: #c9c9d8;
+  margin-bottom: 30px;
+}
+.promise-main {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 900;
+  font-size: 100px;
+  color: #f0f0f0;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+.promise-main .accent {
+  background: linear-gradient(180deg, #e8c96a 0%, #c9a84c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.promise-post {
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 500;
+  font-size: 42px;
+  color: #8888aa;
+  margin-top: 30px;
+}
+
+.statement-main {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 900;
+  font-size: 96px;
+  color: #f0f0f0;
+  margin-bottom: 30px;
+  line-height: 1.3;
+}
+.statement-main .accent {
+  background: linear-gradient(180deg, #e8c96a 0%, #c9a84c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.statement-sub {
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 500;
+  font-size: 42px;
+  color: #c9c9d8;
+  max-width: 1200px;
+  line-height: 1.6;
+}
+
+.big-statement-main {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 900;
+  font-size: 280px;
+  background: linear-gradient(180deg, #f0f0f0 0%, #e8c96a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 40px;
+  line-height: 1;
+}
+.big-statement-sub {
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 500;
+  font-size: 48px;
+  color: #c9c9d8;
+  letter-spacing: 0.1em;
+}
+
+/* ── Chapter Title ── */
+.chapter-num {
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 500;
+  font-size: 36px;
+  color: #c9a84c;
+  letter-spacing: 0.5em;
+  margin-bottom: 20px;
+}
+.chapter-num-big {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 900;
+  font-size: 320px;
+  background: linear-gradient(180deg, #f0f0f0 0%, #e8c96a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: 30px;
+}
+.chapter-title {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 700;
+  font-size: 84px;
+  color: #f0f0f0;
+  margin-bottom: 30px;
+  letter-spacing: 0.04em;
+}
+.chapter-divider {
+  width: 200px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+}
+
+/* ── Comparison ── */
+.comparison-container {
+  display: flex;
+  gap: 60px;
+  width: 100%;
+  max-width: 1700px;
+  align-items: stretch;
+}
+.comparison-card {
+  flex: 1;
+  padding: 60px;
+  background: linear-gradient(180deg, rgba(18, 18, 30, 0.95), rgba(18, 18, 30, 0.7));
+  border: 2px solid rgba(201, 168, 76, 0.25);
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.comparison-card.highlight {
+  border-color: rgba(201, 168, 76, 0.7);
+  box-shadow: 0 0 40px rgba(201, 168, 76, 0.2);
+}
+.comparison-label {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 700;
+  font-size: 56px;
+  color: #c9c9d8;
+  margin-bottom: 30px;
+}
+.comparison-card.highlight .comparison-label { color: #e8c96a; }
+.comparison-text {
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 500;
+  font-size: 36px;
+  color: #f0f0f0;
+  white-space: pre-line;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+.comparison-role {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 700;
+  font-size: 32px;
+  color: #c9a84c;
+  letter-spacing: 0.05em;
+  padding-top: 30px;
+  border-top: 1px solid rgba(201, 168, 76, 0.3);
+  width: 100%;
+}
+
+/* ── Duo ── */
+.duo-container { display: flex; gap: 80px; align-items: center; justify-content: center; }
+.duo-side { text-align: center; }
+.duo-label {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 700;
+  font-size: 72px;
+  color: #f0f0f0;
+  margin-bottom: 20px;
+}
+.duo-role {
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 500;
+  font-size: 48px;
+  color: #c9a84c;
+}
+.duo-divider {
+  width: 4px; height: 200px;
+  background: linear-gradient(180deg, transparent, #c9a84c, transparent);
+}
+
+/* ── Iconography ── */
+.icon-header {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 700;
+  font-size: 64px;
+  color: #f0f0f0;
+  margin-bottom: 80px;
+}
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 60px;
+  max-width: 1500px;
+  width: 100%;
+}
+.icon-item {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 40px;
+  background: rgba(18, 18, 30, 0.8);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  border-radius: 24px;
+}
+.icon-emoji { font-size: 120px; margin-bottom: 20px; }
+.icon-label {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 700;
+  font-size: 36px;
+  color: #f0f0f0;
+}
+
+/* ── Stats ── */
+.stats-big {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 900;
+  font-size: 360px;
+  background: linear-gradient(180deg, #f0f0f0 0%, #e8c96a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+.stats-label {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 700;
+  font-size: 56px;
+  color: #f0f0f0;
+  margin-top: 20px;
+  margin-bottom: 60px;
+}
+.stats-footer {
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 500;
+  font-size: 40px;
+  color: #c9a84c;
+  letter-spacing: 0.05em;
+}
+
+/* ── Terminal ── */
+.terminal-label {
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 700;
+  font-size: 42px;
+  color: #c9a84c;
+  margin-bottom: 30px;
+  letter-spacing: 0.1em;
+}
+.terminal-window {
+  background: #0a0a0f;
+  border: 2px solid #c9a84c;
+  border-radius: 16px;
+  padding: 50px 60px;
+  width: 100%;
+  max-width: 1500px;
+  box-shadow: 0 0 40px rgba(201, 168, 76, 0.2);
+}
+.terminal-window .header {
+  display: flex; gap: 8px; margin-bottom: 30px;
+}
+.terminal-window .header span {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #555;
+}
+.terminal-content {
+  font-family: "JetBrains Mono", "Consolas", monospace;
+  font-weight: 600;
+  font-size: 36px;
+  color: #e8c96a;
+  text-align: left;
+  white-space: pre-line;
+  line-height: 1.7;
+}
+.terminal-footer {
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 500;
+  font-size: 32px;
+  color: #c9c9d8;
+  margin-top: 40px;
+  letter-spacing: 0.05em;
+}
+
+/* ── Checklist ── */
+.checklist-header {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 900;
+  font-size: 80px;
+  color: #f0f0f0;
+  background: linear-gradient(180deg, #f0f0f0 0%, #e8c96a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 50px;
+}
+.checklist-items {
+  display: flex; flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 1100px;
+}
+.checklist-item {
+  display: flex; align-items: center; gap: 30px;
+  padding: 30px 40px;
+  background: rgba(18, 18, 30, 0.85);
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  border-radius: 16px;
+  text-align: left;
+}
+.checklist-checkbox {
+  width: 40px; height: 40px;
+  border: 3px solid #c9a84c;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+.checklist-text {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 700;
+  font-size: 42px;
+  color: #f0f0f0;
+}
+.checklist-footer {
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 500;
+  font-size: 32px;
+  color: #c9c9d8;
+  margin-top: 50px;
+  letter-spacing: 0.05em;
+}
+
+/* ── Tip card ── */
+.tip-num {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 900;
+  font-size: 320px;
+  background: linear-gradient(180deg, #f0f0f0 0%, #e8c96a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+.tip-text {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 700;
+  font-size: 80px;
+  color: #f0f0f0;
+  margin: 20px 0 60px;
+}
+.tip-examples {
+  display: flex; gap: 50px; align-items: stretch;
+  width: 100%; max-width: 1400px;
+}
+.tip-example {
+  flex: 1;
+  padding: 30px 40px;
+  border-radius: 16px;
+  background: rgba(18, 18, 30, 0.85);
+  border: 2px solid;
+}
+.tip-example.bad { border-color: rgba(239, 68, 68, 0.5); }
+.tip-example.good { border-color: rgba(201, 168, 76, 0.7); }
+.tip-mark {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 900;
+  font-size: 56px;
+  margin-bottom: 14px;
+}
+.tip-example.bad .tip-mark { color: #ef4444; }
+.tip-example.good .tip-mark { color: #c9a84c; }
+.tip-example-text {
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 500;
+  font-size: 32px;
+  color: #f0f0f0;
+}
+</style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="294.2" data-width="1920" data-height="1080">
+
+      <div class="clip bg-base" id="bg-base" data-start="0" data-duration="294.2" data-track-index="0"></div>
+      <div class="clip bg-glow" id="bg-glow" data-start="0" data-duration="294.2" data-track-index="1"></div>
+      <div class="clip bg-vignette" id="bg-vignette" data-start="0" data-duration="294.2" data-track-index="2"></div>
+
+      <div class="clip brand-badge" id="brand-badge" data-start="30" data-duration="264.2" data-track-index="3">
+        <div class="dot"></div>
+        <div class="text">AI Builders Lab</div>
+      </div>
+
+      <div class="clip " id="s-O1-scene" data-start="0.4" data-duration="9.28" data-track-index="10"><div class="scene"><div class="welcome-title serif">ようこそ。</div><div class="welcome-subtitle">Week 3 — デザインを AI に注文する</div></div></div>
+      <div class="clip " id="s-O2-scene" data-start="9.68" data-duration="10.92" data-track-index="16"><div class="scene"><div class="promise-pretext">「センスがない」は、もう過去の話。</div><div class="promise-main">AI が、あなたを<span class="accent">プロにする</span>。</div><div class="promise-post">頼むだけで、見た目が変わる。</div></div></div>
+      <div class="clip " id="s-1_1-scene" data-start="20.6" data-duration="6.2" data-track-index="22"><div class="scene"><div class="chapter-num">CHAPTER 1</div><div class="chapter-num-big serif">1</div><div class="chapter-title">「プロっぽさ」の、正体</div><div class="chapter-divider"></div></div></div>
+      <div class="clip " id="s-1_2-scene" data-start="26.8" data-duration="13.72" data-track-index="28"><div class="scene"><div class="icon-header serif">プロっぽさ = 4 大要素で 80% 決まる</div><div class="icon-grid"><div class="icon-item"><div class="icon-emoji">📏</div><div class="icon-label">余白</div></div><div class="icon-item"><div class="icon-emoji">🎨</div><div class="icon-label">配色</div></div><div class="icon-item"><div class="icon-emoji">🅰</div><div class="icon-label">フォント</div></div><div class="icon-item"><div class="icon-emoji">📸</div><div class="icon-label">写真</div></div></div></div></div>
+      <div class="clip " id="s-1_3-scene" data-start="40.52" data-duration="9.28" data-track-index="34"><div class="scene"><div class="statement-main">全部、<span class="accent">AI に頼める</span></div><div class="statement-sub">センスではなく、「正しい頼み方」を知っているかだけが差になる。</div></div></div>
+      <div class="clip " id="s-2_1-scene" data-start="49.8" data-duration="5.8" data-track-index="40"><div class="scene"><div class="chapter-num">CHAPTER 2</div><div class="chapter-num-big serif">2</div><div class="chapter-title">色とフォントの、頼み方</div><div class="chapter-divider"></div></div></div>
+      <div class="clip " id="s-2_2-scene" data-start="55.6" data-duration="15.88" data-track-index="46"><div class="scene"><div class="terminal-label">雰囲気で頼む</div><div class="terminal-window"><div class="header"><span></span><span></span><span></span></div><div class="terminal-content">> 高級感のある黒×ゴールドにして
+> ナチュラルでオーガニックに
+> ポップで明るく
+> クールで知的に</div></div><div class="terminal-footer">雰囲気のキーワードで配色が変わる</div></div></div>
+      <div class="clip " id="s-2_3-scene" data-start="71.48" data-duration="14.84" data-track-index="52"><div class="scene"><div class="terminal-label">厳密に色を指定</div><div class="terminal-window"><div class="header"><span></span><span></span><span></span></div><div class="terminal-content">> メインカラーを #C9A84C に
+> アクセントを #EF4444 に
+> 背景を #0A0A0F に</div></div><div class="terminal-footer">ピクセル単位で正確</div></div></div>
+      <div class="clip " id="s-2_4-scene" data-start="86.32" data-duration="13.72" data-track-index="58"><div class="scene"><div class="terminal-label">フォントを変える</div><div class="terminal-window"><div class="header"><span></span><span></span><span></span></div><div class="terminal-content">> フォントを Noto Sans JP に
+> 見出しはセリフ体の高級感あるやつに
+> 本文は読みやすい丸ゴシックで</div></div><div class="terminal-footer">和文・欧文どちらも自由</div></div></div>
+      <div class="clip " id="s-3_1-scene" data-start="100.04" data-duration="5.04" data-track-index="64"><div class="scene"><div class="chapter-num">CHAPTER 3</div><div class="chapter-num-big serif">3</div><div class="chapter-title">レイアウトを、変える</div><div class="chapter-divider"></div></div></div>
+      <div class="clip " id="s-3_2-scene" data-start="105.08" data-duration="10.72" data-track-index="70"><div class="scene"><div class="icon-header serif">1 文で構造が変わる</div><div class="icon-grid"><div class="icon-item"><div class="icon-emoji">🖥</div><div class="icon-label">全画面ヒーロー</div></div><div class="icon-item"><div class="icon-emoji">▦</div><div class="icon-label">2 カラム</div></div><div class="icon-item"><div class="icon-emoji">◳</div><div class="icon-label">3 列グリッド</div></div><div class="icon-item"><div class="icon-emoji">↕</div><div class="icon-label">ジグザグ</div></div></div></div></div>
+      <div class="clip " id="s-3_3-scene" data-start="115.8" data-duration="11.56" data-track-index="76"><div class="scene"><div class="statement-main">余白を広げるだけで、<span class="accent">プロっぽさが倍増</span></div><div class="statement-sub">「セクション間の余白をもっと広げて」だけで、別物に見える。</div></div></div>
+      <div class="clip " id="s-4_1-scene" data-start="127.36" data-duration="6.92" data-track-index="82"><div class="scene"><div class="chapter-num">CHAPTER 4</div><div class="chapter-num-big serif">4</div><div class="chapter-title">デザイン上達の、最大の裏技</div><div class="chapter-divider"></div></div></div>
+      <div class="clip " id="s-4_2-scene" data-start="134.28" data-duration="13.92" data-track-index="88"><div class="scene"><div class="terminal-label">URL を渡すだけ</div><div class="terminal-window"><div class="header"><span></span><span></span><span></span></div><div class="terminal-content">> このサイトみたいに:
+  https://stripe.com</div></div><div class="terminal-footer">雰囲気が丸ごと真似される</div></div></div>
+      <div class="clip " id="s-4_3-scene" data-start="148.2" data-duration="16.56" data-track-index="94"><div class="scene"><div class="icon-header serif">世界一流の参考サイト</div><div class="icon-grid"><div class="icon-item"><div class="icon-emoji">💳</div><div class="icon-label">Stripe</div></div><div class="icon-item"><div class="icon-emoji">📋</div><div class="icon-label">Notion</div></div><div class="icon-item"><div class="icon-emoji">📈</div><div class="icon-label">Linear</div></div><div class="icon-item"><div class="icon-emoji">🍎</div><div class="icon-label">Apple</div></div></div></div></div>
+      <div class="clip " id="s-5_1-scene" data-start="164.76" data-duration="5.6" data-track-index="100"><div class="scene"><div class="chapter-num">CHAPTER 5</div><div class="chapter-num-big serif">5</div><div class="chapter-title">スマホ対応を、忘れない</div><div class="chapter-divider"></div></div></div>
+      <div class="clip " id="s-5_2-scene" data-start="170.36" data-duration="16.12" data-track-index="106"><div class="scene"><div class="terminal-label">1 文でレスポンシブ完了</div><div class="terminal-window"><div class="header"><span></span><span></span><span></span></div><div class="terminal-content">> スマホでも綺麗に表示されるようにして
+  ヘッダーはハンバーガーメニュー化
+  カードは縦並び 1 列に</div></div><div class="terminal-footer">文字サイズ・ボタン・メニュー全自動</div></div></div>
+      <div class="clip " id="s-5_3-scene" data-start="186.48" data-duration="10.96" data-track-index="112"><div class="scene"><div class="checklist-header serif">スマホで確認</div><div class="checklist-items"><div class="checklist-item"><div class="checklist-checkbox"></div><div class="checklist-text">開発者ツール → スマホアイコン</div></div><div class="checklist-item"><div class="checklist-checkbox"></div><div class="checklist-text">iPhone / Android で表示確認</div></div><div class="checklist-item"><div class="checklist-checkbox"></div><div class="checklist-text">崩れたら「ここが崩れてる」と頼む</div></div></div><div class="checklist-footer">ブラウザだけで完結</div></div></div>
+      <div class="clip " id="s-6_1-scene" data-start="197.44" data-duration="6.08" data-track-index="118"><div class="scene"><div class="chapter-num">CHAPTER 6</div><div class="chapter-num-big serif">6</div><div class="chapter-title">動きをつけて、命を吹き込む</div><div class="chapter-divider"></div></div></div>
+      <div class="clip " id="s-6_2-scene" data-start="203.52" data-duration="14.72" data-track-index="124"><div class="scene"><div class="icon-header serif">鉄板アニメーション</div><div class="icon-grid"><div class="icon-item"><div class="icon-emoji">↘</div><div class="icon-label">フェードイン</div></div><div class="icon-item"><div class="icon-emoji">🪄</div><div class="icon-label">ホバー浮き</div></div><div class="icon-item"><div class="icon-emoji">🔍</div><div class="icon-label">画像ズーム</div></div><div class="icon-item"><div class="icon-emoji">✨</div><div class="icon-label">光るボタン</div></div></div></div></div>
+      <div class="clip " id="s-6_3-scene" data-start="218.24" data-duration="8.12" data-track-index="130"><div class="scene"><div class="tip-num serif">⚠</div><div class="tip-text serif">やりすぎ注意</div><div class="tip-examples"><div class="tip-example bad"><div class="tip-mark">✗</div><div class="tip-example-text">5 種類以上を盛る</div></div><div class="tip-example good"><div class="tip-mark">✓</div><div class="tip-example-text">3 種類以内に絞る</div></div></div></div></div>
+      <div class="clip " id="s-7_1-scene" data-start="226.36" data-duration="5.08" data-track-index="136"><div class="scene"><div class="chapter-num">CHAPTER 7</div><div class="chapter-num-big serif">7</div><div class="chapter-title">仕上げのチェックリスト</div><div class="chapter-divider"></div></div></div>
+      <div class="clip " id="s-7_2-scene" data-start="231.44" data-duration="15.04" data-track-index="142"><div class="scene"><div class="checklist-header serif">プロっぽさの最終確認</div><div class="checklist-items"><div class="checklist-item"><div class="checklist-checkbox"></div><div class="checklist-text">余白は十分か (80px+)</div></div><div class="checklist-item"><div class="checklist-checkbox"></div><div class="checklist-text">配色は 3 色以内か</div></div><div class="checklist-item"><div class="checklist-checkbox"></div><div class="checklist-text">スマホで横スクロールしないか</div></div></div><div class="checklist-footer">全部 ✓ なら URL を送れる品質</div></div></div>
+      <div class="clip " id="s-8_1-scene" data-start="246.48" data-duration="6.56" data-track-index="148"><div class="scene"><div class="chapter-num">CHAPTER 8</div><div class="chapter-num-big serif">8</div><div class="chapter-title">1 週間後の自分</div><div class="chapter-divider"></div></div></div>
+      <div class="clip " id="s-8_2-scene" data-start="253.04" data-duration="15.2" data-track-index="154"><div class="scene"><div class="big-statement-main serif">「これ、自分が…？」</div><div class="big-statement-sub">Week 2 のサイトが、別人のように洗練される。</div></div></div>
+      <div class="clip " id="s-9_1-scene" data-start="268.24" data-duration="12.44" data-track-index="160"><div class="scene"><div class="checklist-header serif">今週の宿題</div><div class="checklist-items"><div class="checklist-item"><div class="checklist-checkbox"></div><div class="checklist-text">ビフォー・アフター スクショ</div></div><div class="checklist-item"><div class="checklist-checkbox"></div><div class="checklist-text">何を頼んで変わったか記述</div></div><div class="checklist-item"><div class="checklist-checkbox"></div><div class="checklist-text">コミュニティに投稿</div></div></div><div class="checklist-footer">Week 4 で、動くアプリに化ける</div></div></div>
+      <div class="clip " id="s-9_2-scene" data-start="280.68" data-duration="12.52" data-track-index="166"><div class="scene"><div class="statement-main">Week 4 で、<span class="accent">命を宿らせる</span></div><div class="statement-sub">次は、ただのページに、本物のアプリの動きを与える。</div></div></div>
+
+      <audio class="clip" id="a-O1" data-start="0.4" data-duration="9.28" data-track-index="200" data-volume="1.0" src="assets/main_lesson_scenes/week03_O1.wav"></audio>
+      <audio class="clip" id="a-O2" data-start="9.68" data-duration="10.92" data-track-index="201" data-volume="1.0" src="assets/main_lesson_scenes/week03_O2.wav"></audio>
+      <audio class="clip" id="a-1_1" data-start="20.6" data-duration="6.2" data-track-index="202" data-volume="1.0" src="assets/main_lesson_scenes/week03_1_1.wav"></audio>
+      <audio class="clip" id="a-1_2" data-start="26.8" data-duration="13.72" data-track-index="203" data-volume="1.0" src="assets/main_lesson_scenes/week03_1_2.wav"></audio>
+      <audio class="clip" id="a-1_3" data-start="40.52" data-duration="9.28" data-track-index="204" data-volume="1.0" src="assets/main_lesson_scenes/week03_1_3.wav"></audio>
+      <audio class="clip" id="a-2_1" data-start="49.8" data-duration="5.8" data-track-index="205" data-volume="1.0" src="assets/main_lesson_scenes/week03_2_1.wav"></audio>
+      <audio class="clip" id="a-2_2" data-start="55.6" data-duration="15.88" data-track-index="206" data-volume="1.0" src="assets/main_lesson_scenes/week03_2_2.wav"></audio>
+      <audio class="clip" id="a-2_3" data-start="71.48" data-duration="14.84" data-track-index="207" data-volume="1.0" src="assets/main_lesson_scenes/week03_2_3.wav"></audio>
+      <audio class="clip" id="a-2_4" data-start="86.32" data-duration="13.72" data-track-index="208" data-volume="1.0" src="assets/main_lesson_scenes/week03_2_4.wav"></audio>
+      <audio class="clip" id="a-3_1" data-start="100.04" data-duration="5.04" data-track-index="209" data-volume="1.0" src="assets/main_lesson_scenes/week03_3_1.wav"></audio>
+      <audio class="clip" id="a-3_2" data-start="105.08" data-duration="10.72" data-track-index="210" data-volume="1.0" src="assets/main_lesson_scenes/week03_3_2.wav"></audio>
+      <audio class="clip" id="a-3_3" data-start="115.8" data-duration="11.56" data-track-index="211" data-volume="1.0" src="assets/main_lesson_scenes/week03_3_3.wav"></audio>
+      <audio class="clip" id="a-4_1" data-start="127.36" data-duration="6.92" data-track-index="212" data-volume="1.0" src="assets/main_lesson_scenes/week03_4_1.wav"></audio>
+      <audio class="clip" id="a-4_2" data-start="134.28" data-duration="13.92" data-track-index="213" data-volume="1.0" src="assets/main_lesson_scenes/week03_4_2.wav"></audio>
+      <audio class="clip" id="a-4_3" data-start="148.2" data-duration="16.56" data-track-index="214" data-volume="1.0" src="assets/main_lesson_scenes/week03_4_3.wav"></audio>
+      <audio class="clip" id="a-5_1" data-start="164.76" data-duration="5.6" data-track-index="215" data-volume="1.0" src="assets/main_lesson_scenes/week03_5_1.wav"></audio>
+      <audio class="clip" id="a-5_2" data-start="170.36" data-duration="16.12" data-track-index="216" data-volume="1.0" src="assets/main_lesson_scenes/week03_5_2.wav"></audio>
+      <audio class="clip" id="a-5_3" data-start="186.48" data-duration="10.96" data-track-index="217" data-volume="1.0" src="assets/main_lesson_scenes/week03_5_3.wav"></audio>
+      <audio class="clip" id="a-6_1" data-start="197.44" data-duration="6.08" data-track-index="218" data-volume="1.0" src="assets/main_lesson_scenes/week03_6_1.wav"></audio>
+      <audio class="clip" id="a-6_2" data-start="203.52" data-duration="14.72" data-track-index="219" data-volume="1.0" src="assets/main_lesson_scenes/week03_6_2.wav"></audio>
+      <audio class="clip" id="a-6_3" data-start="218.24" data-duration="8.12" data-track-index="220" data-volume="1.0" src="assets/main_lesson_scenes/week03_6_3.wav"></audio>
+      <audio class="clip" id="a-7_1" data-start="226.36" data-duration="5.08" data-track-index="221" data-volume="1.0" src="assets/main_lesson_scenes/week03_7_1.wav"></audio>
+      <audio class="clip" id="a-7_2" data-start="231.44" data-duration="15.04" data-track-index="222" data-volume="1.0" src="assets/main_lesson_scenes/week03_7_2.wav"></audio>
+      <audio class="clip" id="a-8_1" data-start="246.48" data-duration="6.56" data-track-index="223" data-volume="1.0" src="assets/main_lesson_scenes/week03_8_1.wav"></audio>
+      <audio class="clip" id="a-8_2" data-start="253.04" data-duration="15.2" data-track-index="224" data-volume="1.0" src="assets/main_lesson_scenes/week03_8_2.wav"></audio>
+      <audio class="clip" id="a-9_1" data-start="268.24" data-duration="12.44" data-track-index="225" data-volume="1.0" src="assets/main_lesson_scenes/week03_9_1.wav"></audio>
+      <audio class="clip" id="a-9_2" data-start="280.68" data-duration="12.52" data-track-index="226" data-volume="1.0" src="assets/main_lesson_scenes/week03_9_2.wav"></audio>
+
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      tl.to("#bg-glow", { scale: 1.06, opacity: 0.85, duration: 5, repeat: 60, yoyo: true, ease: "sine.inOut" }, 0);
+      tl.fromTo("#brand-badge", { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }, 30);
+
+      tl.fromTo("#s-O1-scene", { opacity: 0 }, { opacity: 1, duration: 0.8, ease: "power2.out" }, 0.4);
+tl.to("#s-O1-scene", { opacity: 0, duration: 0.8, ease: "power2.in" }, 8.879999999999999);
+      tl.fromTo("#s-O2-scene", { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 1.0, ease: "power2.out" }, 9.68);
+tl.to("#s-O2-scene", { opacity: 0, duration: 0.8, ease: "power2.in" }, 19.8);
+      tl.fromTo("#s-1_1-scene", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.9, ease: "back.out(1.4)" }, 20.6);
+tl.to("#s-1_1-scene", { opacity: 0, y: -20, duration: 0.7, ease: "power2.in" }, 26.1);
+      tl.fromTo("#s-1_2-scene", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 26.8);
+tl.to("#s-1_2-scene", { opacity: 0, duration: 0.6, ease: "power2.in" }, 39.92);
+      tl.fromTo("#s-1_3-scene", { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.9, ease: "back.out(1.3)" }, 40.52);
+tl.to("#s-1_3-scene", { opacity: 0, duration: 0.7, ease: "power2.in" }, 49.1);
+      tl.fromTo("#s-2_1-scene", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.9, ease: "back.out(1.4)" }, 49.8);
+tl.to("#s-2_1-scene", { opacity: 0, y: -20, duration: 0.7, ease: "power2.in" }, 54.89999999999999);
+      tl.fromTo("#s-2_2-scene", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 55.6);
+tl.to("#s-2_2-scene", { opacity: 0, duration: 0.6, ease: "power2.in" }, 70.88000000000001);
+      tl.fromTo("#s-2_3-scene", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 71.48);
+tl.to("#s-2_3-scene", { opacity: 0, duration: 0.6, ease: "power2.in" }, 85.72000000000001);
+      tl.fromTo("#s-2_4-scene", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 86.32);
+tl.to("#s-2_4-scene", { opacity: 0, duration: 0.6, ease: "power2.in" }, 99.44);
+      tl.fromTo("#s-3_1-scene", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.9, ease: "back.out(1.4)" }, 100.04);
+tl.to("#s-3_1-scene", { opacity: 0, y: -20, duration: 0.7, ease: "power2.in" }, 104.38000000000001);
+      tl.fromTo("#s-3_2-scene", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 105.08);
+tl.to("#s-3_2-scene", { opacity: 0, duration: 0.6, ease: "power2.in" }, 115.2);
+      tl.fromTo("#s-3_3-scene", { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.9, ease: "back.out(1.3)" }, 115.8);
+tl.to("#s-3_3-scene", { opacity: 0, duration: 0.7, ease: "power2.in" }, 126.66);
+      tl.fromTo("#s-4_1-scene", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.9, ease: "back.out(1.4)" }, 127.36);
+tl.to("#s-4_1-scene", { opacity: 0, y: -20, duration: 0.7, ease: "power2.in" }, 133.58);
+      tl.fromTo("#s-4_2-scene", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 134.28);
+tl.to("#s-4_2-scene", { opacity: 0, duration: 0.6, ease: "power2.in" }, 147.6);
+      tl.fromTo("#s-4_3-scene", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 148.2);
+tl.to("#s-4_3-scene", { opacity: 0, duration: 0.6, ease: "power2.in" }, 164.16);
+      tl.fromTo("#s-5_1-scene", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.9, ease: "back.out(1.4)" }, 164.76);
+tl.to("#s-5_1-scene", { opacity: 0, y: -20, duration: 0.7, ease: "power2.in" }, 169.66);
+      tl.fromTo("#s-5_2-scene", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 170.36);
+tl.to("#s-5_2-scene", { opacity: 0, duration: 0.6, ease: "power2.in" }, 185.88000000000002);
+      tl.fromTo("#s-5_3-scene", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 186.48);
+tl.to("#s-5_3-scene", { opacity: 0, duration: 0.6, ease: "power2.in" }, 196.84);
+      tl.fromTo("#s-6_1-scene", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.9, ease: "back.out(1.4)" }, 197.44);
+tl.to("#s-6_1-scene", { opacity: 0, y: -20, duration: 0.7, ease: "power2.in" }, 202.82000000000002);
+      tl.fromTo("#s-6_2-scene", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 203.52);
+tl.to("#s-6_2-scene", { opacity: 0, duration: 0.6, ease: "power2.in" }, 217.64000000000001);
+      tl.fromTo("#s-6_3-scene", { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.4)" }, 218.24);
+tl.to("#s-6_3-scene", { opacity: 0, duration: 0.5, ease: "power2.in" }, 225.86);
+      tl.fromTo("#s-7_1-scene", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.9, ease: "back.out(1.4)" }, 226.36);
+tl.to("#s-7_1-scene", { opacity: 0, y: -20, duration: 0.7, ease: "power2.in" }, 230.74000000000004);
+      tl.fromTo("#s-7_2-scene", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 231.44);
+tl.to("#s-7_2-scene", { opacity: 0, duration: 0.6, ease: "power2.in" }, 245.88);
+      tl.fromTo("#s-8_1-scene", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.9, ease: "back.out(1.4)" }, 246.48);
+tl.to("#s-8_1-scene", { opacity: 0, y: -20, duration: 0.7, ease: "power2.in" }, 252.34);
+      tl.fromTo("#s-8_2-scene", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 1.2, ease: "back.out(1.6)" }, 253.04);
+tl.to("#s-8_2-scene", { opacity: 0, duration: 0.8, ease: "power2.in" }, 267.44);
+      tl.fromTo("#s-9_1-scene", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 268.24);
+tl.to("#s-9_1-scene", { opacity: 0, duration: 0.6, ease: "power2.in" }, 280.08);
+      tl.fromTo("#s-9_2-scene", { opacity: 0 }, { opacity: 1, duration: 1.2, ease: "power2.out" }, 280.68);
+tl.to("#s-9_2-scene", { opacity: 0, duration: 1.5, ease: "power2.in" }, 291.7);
+
+
+      tl.to({}, { duration: 0.01 }, 294.2);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
