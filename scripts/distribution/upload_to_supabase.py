@@ -56,109 +56,152 @@ PDF_DIR = ROOT / "materials" / "pdf"
 # ─────────────────────────────────────────────────────────────────────────
 VIDEO_META = {
     1: {
-        "title": "Week 1 イントロ — はじめての Claude Code",
-        "description": "コードを 1 行も書かずに、本物のアプリを作る。",
+        "intro_title": "Week 1 イントロ — はじめての Claude Code",
+        "intro_desc": "コードを 1 行も書かずに、本物のアプリを作る。",
+        "main_title": "Week 1 本編 — はじめての Claude Code",
+        "main_desc": "インストール → 対話 → メモ帳アプリ完成。30 分で「動いた」を体験する。",
     },
     2: {
-        "title": "Week 2 イントロ — 日本語だけで Web ページを作る",
-        "description": "あなたの名前で、Web サイトを持つ。",
+        "intro_title": "Week 2 イントロ — 日本語だけで Web ページを作る",
+        "intro_desc": "あなたの名前で、Web サイトを持つ。",
+        "main_title": "Week 2 本編 — 日本語だけで Web ページを作る",
+        "main_desc": "構成決め → AI に頼む → ページ追加 → ナビ整備。自分のサイトを 1 週間で公開。",
     },
     3: {
-        "title": "Week 3 イントロ — デザインを AI に注文する",
-        "description": "プロっぽい見た目を、5 分で手に入れる。",
+        "intro_title": "Week 3 イントロ — デザインを AI に注文する",
+        "intro_desc": "プロっぽい見た目を、5 分で手に入れる。",
+        "main_title": "Week 3 本編 — デザインを AI に注文する",
+        "main_desc": "余白・配色・フォント・参考サイト引用。プロ品質に仕上げる語彙を全部覚える。",
     },
     4: {
-        "title": "Week 4 イントロ — 機能を言葉で追加する",
-        "description": "ただのページが、動くアプリに化ける。",
+        "intro_title": "Week 4 イントロ — 機能を言葉で追加する",
+        "intro_desc": "ただのページが、動くアプリに化ける。",
+        "main_title": "Week 4 本編 — 機能を言葉で追加する",
+        "main_desc": "Supabase 導入・ログイン・マイページ・管理画面。Web サイトを Web アプリに進化。",
     },
     5: {
-        "title": "Week 5 イントロ — AI の力をアプリに入れる",
-        "description": "あなたのアプリに、AI を住まわせる。",
+        "intro_title": "Week 5 イントロ — AI の力をアプリに入れる",
+        "intro_desc": "あなたのアプリに、AI を住まわせる。",
+        "main_title": "Week 5 本編 — AI の力をアプリに入れる",
+        "main_desc": "API キー取得 → AI チャット実装 → 性格付け → コスト管理。差別化の最大の武器。",
     },
     6: {
-        "title": "Week 6 イントロ — 完成させて世界に公開する",
-        "description": "あなたの URL が、世界に生まれる。",
+        "intro_title": "Week 6 イントロ — 完成させて世界に公開する",
+        "intro_desc": "あなたの URL が、世界に生まれる。",
+        "main_title": "Week 6 本編 — 完成させて世界に公開する",
+        "main_desc": "GitHub・Vercel デプロイ → 独自ドメイン → SEO/OGP。家族に URL を送る感動の瞬間。",
     },
     7: {
-        "title": "Week 7 イントロ — お金を受け取れるようにする",
-        "description": "趣味から、ビジネスへ。一線を越える。",
+        "intro_title": "Week 7 イントロ — お金を受け取れるようにする",
+        "intro_desc": "趣味から、ビジネスへ。一線を越える。",
+        "main_title": "Week 7 本編 — お金を受け取れるようにする",
+        "main_desc": "Stripe アカウント → 一括 / サブスク / アクセス制御 / 価格設定。起業家の入口に立つ。",
     },
     8: {
-        "title": "Week 8 イントロ — お客さんを集めて稼ぐ",
-        "description": "最初の 1 人のお客さんと、本当に出会う。",
+        "intro_title": "Week 8 イントロ — お客さんを集めて稼ぐ",
+        "intro_desc": "最初の 1 人のお客さんと、本当に出会う。",
+        "main_title": "Week 8 本編 — お客さんを集めて稼ぐ",
+        "main_desc": "X / note 発信 → AI 自動投稿 → 最初の 1 人獲得 → 卒業後 6 ヶ月ロードマップ。",
     },
 }
 
 
-def find_latest_mp4(week: int) -> Path | None:
-    """指定 Week の最新 MP4 ファイルを取得"""
-    renders_dir = EDU_VIDEO_DIR / f"week{week:02d}-intro" / "renders"
+def find_latest_mp4(week: int, kind: str) -> Path | None:
+    """指定 Week / kind ('intro' or 'main') の最新 MP4 を取得"""
+    renders_dir = EDU_VIDEO_DIR / f"week{week:02d}-{kind}" / "renders"
     if not renders_dir.exists():
         return None
     mp4s = sorted(renders_dir.glob("*.mp4"), key=lambda p: p.stat().st_mtime, reverse=True)
     return mp4s[0] if mp4s else None
 
 
-def upload_videos() -> None:
-    print("\n=== 動画アップロード ===")
-    for week, meta in VIDEO_META.items():
-        mp4 = find_latest_mp4(week)
-        if not mp4:
-            print(f"  Week {week:02d}: skip (MP4 not found)")
-            continue
+def upload_one_video(
+    week: int,
+    kind: str,
+    title: str,
+    description: str,
+    duration_seconds: int,
+    sort_order: int,
+) -> None:
+    """1 本 (intro or main) を Storage + DB に投入"""
+    mp4 = find_latest_mp4(week, kind)
+    if not mp4:
+        print(f"  Week {week:02d} {kind}: skip (MP4 not found)")
+        return
 
-        storage_path = f"week{week:02d}/intro.mp4"
-        size = mp4.stat().st_size
-        print(f"  Week {week:02d}: uploading {mp4.name} ({size / 1024 / 1024:.1f} MB) -> {storage_path}")
+    storage_path = f"week{week:02d}/{kind}.mp4"
+    size = mp4.stat().st_size
+    print(f"  Week {week:02d} {kind}: uploading {mp4.name} ({size / 1024 / 1024:.1f} MB) -> {storage_path}")
 
-        # アップロード（既存ファイルは上書き）
-        with open(mp4, "rb") as f:
-            try:
+    with open(mp4, "rb") as f:
+        try:
+            sb.storage.from_(VIDEOS_BUCKET).upload(
+                storage_path,
+                f.read(),
+                {"content-type": "video/mp4", "upsert": "true"},
+            )
+        except Exception as e:
+            msg = str(e)
+            if "Duplicate" in msg or "already exists" in msg.lower():
+                sb.storage.from_(VIDEOS_BUCKET).remove([storage_path])
+                f.seek(0)
                 sb.storage.from_(VIDEOS_BUCKET).upload(
                     storage_path,
                     f.read(),
-                    {"content-type": "video/mp4", "upsert": "true"},
+                    {"content-type": "video/mp4"},
                 )
-            except Exception as e:
-                # supabase-py v2 では upsert が別シグネチャの場合あり
-                msg = str(e)
-                if "Duplicate" in msg or "already exists" in msg.lower():
-                    sb.storage.from_(VIDEOS_BUCKET).remove([storage_path])
-                    f.seek(0)
-                    sb.storage.from_(VIDEOS_BUCKET).upload(
-                        storage_path,
-                        f.read(),
-                        {"content-type": "video/mp4"},
-                    )
-                else:
-                    raise
+            else:
+                raise
 
-        # videos テーブルへ upsert
-        # 既存行を week + storage_path で検索
-        existing = (
-            sb.table("videos")
-            .select("id")
-            .eq("week", week)
-            .eq("storage_path", storage_path)
-            .execute()
+    # videos テーブル upsert
+    existing = (
+        sb.table("videos")
+        .select("id")
+        .eq("week", week)
+        .eq("storage_path", storage_path)
+        .execute()
+    )
+
+    record = {
+        "week": week,
+        "title": title,
+        "description": description,
+        "storage_path": storage_path,
+        "duration_seconds": duration_seconds,
+        "sort_order": sort_order,
+        "unlocked_at": None,  # 管理画面でアンロック
+    }
+
+    if existing.data:
+        sb.table("videos").update(record).eq("id", existing.data[0]["id"]).execute()
+        print(f"    -> DB row updated")
+    else:
+        sb.table("videos").insert(record).execute()
+        print(f"    -> DB row inserted")
+
+
+def upload_videos() -> None:
+    print("\n=== 動画アップロード ===")
+    for week, meta in VIDEO_META.items():
+        # イントロ (sort_order=0)
+        upload_one_video(
+            week=week,
+            kind="intro",
+            title=meta["intro_title"],
+            description=meta["intro_desc"],
+            duration_seconds=30,
+            sort_order=0,
         )
-
-        record = {
-            "week": week,
-            "title": meta["title"],
-            "description": meta["description"],
-            "storage_path": storage_path,
-            "duration_seconds": 30,
-            "sort_order": 0,
-            "unlocked_at": None,  # 管理画面でアンロック
-        }
-
-        if existing.data:
-            sb.table("videos").update(record).eq("id", existing.data[0]["id"]).execute()
-            print(f"    -> DB row updated")
-        else:
-            sb.table("videos").insert(record).execute()
-            print(f"    -> DB row inserted")
+        # 本編 (sort_order=1)
+        # 実際の duration は ffprobe で取得すると正確だが、概算で十分
+        upload_one_video(
+            week=week,
+            kind="main",
+            title=meta["main_title"],
+            description=meta["main_desc"],
+            duration_seconds=300,  # 5 分の概算
+            sort_order=1,
+        )
 
 
 # ─────────────────────────────────────────────────────────────────────────
