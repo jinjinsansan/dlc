@@ -28,6 +28,7 @@ yarn-error.log*
 
 # sensitive instruction files
 フォルダ内のMDファイルをしっかりと読み.txt
+クラウドフレア情報.txt
 
 # vercel
 .vercel

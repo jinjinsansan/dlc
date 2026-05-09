@@ -85,8 +85,8 @@ export default function VideoCard({
     return `${m}:${String(r).padStart(2, "0")}`;
   };
 
-  // 動画ソースの優先順: Supabase Storage > Cloudflare Stream > Placeholder
-  const hasSource = !!(video.storage_path || video.cloudflare_video_id);
+  // 動画ソースの優先順: Cloudflare Stream > Supabase Storage > Placeholder
+  const hasSource = !!(video.cloudflare_video_id || video.storage_path);
 
   return (
     <Card className="hover:border-primary/50 transition-colors relative">
@@ -98,48 +98,46 @@ export default function VideoCard({
       <div className="w-full aspect-video bg-bg rounded-lg mb-3 flex items-center justify-center overflow-hidden relative">
         {!hasSource ? (
           <span className="text-text-muted text-sm">動画準備中</span>
-        ) : video.storage_path ? (
-          // Supabase Storage 経由 (HTML5 video)
-          signedUrl ? (
-            <video
-              ref={videoRef}
-              src={signedUrl}
-              controls
-              controlsList="nodownload"
-              className="w-full h-full object-contain bg-black"
-              onError={() => setError("動画の読み込みに失敗しました")}
-            />
-          ) : (
-            <button
-              onClick={fetchSignedUrl}
-              disabled={loading}
-              className="flex flex-col items-center justify-center gap-3 w-full h-full bg-bg hover:bg-surface transition-colors disabled:opacity-50"
-            >
-              <span className="w-16 h-16 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center">
-                <span className="text-primary text-2xl ml-1">▶</span>
-              </span>
-              <span className="text-text-muted text-sm">
-                {loading
-                  ? "読み込み中..."
-                  : error
-                  ? error
-                  : "クリックして再生"}
-              </span>
-              {video.duration_seconds && (
-                <span className="text-text-muted text-xs">
-                  {formatDuration(video.duration_seconds)}
-                </span>
-              )}
-            </button>
-          )
-        ) : (
-          // Cloudflare Stream フォールバック
+        ) : video.cloudflare_video_id ? (
+          // Cloudflare Stream 経由 (iframe)
           <iframe
-            src={`https://iframe.videodelivery.net/${video.cloudflare_video_id}`}
+            src={`https://iframe.videodelivery.net/${video.cloudflare_video_id}?poster=https%3A%2F%2Fvideodelivery.net%2F${video.cloudflare_video_id}%2Fthumbnails%2Fthumbnail.jpg`}
             className="w-full h-full"
             allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"
             allowFullScreen
           />
+        ) : signedUrl ? (
+          // Supabase Storage 経由 (HTML5 video)
+          <video
+            ref={videoRef}
+            src={signedUrl}
+            controls
+            controlsList="nodownload"
+            className="w-full h-full object-contain bg-black"
+            onError={() => setError("動画の読み込みに失敗しました")}
+          />
+        ) : (
+          <button
+            onClick={fetchSignedUrl}
+            disabled={loading}
+            className="flex flex-col items-center justify-center gap-3 w-full h-full bg-bg hover:bg-surface transition-colors disabled:opacity-50"
+          >
+            <span className="w-16 h-16 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center">
+              <span className="text-primary text-2xl ml-1">▶</span>
+            </span>
+            <span className="text-text-muted text-sm">
+              {loading
+                ? "読み込み中..."
+                : error
+                ? error
+                : "クリックして再生"}
+            </span>
+            {video.duration_seconds && (
+              <span className="text-text-muted text-xs">
+                {formatDuration(video.duration_seconds)}
+              </span>
+            )}
+          </button>
         )}
       </div>
       <div className="flex flex-col sm:flex-row items-start justify-between gap-2">
