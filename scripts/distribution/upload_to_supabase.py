@@ -15,6 +15,7 @@
 
 from __future__ import annotations
 
+import argparse
 import os
 import sys
 from pathlib import Path
@@ -209,6 +210,7 @@ def upload_videos() -> None:
 # ─────────────────────────────────────────────────────────────────────────
 PDF_META = {
     "00-README.pdf": {
+        "storage_name": "00-README.pdf",
         "title": "ようこそ — 教材の使い方",
         "description": "学習の進め方・カリキュラム全体像",
         "category": "reference",
@@ -216,61 +218,73 @@ PDF_META = {
         "sort_order": 0,
     },
     "Week01-はじめてのClaudeCode.pdf": {
+        "storage_name": "Week01.pdf",
         "title": "Week 1 — はじめての Claude Code",
         "description": "インストール・最初の感動体験・上手に頼む 5 つのコツ",
         "category": "week", "week": 1, "sort_order": 1,
     },
     "Week02-日本語だけでWebページを作る.pdf": {
+        "storage_name": "Week02.pdf",
         "title": "Week 2 — 日本語だけで Web ページを作る",
         "description": "サイト構成テンプレ 3 種・複数ページ作成",
         "category": "week", "week": 2, "sort_order": 2,
     },
     "Week03-デザインをAIに注文する.pdf": {
+        "storage_name": "Week03.pdf",
         "title": "Week 3 — デザインを AI に注文する",
         "description": "プロっぽさの 4 大要素・参考サイト見せる技",
         "category": "week", "week": 3, "sort_order": 3,
     },
     "Week04-機能を言葉で追加する.pdf": {
+        "storage_name": "Week04.pdf",
         "title": "Week 4 — 機能を言葉で追加する",
         "description": "Supabase 導入・認証・マイページ・管理画面",
         "category": "week", "week": 4, "sort_order": 4,
     },
     "Week05-AIの力をアプリに入れる.pdf": {
+        "storage_name": "Week05.pdf",
         "title": "Week 5 — AI の力をアプリに入れる",
         "description": "API キー取得・AI チャット・テキスト系 AI 機能 30 選",
         "category": "week", "week": 5, "sort_order": 5,
     },
     "Week06-完成させて世界に公開する.pdf": {
+        "storage_name": "Week06.pdf",
         "title": "Week 6 — 完成させて世界に公開する",
         "description": "GitHub・Vercel 完全手順書・独自ドメイン",
         "category": "week", "week": 6, "sort_order": 6,
     },
     "Week07-お金を受け取れるようにする.pdf": {
+        "storage_name": "Week07.pdf",
         "title": "Week 7 — お金を受け取れるようにする",
         "description": "Stripe 導入・サブスク・価格設定ワークシート",
         "category": "week", "week": 7, "sort_order": 7,
     },
     "Week08-お客さんを集めて稼ぐ.pdf": {
+        "storage_name": "Week08.pdf",
         "title": "Week 8 — お客さんを集めて稼ぐ",
         "description": "SNS 集客・note テンプレ・最初の 1 人獲得・修了の章",
         "category": "week", "week": 8, "sort_order": 8,
     },
     "フレーズ集マスター.pdf": {
+        "storage_name": "phrases.pdf",
         "title": "フレーズ集マスター — 全 165+ フレーズ完全版",
         "description": "8 週間で身につけたフレーズの全集",
         "category": "phrase", "week": None, "sort_order": 0,
     },
     "トラブルシューティング.pdf": {
+        "storage_name": "troubleshooting.pdf",
         "title": "トラブルシューティング — よくあるエラー 30 選",
         "description": "受講中に詰まった時の辞書",
         "category": "troubleshooting", "week": None, "sort_order": 0,
     },
     "用語集.pdf": {
+        "storage_name": "glossary.pdf",
         "title": "用語集 — カタカナ用語をやさしく解説",
         "description": "「○○って何?」を 30 秒で解消",
         "category": "glossary", "week": None, "sort_order": 0,
     },
     "卒業後ロードマップ.pdf": {
+        "storage_name": "roadmap.pdf",
         "title": "卒業後ロードマップ — 6 ヶ月で月収 10〜30 万",
         "description": "受講後 6 ヶ月の具体計画",
         "category": "roadmap", "week": None, "sort_order": 0,
@@ -286,7 +300,7 @@ def upload_pdfs() -> None:
             print(f"  {fname}: skip (not found)")
             continue
 
-        storage_path = f"pdf/{fname}"
+        storage_path = f"pdf/{meta['storage_name']}"
         size = pdf_path.stat().st_size
         print(f"  {fname}: uploading ({size / 1024 / 1024:.2f} MB) -> {storage_path}")
 
@@ -338,12 +352,21 @@ def upload_pdfs() -> None:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--pdfs-only", action="store_true",
+                        help="動画は Cloudflare Stream に投入するため Supabase 側は PDF のみ実行")
+    parser.add_argument("--videos-only", action="store_true",
+                        help="動画 (Supabase Storage) のみ実行 (CF Stream を使う場合は通常不要)")
+    args = parser.parse_args()
+
     print(f"Supabase: {SUPABASE_URL}")
     print(f"Videos source: {EDU_VIDEO_DIR}")
     print(f"PDFs source: {PDF_DIR}")
 
-    upload_videos()
-    upload_pdfs()
+    if not args.pdfs_only:
+        upload_videos()
+    if not args.videos_only:
+        upload_pdfs()
 
     print("\nDone.")
 
