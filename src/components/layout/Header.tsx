@@ -75,6 +75,18 @@ export default function Header() {
               {l}
             </Link>
           ))}
+          <Link
+            href="/login"
+            className="font-mono-jp"
+            style={{
+              fontSize: 12,
+              letterSpacing: "0.12em",
+              color: "var(--color-text-muted)",
+              textTransform: "uppercase",
+            }}
+          >
+            Log In
+          </Link>
           <Link href="/apply" className="btn btn-primary" style={{ padding: "12px 22px", fontSize: 12 }}>
             APPLY <span className="arrow">→</span>
           </Link>
