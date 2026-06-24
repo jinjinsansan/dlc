@@ -2,6 +2,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import Card from "@/components/ui/Card";
 import { FileText, BookOpen, Wrench, Map, GraduationCap, MessageCircle, FileCode } from "lucide-react";
 import PageHead from "@/components/members/PageHead";
+import { isAdmin } from "@/lib/admin";
 
 interface Material {
   id: string;
@@ -47,8 +48,9 @@ export default async function MaterialsPage() {
     .eq("email", user?.email)
     .single();
 
-  const userPlan = profile?.plan ?? "video-only";
   const planHierarchy = ["video-only", "video-email", "zoom"];
+  // 管理者はプラン行が無くても全教材を閲覧できる
+  const userPlan = isAdmin(user?.email) ? "zoom" : profile?.plan ?? "video-only";
   const userPlanIndex = planHierarchy.indexOf(userPlan);
 
   const { data: materials } = await supabase

@@ -146,16 +146,37 @@ create table if not exists public.jobs (
   user_id uuid references auth.users(id) on delete set null,
   type text check (type in ('request', 'offer')) not null,
   title text not null,
-  body text not null,
-  budget_min int,
-  budget_max int,
-  deadline date,
+  description text,                         -- 概要・詳細 (アプリが使用)
+  budget text,                             -- 予算 (自由入力テキスト 例: '¥50,000')
+  duration text,                           -- 期間 (自由入力テキスト 例: '2週間')
   contact text,
   status text default 'open' check (status in ('open', 'closed')),
   created_at timestamptz default now()
 );
 
 create index if not exists jobs_status_idx on public.jobs (status, created_at desc);
+
+
+-- ───────────────────────────────────────────────────────────────────────
+-- 9. post_likes / job_interests (いいね / 興味あり)
+-- ───────────────────────────────────────────────────────────────────────
+create table if not exists public.post_likes (
+  post_id uuid not null references public.posts(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  created_at timestamptz default now(),
+  primary key (post_id, user_id)
+);
+
+create index if not exists post_likes_post_idx on public.post_likes (post_id);
+
+create table if not exists public.job_interests (
+  job_id uuid not null references public.jobs(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  created_at timestamptz default now(),
+  primary key (job_id, user_id)
+);
+
+create index if not exists job_interests_job_idx on public.job_interests (job_id);
 
 
 -- ═══════════════════════════════════════════════════════════════════════
@@ -171,6 +192,8 @@ alter table public.tickets enable row level security;
 alter table public.posts enable row level security;
 alter table public.replies enable row level security;
 alter table public.jobs enable row level security;
+alter table public.post_likes enable row level security;
+alter table public.job_interests enable row level security;
 
 
 -- ── users ── 自分のデータのみ閲覧/更新可。サービスロールは全権。
@@ -255,6 +278,32 @@ create policy jobs_self_insert on public.jobs
 drop policy if exists jobs_self_update on public.jobs;
 create policy jobs_self_update on public.jobs
   for update using (auth.uid() = user_id);
+
+
+-- ── post_likes / job_interests ── 認証済みは閲覧可、自分の分のみ追加/削除
+drop policy if exists post_likes_authenticated_select on public.post_likes;
+create policy post_likes_authenticated_select on public.post_likes
+  for select using (auth.role() = 'authenticated');
+
+drop policy if exists post_likes_self_insert on public.post_likes;
+create policy post_likes_self_insert on public.post_likes
+  for insert with check (auth.uid() = user_id);
+
+drop policy if exists post_likes_self_delete on public.post_likes;
+create policy post_likes_self_delete on public.post_likes
+  for delete using (auth.uid() = user_id);
+
+drop policy if exists job_interests_authenticated_select on public.job_interests;
+create policy job_interests_authenticated_select on public.job_interests
+  for select using (auth.role() = 'authenticated');
+
+drop policy if exists job_interests_self_insert on public.job_interests;
+create policy job_interests_self_insert on public.job_interests
+  for insert with check (auth.uid() = user_id);
+
+drop policy if exists job_interests_self_delete on public.job_interests;
+create policy job_interests_self_delete on public.job_interests
+  for delete using (auth.uid() = user_id);
 
 
 -- ═══════════════════════════════════════════════════════════════════════

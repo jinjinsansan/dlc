@@ -23,6 +23,16 @@ export default function RegisterPage() {
       return;
     }
 
+    if (password.length < 8) {
+      setError("パスワードは8文字以上にしてください");
+      return;
+    }
+
+    if (!/[a-zA-Z]/.test(password) || !/[0-9]/.test(password)) {
+      setError("パスワードは英字と数字を含めてください");
+      return;
+    }
+
     setLoading(true);
 
     const supabase = createClient();
@@ -141,6 +151,16 @@ export default function RegisterPage() {
                 placeholder="taro@example.com"
                 style={{ width: "100%" }}
               />
+              <p
+                style={{
+                  fontSize: 11,
+                  color: "var(--color-primary)",
+                  marginTop: 6,
+                  lineHeight: 1.6,
+                }}
+              >
+                ※ 決済時と同じメールアドレスをご入力ください
+              </p>
             </div>
             <div>
               <label
@@ -161,8 +181,8 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                minLength={6}
-                placeholder="6文字以上"
+                minLength={8}
+                placeholder="8文字以上・英数字を含む"
                 style={{ width: "100%" }}
               />
             </div>
@@ -185,7 +205,7 @@ export default function RegisterPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                minLength={6}
+                minLength={8}
                 placeholder="再入力"
                 style={{ width: "100%" }}
               />

@@ -36,11 +36,25 @@ export const PLAN_ACCESS: Record<PlanId, PlanAccess> = {
   },
 };
 
+/** プラン未設定（＝未課金 / メール不一致）ユーザーは一切アクセス不可 */
+export const NO_ACCESS: PlanAccess = {
+  videos: false,
+  materials: false,
+  support: false,
+  zoom: false,
+  community: false,
+  jobs: false,
+};
+
+export function hasPaidPlan(plan: string | null): boolean {
+  return !!plan && plan in PLAN_ACCESS;
+}
+
 export function getPlanAccess(plan: string | null): PlanAccess {
   if (plan && plan in PLAN_ACCESS) {
     return PLAN_ACCESS[plan as PlanId];
   }
-  return PLAN_ACCESS["video-only"];
+  return NO_ACCESS;
 }
 
 export function getPlanLabel(plan: string | null): string {

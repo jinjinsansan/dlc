@@ -179,6 +179,22 @@ export default function ApplySuccessPage() {
           </ol>
         </div>
 
+        <div
+          style={{
+            padding: 20,
+            border: "1px solid var(--color-primary)",
+            background: "rgba(201,168,76,0.08)",
+            marginBottom: 48,
+            fontSize: 14,
+            lineHeight: 1.8,
+            color: "var(--color-text)",
+          }}
+        >
+          ⚠️ <strong>重要</strong>：会員登録は必ず
+          <strong style={{ color: "var(--color-primary)" }}>決済時と同じメールアドレス</strong>
+          で行ってください。異なるメールアドレスで登録すると、購入したプランが反映されません。
+        </div>
+
         <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
           <Link href="/login" className="btn btn-primary">
             ログインへ <span className="arrow">→</span>

@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import Card from "@/components/ui/Card";
-import { getPlanLabel, getPlanAccess } from "@/lib/plans";
+import { getPlanLabel, getPlanAccess, PLAN_ACCESS } from "@/lib/plans";
+import { isAdmin } from "@/lib/admin";
 
 export default async function DashboardPage() {
   const supabase = createServerSupabaseClient();
@@ -17,7 +18,7 @@ export default async function DashboardPage() {
 
   const name = profile?.name ?? user?.user_metadata?.name ?? "会員";
   const plan = profile?.plan ?? null;
-  const access = getPlanAccess(plan);
+  const access = isAdmin(user?.email) ? PLAN_ACCESS["zoom"] : getPlanAccess(plan);
 
   const { data: announcements } = await supabase
     .from("announcements")

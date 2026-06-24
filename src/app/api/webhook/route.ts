@@ -40,22 +40,36 @@ export async function POST(request: NextRequest) {
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
     const planId = session.metadata?.planId;
-    const email = session.customer_details?.email;
+    const email = session.customer_details?.email?.toLowerCase();
+    const name = session.customer_details?.name ?? undefined;
+    const customerId =
+      typeof session.customer === "string" ? session.customer : null;
 
     if (email && planId) {
       const supabaseAdmin = getSupabaseAdmin();
-      const { error } = await supabaseAdmin.from("users").upsert(
-        {
-          email,
-          plan: planId,
-          stripe_session_id: session.id,
-          created_at: new Date().toISOString(),
-        },
-        { onConflict: "email" }
-      );
+
+      // created_at は upsert に含めない（再送時に上書きしないため。
+      // 新規行は DB の default now() が入る）。updated_at は常に更新。
+      const payload: Record<string, unknown> = {
+        email,
+        plan: planId,
+        stripe_session_id: session.id,
+        updated_at: new Date().toISOString(),
+      };
+      if (name) payload.name = name;
+      if (customerId) payload.stripe_customer_id = customerId;
+
+      const { error } = await supabaseAdmin
+        .from("users")
+        .upsert(payload, { onConflict: "email" });
 
       if (error) {
-        console.error("Supabase user creation error:", error);
+        // 失敗時は 500 を返し Stripe にリトライさせる（冪等な upsert なので安全）
+        console.error("Supabase user upsert error:", error);
+        return NextResponse.json(
+          { error: "user sync failed" },
+          { status: 500 }
+        );
       }
     }
   }

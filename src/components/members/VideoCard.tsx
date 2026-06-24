@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Card from "@/components/ui/Card";
 import { createClient } from "@/lib/supabase/client";
 
@@ -51,6 +51,16 @@ export default function VideoCard({
     }
   };
 
+  const markWatched = useCallback(async () => {
+    if (watched) return;
+    const supabase = createClient();
+    const { error: err } = await supabase.from("video_watches").upsert(
+      { user_id: userId, video_id: video.id },
+      { onConflict: "user_id,video_id" }
+    );
+    if (!err) setWatched(true);
+  }, [watched, userId, video.id]);
+
   // 50% 視聴したら自動で「視聴済み」マーク
   useEffect(() => {
     const v = videoRef.current;
@@ -66,17 +76,7 @@ export default function VideoCard({
     };
     v.addEventListener("timeupdate", onTimeUpdate);
     return () => v.removeEventListener("timeupdate", onTimeUpdate);
-  }, [watched, signedUrl]);
-
-  const markWatched = async () => {
-    if (watched) return;
-    const supabase = createClient();
-    const { error: err } = await supabase.from("video_watches").upsert(
-      { user_id: userId, video_id: video.id },
-      { onConflict: "user_id,video_id" }
-    );
-    if (!err) setWatched(true);
-  };
+  }, [watched, signedUrl, markWatched]);
 
   const formatDuration = (s: number | null): string => {
     if (!s) return "";

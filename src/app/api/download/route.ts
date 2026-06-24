@@ -40,6 +40,39 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
   }
 
+  // ユーザーのプラン取得（未課金は弾く）
+  const { data: profile } = await supabase
+    .from("users")
+    .select("plan")
+    .eq("email", user.email)
+    .single();
+
+  const hierarchy = ["video-only", "video-email", "zoom"];
+  const userIdx = hierarchy.indexOf(profile?.plan ?? "");
+  if (userIdx < 0) {
+    return NextResponse.json(
+      { error: "有効なプランがありません" },
+      { status: 403 }
+    );
+  }
+
+  // 教材レコードの plan_required と照合
+  const { data: material } = await supabase
+    .from("materials")
+    .select("plan_required")
+    .eq("file_url", filePath)
+    .single();
+
+  if (material?.plan_required) {
+    const requiredIdx = hierarchy.indexOf(material.plan_required);
+    if (userIdx < requiredIdx) {
+      return NextResponse.json(
+        { error: "このプランでは閲覧できません" },
+        { status: 403 }
+      );
+    }
+  }
+
   const { data, error } = await supabase.storage
     .from("materials")
     .createSignedUrl(filePath, 60);

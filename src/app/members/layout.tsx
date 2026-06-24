@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import MemberSidebar from "@/components/layout/MemberSidebar";
-import { getPlanAccess } from "@/lib/plans";
+import { getPlanAccess, hasPaidPlan, PLAN_ACCESS } from "@/lib/plans";
 import { MemberProvider, MemberProfile } from "@/components/members/MemberContext";
 import { isAdmin } from "@/lib/admin";
 
@@ -26,8 +26,16 @@ export default async function MembersLayout({
     .single();
 
   const plan = profile?.plan ?? null;
+  const admin = isAdmin(user.email);
+
+  // 未課金（メール不一致を含む）かつ管理者でない場合はメンバー領域に入れない
+  if (!admin && !hasPaidPlan(plan)) {
+    redirect("/account-pending");
+  }
+
   const name = profile?.name ?? user.user_metadata?.name ?? "会員";
-  const access = getPlanAccess(plan);
+  // 管理者はプラン行が無くても全機能を閲覧できるようにする
+  const access = admin ? PLAN_ACCESS["zoom"] : getPlanAccess(plan);
 
   const memberProfile: MemberProfile = {
     userId: user.id,
@@ -36,7 +44,7 @@ export default async function MembersLayout({
     plan,
     access,
     communityFreeUntil: profile?.community_free_until ?? null,
-    isAdmin: isAdmin(user.email),
+    isAdmin: admin,
   };
 
   return (
