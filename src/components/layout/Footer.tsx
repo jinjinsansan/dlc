@@ -122,7 +122,7 @@ export default function Footer() {
             color: "var(--color-text-dim)",
           }}
         >
-          <span>© {new Date().getFullYear()} D-LAB / ACADEMY.ANATOUAI.COM</span>
+          <span>© {new Date().getFullYear()} D-LAB / ACADEMY.DLOGICAI.IN</span>
           <span>DESIGNED IN TOKYO</span>
         </div>
       </div>

@@ -1,6 +1,6 @@
 // カンマ区切りで複数の管理者メールを指定可能
 // 例: NEXT_PUBLIC_ADMIN_EMAIL="a@example.com,b@example.com"
-const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAIL ?? "admin@ai-builders-lab.com")
+const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAIL ?? "admin@dlogicai.in")
   .split(",")
   .map((e) => e.trim().toLowerCase())
   .filter(Boolean);

@@ -107,8 +107,8 @@ export default function AccountPendingPage() {
 
         <p style={{ marginTop: 32, fontSize: 13, color: "var(--color-text-dim)" }}>
           お困りの場合は{" "}
-          <a href="mailto:support@ai-builders-lab.com" style={{ color: "var(--color-primary)" }}>
-            support@ai-builders-lab.com
+          <a href="mailto:support@dlogicai.in" style={{ color: "var(--color-primary)" }}>
+            support@dlogicai.in
           </a>{" "}
           までご連絡ください。
         </p>
