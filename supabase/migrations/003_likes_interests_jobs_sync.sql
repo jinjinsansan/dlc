@@ -80,5 +80,14 @@ alter table public.jobs add column if not exists description text;
 alter table public.jobs add column if not exists budget text;
 alter table public.jobs add column if not exists duration text;
 
--- 旧 body カラムが not null 制約付きで残っていると insert が失敗するため緩和
-alter table public.jobs alter column body drop not null;
+-- 旧 body カラムが not null 制約付きで残っていると insert が失敗するため緩和。
+-- 新規DBには body カラムが無いので、存在する場合のみ実行する。
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'jobs' and column_name = 'body'
+  ) then
+    alter table public.jobs alter column body drop not null;
+  end if;
+end $$;
