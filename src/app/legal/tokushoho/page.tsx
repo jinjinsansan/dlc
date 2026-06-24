@@ -1,7 +1,7 @@
 import PublicHeader from "@/components/layout/PublicHeader";
 
 const items: [string, string][] = [
-  ["販売事業者名", "AI Builders Lab 運営事務局"],
+  ["販売事業者名", "D-lab 運営事務局"],
   ["代表者", "請求があった場合に遅滞なく開示いたします"],
   ["所在地", "請求があった場合に遅滞なく開示いたします"],
   ["電話番号", "請求があった場合に遅滞なく開示いたします"],
