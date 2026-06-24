@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { siteConfig } from "@/lib/siteConfig";
+import { siteConfig, enrollmentOpen } from "@/lib/siteConfig";
 
 export default function CTASection() {
   const seatsLeft = siteConfig.recruitment.remainingSlots;
@@ -69,7 +69,9 @@ export default function CTASection() {
             margin: "0 auto 56px",
           }}
         >
-          1期生 残り {seatsLeft}名。締切：{formattedDeadline}。
+          {enrollmentOpen
+            ? `1期生 残り ${seatsLeft}名。締切：${formattedDeadline}。`
+            : "1期生の募集はまもなく開始します。公開通知をご希望の方はメールアドレスをご登録ください。"}
         </p>
         <div
           style={{
@@ -84,7 +86,7 @@ export default function CTASection() {
             className="btn btn-primary"
             style={{ padding: "22px 40px", fontSize: 15 }}
           >
-            申し込む <span className="arrow">→</span>
+            {enrollmentOpen ? "申し込む" : "事前登録する"} <span className="arrow">→</span>
           </Link>
           <Link
             href="/launch/episode/1"

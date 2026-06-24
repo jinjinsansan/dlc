@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { enrollmentOpen } from "@/lib/siteConfig";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -88,7 +89,7 @@ export default function Header() {
             Log In
           </Link>
           <Link href="/apply" className="btn btn-primary" style={{ padding: "12px 22px", fontSize: 12 }}>
-            APPLY <span className="arrow">→</span>
+            {enrollmentOpen ? "APPLY" : "COMING SOON"} <span className="arrow">→</span>
           </Link>
         </nav>
       </div>

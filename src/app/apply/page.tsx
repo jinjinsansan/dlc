@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { enrollmentOpen } from "@/lib/siteConfig";
+import EmailForm from "@/components/launch/EmailForm";
 
 const PLANS = [
   {
@@ -153,10 +155,88 @@ function Steps({ active }: { active: number }) {
   );
 }
 
+function ComingSoon() {
+  return (
+    <>
+      <HeaderApply />
+      <main style={{ maxWidth: 640, margin: "0 auto", padding: "180px 32px 120px" }}>
+        <div className="eyebrow" style={{ textAlign: "center", marginBottom: 24 }}>
+          — COMING SOON / 準備中
+        </div>
+        <h1
+          className="font-serif-jp"
+          style={{
+            fontSize: "clamp(36px, 5vw, 56px)",
+            fontWeight: 700,
+            textAlign: "center",
+            lineHeight: 1.15,
+            letterSpacing: "-0.01em",
+            marginBottom: 32,
+          }}
+        >
+          ただいま
+          <span style={{ color: "var(--color-primary)", fontStyle: "italic" }}>準備中</span>
+          です。
+        </h1>
+        <p
+          style={{
+            fontSize: 15,
+            color: "var(--color-text-muted)",
+            lineHeight: 1.9,
+            textAlign: "center",
+            marginBottom: 48,
+          }}
+        >
+          AI Builders Lab は現在開講準備を進めています。
+          <br />
+          お申し込みの受付開始は、下記にメールアドレスをご登録いただいた方へ
+          <br />
+          いち早くお知らせします。
+        </p>
+
+        <div
+          style={{
+            background: "var(--color-surface)",
+            border: "1px solid var(--color-border-hair)",
+            padding: 32,
+          }}
+        >
+          <div
+            className="font-mono-jp"
+            style={{
+              fontSize: 10,
+              color: "var(--color-text-dim)",
+              letterSpacing: "0.2em",
+              marginBottom: 16,
+            }}
+          >
+            NOTIFY ME / 公開通知を受け取る
+          </div>
+          <EmailForm />
+        </div>
+
+        <div style={{ textAlign: "center", marginTop: 40 }}>
+          <Link
+            href="/launch/episode/1"
+            className="font-mono-jp"
+            style={{ fontSize: 12, color: "var(--color-primary)", letterSpacing: "0.15em" }}
+          >
+            無料の紹介動画を見る →
+          </Link>
+        </div>
+      </main>
+    </>
+  );
+}
+
 export default function ApplyPage() {
   const [planId, setPlanId] = useState<string>("video-email");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  if (!enrollmentOpen) {
+    return <ComingSoon />;
+  }
 
   const plan = PLANS.find((p) => p.id === planId) ?? PLANS[1];
 

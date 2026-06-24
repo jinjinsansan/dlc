@@ -3,6 +3,7 @@ import Link from "next/link";
 import EmailForm from "@/components/launch/EmailForm";
 import WatchedTracker from "@/components/launch/WatchedTracker";
 import { episodes } from "@/lib/episodes";
+import { enrollmentOpen } from "@/lib/siteConfig";
 
 const EPISODE_DURATIONS = ["14:32", "18:45", "16:20", "22:10"];
 
@@ -267,14 +268,17 @@ export default function EpisodePage({ params }: { params: { n: string } }) {
                     lineHeight: 1.7,
                   }}
                 >
-                  第 1 期生 限定枠で募集中。
+                  {enrollmentOpen
+                    ? "第 1 期生 限定枠で募集中。"
+                    : "第 1 期生はまもなく募集開始。公開通知は下記から。"}
                 </p>
                 <Link
                   href="/apply"
                   className="btn btn-primary"
                   style={{ padding: "16px 32px", fontSize: 14 }}
                 >
-                  今すぐ申し込む <span className="arrow">→</span>
+                  {enrollmentOpen ? "今すぐ申し込む" : "近日公開・事前登録"}{" "}
+                  <span className="arrow">→</span>
                 </Link>
               </div>
             )}
@@ -360,7 +364,8 @@ export default function EpisodePage({ params }: { params: { n: string } }) {
                 </Link>
               ) : (
                 <Link href="/apply" className="btn btn-primary">
-                  第1期に申し込む <span className="arrow">→</span>
+                  {enrollmentOpen ? "第1期に申し込む" : "近日公開・事前登録"}{" "}
+                  <span className="arrow">→</span>
                 </Link>
               )}
             </div>
@@ -462,7 +467,8 @@ export default function EpisodePage({ params }: { params: { n: string } }) {
                 marginTop: 32,
               }}
             >
-              申し込み <span className="arrow">→</span>
+              {enrollmentOpen ? "申し込み" : "近日公開・事前登録"}{" "}
+              <span className="arrow">→</span>
             </Link>
           </aside>
         </div>

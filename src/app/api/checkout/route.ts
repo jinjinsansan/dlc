@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStripe, PLANS, PlanId } from "@/lib/stripe";
+import { enrollmentOpen } from "@/lib/siteConfig";
 
 export async function POST(request: NextRequest) {
   try {
+    // 受付停止中（準備中）はサーバー側で決済を拒否する
+    if (!enrollmentOpen) {
+      return NextResponse.json(
+        { error: "現在、お申し込みの受付を停止しています（準備中）" },
+        { status: 403 }
+      );
+    }
+
     const { planId } = await request.json();
 
     if (!planId || !(planId in PLANS)) {

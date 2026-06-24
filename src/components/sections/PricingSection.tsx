@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SectionHead from "./SectionHead";
+import { enrollmentOpen } from "@/lib/siteConfig";
 
 export default function PricingSection() {
   const plans = [
@@ -67,7 +68,11 @@ export default function PricingSection() {
               </span>
             </>
           }
-          intro="全プラン一括払い、追加料金なし。Stripeでの安全な決済。"
+          intro={
+            enrollmentOpen
+              ? "全プラン一括払い、追加料金なし。Stripeでの安全な決済。"
+              : "現在お申し込みは準備中です。公開通知をご希望の方はメールアドレスをご登録ください。"
+          }
         />
 
         <div
@@ -233,7 +238,15 @@ export default function PricingSection() {
                 className={`btn ${p.featured ? "btn-primary" : "btn-ghost"}`}
                 style={{ width: "100%", justifyContent: "center" }}
               >
-                申し込む <span className="arrow">→</span>
+                {enrollmentOpen ? (
+                  <>
+                    申し込む <span className="arrow">→</span>
+                  </>
+                ) : (
+                  <>
+                    近日公開・事前登録 <span className="arrow">→</span>
+                  </>
+                )}
               </Link>
             </div>
           ))}

@@ -179,6 +179,15 @@ create table if not exists public.job_interests (
 create index if not exists job_interests_job_idx on public.job_interests (job_id);
 
 
+-- ───────────────────────────────────────────────────────────────────────
+-- 10. launch_emails (ローンチ通知の事前メール登録)
+-- ───────────────────────────────────────────────────────────────────────
+create table if not exists public.launch_emails (
+  email text primary key,
+  created_at timestamptz default now()
+);
+
+
 -- ═══════════════════════════════════════════════════════════════════════
 -- Row Level Security (RLS)
 -- ═══════════════════════════════════════════════════════════════════════
@@ -194,6 +203,7 @@ alter table public.replies enable row level security;
 alter table public.jobs enable row level security;
 alter table public.post_likes enable row level security;
 alter table public.job_interests enable row level security;
+alter table public.launch_emails enable row level security;
 
 
 -- ── users ── 自分のデータのみ閲覧/更新可。サービスロールは全権。
@@ -304,6 +314,12 @@ create policy job_interests_self_insert on public.job_interests
 drop policy if exists job_interests_self_delete on public.job_interests;
 create policy job_interests_self_delete on public.job_interests
   for delete using (auth.uid() = user_id);
+
+
+-- ── launch_emails ── 匿名含む誰でも事前登録(挿入)のみ可能、閲覧不可
+drop policy if exists launch_emails_anon_insert on public.launch_emails;
+create policy launch_emails_anon_insert on public.launch_emails
+  for insert with check (true);
 
 
 -- ═══════════════════════════════════════════════════════════════════════

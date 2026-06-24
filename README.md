@@ -79,3 +79,14 @@ npm run lint
 - プラン階層 `video-only < video-email < zoom`。動画/教材/サポート/コミュニティ/受発注の
   各機能は `src/lib/plans.ts` の `PLAN_ACCESS` とサーバー側 layout ゲートで制御。
 - 管理者判定は `NEXT_PUBLIC_ADMIN_EMAIL`（`src/lib/admin.ts`）。
+
+## 申し込み受付の開閉（準備中モード）
+
+`src/lib/siteConfig.ts` の `recruitment.isOpen` が単一の開閉スイッチ。
+
+- `false`（準備中）: `/apply` は「準備中＋メール事前登録」を表示、LPの申込CTAは「近日公開」に変わり、
+  `/api/checkout` はサーバー側で 403 を返す（API直叩きでも決済不可）。
+- `true`（公開）: 申込ボタン・`/apply`・決済が一斉に有効化される。
+
+公開するときは `isOpen: true` に変更してデプロイするだけ。事前登録メールは
+`launch_emails` テーブル（migration 004）に蓄積される。

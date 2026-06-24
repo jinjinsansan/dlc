@@ -19,7 +19,7 @@ export default function EmailForm() {
       const supabase = createClient();
       const { error } = await supabase
         .from("launch_emails")
-        .upsert({ email }, { onConflict: "email" });
+        .upsert({ email }, { onConflict: "email", ignoreDuplicates: true });
 
       if (error) throw error;
 
