@@ -38,7 +38,7 @@ export default function AboutSection() {
           kicker="THE LAB / WHAT WE ARE"
           title={
             <>
-              AI Builders Labは、
+              D-labは、
               <br />
               <span style={{ color: "var(--color-primary)", fontStyle: "italic" }}>
                 作れる人間

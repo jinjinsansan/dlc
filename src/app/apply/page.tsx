@@ -63,7 +63,7 @@ function HeaderApply() {
         }}
       >
         <Link href="/" className="font-serif-jp" style={{ fontSize: 22, fontWeight: 700 }}>
-          AI Builders <span style={{ color: "var(--color-primary)" }}>Lab</span>
+          D-<span style={{ color: "var(--color-primary)" }}>lab</span>
         </Link>
         <Link
           href="/"
@@ -187,7 +187,7 @@ function ComingSoon() {
             marginBottom: 48,
           }}
         >
-          AI Builders Lab は現在開講準備を進めています。
+          D-lab は現在開講準備を進めています。
           <br />
           お申し込みの受付開始は、下記にメールアドレスをご登録いただいた方へ
           <br />

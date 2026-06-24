@@ -58,7 +58,7 @@ export default function MemberSidebar({ access, name, plan }: Props) {
           className="font-serif-jp"
           style={{ fontSize: 20, fontWeight: 700, display: "block" }}
         >
-          AI Builders <span style={{ color: "var(--color-primary)" }}>Lab</span>
+          D-<span style={{ color: "var(--color-primary)" }}>lab</span>
         </Link>
         <span
           className="font-mono-jp"

@@ -26,8 +26,9 @@ export default function MemberHeader({
   return (
     <header className="fixed top-0 w-full z-50 bg-bg/80 backdrop-blur-md border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
-        <Link href="/members/dashboard" className="font-serif text-xl font-bold text-primary">
-          AI Builders Lab
+        <Link href="/members/dashboard" className="font-serif text-xl font-bold">
+          <span className="text-text-main">D-</span>
+          <span className="text-primary">lab</span>
         </Link>
 
         <div className="hidden md:flex items-center gap-6">

@@ -69,7 +69,7 @@ export default function RegisterPage() {
         }}
       >
         <Link href="/" className="font-serif-jp" style={{ fontSize: 22, fontWeight: 700 }}>
-          AI Builders <span style={{ color: "var(--color-primary)" }}>Lab</span>
+          D-<span style={{ color: "var(--color-primary)" }}>lab</span>
         </Link>
 
         <div style={{ maxWidth: 400 }}>
@@ -254,7 +254,7 @@ export default function RegisterPage() {
             letterSpacing: "0.18em",
           }}
         >
-          © {new Date().getFullYear()} AI BUILDERS LAB
+          © {new Date().getFullYear()} D-LAB
         </div>
       </div>
 
@@ -309,7 +309,7 @@ export default function RegisterPage() {
               letterSpacing: "0.18em",
             }}
           >
-            — AI BUILDERS LAB / 8 WEEKS · 1 PRODUCT
+            — D-LAB / 8 WEEKS · 1 PRODUCT
           </div>
         </div>
       </div>

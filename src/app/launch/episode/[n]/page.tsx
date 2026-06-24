@@ -32,7 +32,7 @@ function PublicHeader() {
         }}
       >
         <Link href="/" className="font-serif-jp" style={{ fontSize: 22, fontWeight: 700 }}>
-          AI Builders <span style={{ color: "var(--color-primary)" }}>Lab</span>
+          D-<span style={{ color: "var(--color-primary)" }}>lab</span>
         </Link>
         <Link
           href="/launch"
@@ -258,7 +258,7 @@ export default function EpisodePage({ params }: { params: { n: string } }) {
                     marginBottom: 12,
                   }}
                 >
-                  AI Builders Lab で、作れる側の人間に。
+                  D-lab で、作れる側の人間に。
                 </h2>
                 <p
                   style={{

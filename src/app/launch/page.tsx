@@ -29,7 +29,7 @@ function PublicHeader() {
         }}
       >
         <Link href="/" className="font-serif-jp" style={{ fontSize: 22, fontWeight: 700 }}>
-          AI Builders <span style={{ color: "var(--color-primary)" }}>Lab</span>
+          D-<span style={{ color: "var(--color-primary)" }}>lab</span>
         </Link>
         <Link
           href="/"
@@ -106,7 +106,7 @@ export default function LaunchPage() {
               margin: "24px auto 0",
             }}
           >
-            第1期募集に先立ち、AI Builders Lab がなぜ生まれたか、
+            第1期募集に先立ち、D-lab がなぜ生まれたか、
             何をどう教えるのかを 4 本の動画で公開しています。
           </p>
         </div>

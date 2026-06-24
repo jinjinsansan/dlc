@@ -52,7 +52,7 @@ export default function LoginPage() {
           className="font-serif-jp"
           style={{ fontSize: 22, fontWeight: 700 }}
         >
-          AI Builders <span style={{ color: "var(--color-primary)" }}>Lab</span>
+          D-<span style={{ color: "var(--color-primary)" }}>lab</span>
         </Link>
 
         <div style={{ maxWidth: 400 }}>
@@ -183,7 +183,7 @@ export default function LoginPage() {
             letterSpacing: "0.18em",
           }}
         >
-          © {new Date().getFullYear()} AI BUILDERS LAB
+          © {new Date().getFullYear()} D-LAB
         </div>
       </div>
 
