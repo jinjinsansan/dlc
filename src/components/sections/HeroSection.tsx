@@ -9,7 +9,7 @@ export default function HeroSection() {
     <section
       style={{
         position: "relative",
-        minHeight: "100vh",
+        minHeight: "96vh",
         overflow: "hidden",
         borderBottom: "1px solid var(--color-border-hair)",
       }}
@@ -20,12 +20,13 @@ export default function HeroSection() {
       <div
         style={{
           position: "absolute",
-          top: "40%",
+          top: "38%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 900,
-          height: 900,
-          background: "radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 60%)",
+          width: 920,
+          height: 920,
+          maxWidth: "120vw",
+          background: "radial-gradient(circle, rgba(201,168,76,0.13) 0%, transparent 60%)",
           pointerEvents: "none",
         }}
       />
@@ -39,13 +40,15 @@ export default function HeroSection() {
           right: 0,
           display: "flex",
           justifyContent: "space-between",
-          padding: "0 48px",
+          padding: "0 44px",
           fontFamily: "var(--font-mono)",
           fontSize: 11,
           color: "var(--color-text-dim)",
           letterSpacing: "0.18em",
           textTransform: "uppercase",
           zIndex: 2,
+          flexWrap: "wrap",
+          gap: 8,
         }}
       >
         <span>VOL. 01 / FIRST COHORT</span>
@@ -76,30 +79,30 @@ export default function HeroSection() {
           zIndex: 2,
           maxWidth: 1280,
           margin: "0 auto",
-          padding: "180px 120px 120px",
-          display: "grid",
-          gridTemplateColumns: "1fr",
-          gap: 48,
+          padding: "180px 120px 130px",
         }}
       >
-        <div className="eyebrow">— A NEW SCHOOL FOR THE POST-CODE ERA</div>
+        <div className="eyebrow" style={{ marginBottom: 44 }}>
+          — A NEW SCHOOL FOR THE POST-CODE ERA
+        </div>
 
         <h1
           className="font-serif-jp"
           style={{
-            fontSize: "clamp(52px, 8vw, 124px)",
+            fontSize: "clamp(52px, 8vw, 120px)",
             lineHeight: 1.05,
             fontWeight: 700,
             letterSpacing: "-0.02em",
+            margin: 0,
           }}
         >
           <span
             style={{
               color: "var(--color-text-dim)",
               display: "block",
-              fontSize: "0.42em",
+              fontSize: "0.4em",
               letterSpacing: "0.1em",
-              marginBottom: 24,
+              marginBottom: 22,
               fontWeight: 400,
             }}
           >
@@ -119,8 +122,8 @@ export default function HeroSection() {
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1.2fr",
-            gap: 80,
-            marginTop: 24,
+            gap: 72,
+            marginTop: 56,
             alignItems: "end",
           }}
         >

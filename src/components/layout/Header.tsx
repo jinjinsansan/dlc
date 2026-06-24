@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { enrollmentOpen } from "@/lib/siteConfig";
+import { DLabBrand } from "@/components/brand/DLabMark";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -37,18 +38,7 @@ export default function Header() {
           justifyContent: "space-between",
         }}
       >
-        <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
-          <Link
-            href="/"
-            className="font-serif-jp"
-            style={{ fontSize: 22, fontWeight: 700, letterSpacing: "0.02em" }}
-          >
-            AI Builders <span style={{ color: "var(--color-primary)" }}>Lab</span>
-          </Link>
-          <span className="font-mono-jp" style={{ fontSize: 10, color: "var(--color-text-dim)" }}>
-            EST. 2026
-          </span>
-        </div>
+        <DLabBrand href="/" est />
         <nav
           style={{
             display: "flex",

@@ -17,9 +17,9 @@ const notoSerif = Noto_Serif_JP({
 });
 
 export const metadata: Metadata = {
-  title: "AI Builders Lab | 競馬予想AIを作った私が教えるAI個人開発者養成コミュニティ",
+  title: "D-lab | 競馬予想AIを作った私が教えるAI個人開発者養成コミュニティ",
   description:
-    "ノーコードで本格競馬予想AIを作った実績者が教える、AI個人開発者養成コミュニティ。題材は競馬AIですが、身につくのは『何でも作れる力』です。10年前には不可能だった。今日から、あなたにもできる。",
+    "ノーコードで本格競馬予想AIを作った実績者が教える、AI個人開発者養成コミュニティ「D-lab」。題材は競馬AIですが、身につくのは『何でも作れる力』です。10年前には不可能だった。今日から、あなたにもできる。",
 };
 
 export default function RootLayout({

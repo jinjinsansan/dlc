@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DLabBrand } from "@/components/brand/DLabMark";
 
 export default function Footer() {
   const sections: [string, [string, string][]][] = [
@@ -44,15 +45,8 @@ export default function Footer() {
           }}
         >
           <div>
-            <div
-              className="font-serif-jp"
-              style={{
-                fontSize: 24,
-                fontWeight: 700,
-                marginBottom: 16,
-              }}
-            >
-              AI Builders <span style={{ color: "var(--color-primary)" }}>Lab</span>
+            <div style={{ marginBottom: 16 }}>
+              <DLabBrand size={30} fontSize={24} />
             </div>
             <p
               style={{
@@ -64,6 +58,17 @@ export default function Footer() {
             >
               ノーコードで本格AIプロダクトを作る、個人開発者養成コミュニティ。
               ノーコードで本格競馬予想AIを作った実績者が教える。
+            </p>
+            <p
+              className="font-mono-jp"
+              style={{
+                fontSize: 10,
+                color: "var(--color-text-dim)",
+                letterSpacing: "0.12em",
+                marginTop: 20,
+              }}
+            >
+              D-market · D-swipe · Dlogic ファミリー
             </p>
           </div>
           {sections.map(([title, links]) => (
@@ -117,7 +122,7 @@ export default function Footer() {
             color: "var(--color-text-dim)",
           }}
         >
-          <span>© {new Date().getFullYear()} AI BUILDERS LAB / ACADEMY.ANATOUAI.COM</span>
+          <span>© {new Date().getFullYear()} D-LAB / ACADEMY.ANATOUAI.COM</span>
           <span>DESIGNED IN TOKYO</span>
         </div>
       </div>
